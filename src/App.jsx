@@ -14,7 +14,7 @@ import StudyHub from "./pages/StudyHub/StudyHub";
 
 import { useTranslation } from "react-i18next";
 import "./i18n";
-import Admin from "./admin-dashboard/Admin";
+import Admin from "./admin-dashboard/admin";
 import AdminLogin from "./admin-dashboard/AdminLogin";
 import ProtectedRoute from "./admin-dashboard/ProtectedRoute";
  
