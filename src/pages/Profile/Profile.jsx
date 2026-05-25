@@ -52,7 +52,7 @@ const Profile = ({
   const [shareUsers, setShareUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("posts");
-
+const hasFetchedFollowing = useRef(false);
   const [commentTexts, setCommentTexts] = useState({});
   const [activeCommentId, setActiveCommentId] = useState(null);
 
@@ -136,10 +136,13 @@ const fetchCurrentUserFollowing = async () => {
 };
 
 // Appelle cette fonction après avoir chargé currentUser
+
+
 useEffect(() => {
-  if (currentUser) {
-    fetchCurrentUserFollowing();
-  }
+    if (currentUser && !hasFetchedFollowing.current) {
+        hasFetchedFollowing.current = true;
+        fetchCurrentUserFollowing();
+    }
 }, [currentUser]);
 
 // Calcule si le profil affiché est suivi par l'utilisateur courant
