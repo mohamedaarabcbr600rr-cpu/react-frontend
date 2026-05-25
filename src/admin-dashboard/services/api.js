@@ -1,17 +1,16 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: `${import.meta.env.VITE_API_URL}/api',
+    baseURL: `${import.meta.env.VITE_API_URL}/api`,
     headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
     }
 });
 
-// Intercepteur pour ajouter le token automatiquement
 api.interceptors.request.use(
     (config) => {
-        const token = localStorage.getItem('admin_token'); // ou 'token' selon votre clé
+        const token = localStorage.getItem('admin_token');
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }
@@ -23,7 +22,3 @@ api.interceptors.request.use(
 );
 
 export default api;
-
-
-
-
