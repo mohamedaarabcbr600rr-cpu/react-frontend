@@ -16,9 +16,9 @@ const StoriesSection = ({
     if (!url) return '/default-avatar.png';
     if (url.startsWith('http')) return url;
     if (url.startsWith('/storage')) {
-      return `http://127.0.0.1:8000${url}`;
+      return `import.meta.env.VITE_API_URL${url}`;
     }
-    return `http://127.0.0.1:8000/storage/${url}`;
+    return `import.meta.env.VITE_API_URL/storage/${url}`;
   };
 
   // Don't render if no stories and not own profile
@@ -85,3 +85,4 @@ const StoriesSection = ({
 };
 
 export default StoriesSection;
+

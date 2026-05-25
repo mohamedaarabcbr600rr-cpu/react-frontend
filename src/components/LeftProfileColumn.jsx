@@ -106,3 +106,4 @@ const LeftProfileColumn = ({
 };
 
 export default LeftProfileColumn;
+

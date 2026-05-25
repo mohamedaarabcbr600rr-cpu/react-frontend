@@ -42,3 +42,4 @@ export const useTimer = (initialMinutes = 25) => {
 
   return { minutes, seconds, formatTime, isRunning, isComplete, start, pause, reset };
 };
+

@@ -67,3 +67,4 @@ export default function AdminLogin({ setToken }) {
     </div>
   );
 }
+

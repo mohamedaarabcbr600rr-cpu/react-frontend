@@ -71,3 +71,4 @@ const SessionAnalysis = ({ data, onNewSession }) => {
 };
 
 export default SessionAnalysis;
+

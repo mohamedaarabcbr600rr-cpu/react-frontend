@@ -81,9 +81,9 @@ const Profile = ({
     if (!url) return null;
     if (url.startsWith('http')) return url;
     if (url.startsWith('/storage')) {
-      return `http://127.0.0.1:8000${url}`;
+      return `import.meta.env.VITE_API_URL${url}`;
     }
-    return `http://127.0.0.1:8000/storage/${url}`;
+    return `import.meta.env.VITE_API_URL/storage/${url}`;
   };
 
   // Memory leak cleanup
@@ -740,3 +740,4 @@ const handleFollow = async (targetUserId, targetUserData = null) => {
 };
 
 export default Profile;
+

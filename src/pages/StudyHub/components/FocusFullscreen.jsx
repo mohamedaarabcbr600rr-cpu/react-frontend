@@ -160,3 +160,4 @@ const FocusFullscreen = ({ sessionId, onComplete }) => {
 };
 
 export default FocusFullscreen;
+

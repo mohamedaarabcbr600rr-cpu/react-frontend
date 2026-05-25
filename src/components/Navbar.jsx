@@ -19,8 +19,8 @@ const Navbar = ({ user, searchTerm, onSearch, onLogout, getInitials }) => {
   const getImageUrl = (profilePic) => {
     if (!profilePic) return null;
     if (profilePic.startsWith('http')) return profilePic;
-    if (profilePic.startsWith('/storage')) return `http://127.0.0.1:8000${profilePic}`;
-    return `http://127.0.0.1:8000/storage/${profilePic}`;
+    if (profilePic.startsWith('/storage')) return `import.meta.env.VITE_API_URL${profilePic}`;
+    return `import.meta.env.VITE_API_URL/storage/${profilePic}`;
   };
 
   // ✅ ROUTES MAP
@@ -166,3 +166,4 @@ const Navbar = ({ user, searchTerm, onSearch, onLogout, getInitials }) => {
 };
 
 export default Navbar;
+

@@ -365,3 +365,4 @@ const getScoreClass = (score) => {
 };
 
 export default ProgressChart;
+
