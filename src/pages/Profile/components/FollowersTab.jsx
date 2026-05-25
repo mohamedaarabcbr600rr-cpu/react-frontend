@@ -24,8 +24,8 @@ const FollowersTab = ({ followers = [], onFollowToggle, currentUserId }) => {
   const getImageUrl = (profilePic) => {
     if (!profilePic) return null;
     if (profilePic.startsWith('http')) return profilePic;
-    if (profilePic.startsWith('/storage')) return `${import.meta.env.VITE_API_URL || "http://127.0.0.1:8000"}${profilePic}`;
-    return `${import.meta.env.VITE_API_URL || "http://127.0.0.1:8000"}/storage/${profilePic}`;
+    if (profilePic.startsWith('/storage')) return `http://127.0.0.1:8000${profilePic}`;
+    return `http://127.0.0.1:8000/storage/${profilePic}`;
   };
 
   const getInitials = (name) => {

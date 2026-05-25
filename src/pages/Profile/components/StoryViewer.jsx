@@ -18,9 +18,9 @@ const StoryViewer = ({ stories, initialStoryIndex, onClose, currentUserId }) => 
     if (!url) return null;
     if (url.startsWith('http')) return url;
     if (url.startsWith('/storage')) {
-      return `${import.meta.env.VITE_API_URL || "http://127.0.0.1:8000"}${url}`;
+      return `http://127.0.0.1:8000${url}`;
     }
-    return `${import.meta.env.VITE_API_URL || "http://127.0.0.1:8000"}/storage/${url}`;
+    return `http://127.0.0.1:8000/storage/${url}`;
   };
 
   // Marquer la story comme vue
