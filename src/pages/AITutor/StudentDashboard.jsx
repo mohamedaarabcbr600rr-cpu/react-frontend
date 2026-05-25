@@ -18,7 +18,7 @@ const StudentDashboard = () => {
 
   // 📡 Configuration axios avec token
   const axiosInstance = axios.create({
-    baseURL: 'http://import.meta.env.VITE_API_URL/api',
+    baseURL: 'import.meta.env.VITE_API_URL/api',
   });
 
   // Interceptor pour ajouter le token
@@ -431,5 +431,6 @@ const StudentDashboard = () => {
 };
 
 export default StudentDashboard;
+
 
 

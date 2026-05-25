@@ -168,3 +168,4 @@ const Navbar = ({ user, searchTerm, onSearch, onLogout, getInitials }) => {
 export default Navbar;
 
 
+

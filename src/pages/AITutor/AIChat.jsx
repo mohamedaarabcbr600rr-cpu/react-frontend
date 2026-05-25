@@ -24,7 +24,7 @@ const AIChat = () => {
 
   // 📡 Configuration axios avec token
   const axiosInstance = axios.create({
-    baseURL: 'http://import.meta.env.VITE_API_URL/api',
+    baseURL: 'import.meta.env.VITE_API_URL/api',
   });
 
   // Interceptor pour ajouter le token
@@ -399,5 +399,6 @@ const AIChat = () => {
 };
 
 export default AIChat;
+
 
 
