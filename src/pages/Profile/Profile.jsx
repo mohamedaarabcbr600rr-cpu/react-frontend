@@ -80,11 +80,10 @@ const Profile = ({
   const getFullUrl = (url) => {
     if (!url) return null;
     if (url.startsWith('http')) return url;
-    if (url.startsWith('/storage')) {
-      return `import.meta.env.VITE_API_URL${url}`;
-    }
-    return `import.meta.env.VITE_API_URL/storage/${url}`;
-  };
+    const base = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
+    if (url.startsWith('/storage')) return `${base}${url}`;
+    return `${base}/storage/${url}`;
+};
 
   // Memory leak cleanup
   useEffect(() => {
