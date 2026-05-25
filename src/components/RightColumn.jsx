@@ -259,3 +259,4 @@ const RightColumn = ({ user = null, openLogin, onProfileClick }) => {
 
 export default RightColumn;
 
+

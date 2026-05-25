@@ -197,3 +197,4 @@ const AuthModal = ({ setUser, closeModal }) => {
 
 export default AuthModal;
 
+

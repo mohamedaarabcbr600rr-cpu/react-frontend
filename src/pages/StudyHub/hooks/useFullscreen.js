@@ -30,3 +30,4 @@ export const useFullscreen = () => {
   return { elementRef, isFullscreen, toggleFullscreen, enterFullscreen, exitFullscreen };
 };
 
+

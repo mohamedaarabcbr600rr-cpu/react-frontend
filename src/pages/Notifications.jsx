@@ -17,7 +17,7 @@ const Notifications = ({ user, onNavigateToExperience }) => {
 
   const fetchUnreadCount = async () => {
     try {
-      const res = await axios.get('http://localhost:8000/api/notifications/unread-count', {
+      const res = await axios.get('http://import.meta.env.VITE_API_URL/api/notifications/unread-count', {
         headers: { Authorization: `Bearer ${userToken}` }
       });
       setUnreadCount(res.data.unread_count);
@@ -32,7 +32,7 @@ const Notifications = ({ user, onNavigateToExperience }) => {
       setError(null);
       setErrorType(null);
       
-      const res = await axios.get('http://localhost:8000/api/notifications', {
+      const res = await axios.get('http://import.meta.env.VITE_API_URL/api/notifications', {
         headers: { Authorization: `Bearer ${userToken}` }
       });
 
@@ -75,7 +75,7 @@ const Notifications = ({ user, onNavigateToExperience }) => {
 
   const markAsRead = async (id) => {
     try {
-      await axios.put(`http://localhost:8000/api/notifications/${id}/read`, {}, {
+      await axios.put(`http://import.meta.env.VITE_API_URL/api/notifications/${id}/read`, {}, {
         headers: { Authorization: `Bearer ${userToken}` }
       });
       
@@ -91,7 +91,7 @@ const Notifications = ({ user, onNavigateToExperience }) => {
 
   const markAllAsRead = async () => {
     try {
-      await axios.put('http://localhost:8000/api/notifications/read-all', {}, {
+      await axios.put('http://import.meta.env.VITE_API_URL/api/notifications/read-all', {}, {
         headers: { Authorization: `Bearer ${userToken}` }
       });
       
@@ -328,4 +328,5 @@ const Notifications = ({ user, onNavigateToExperience }) => {
 };
 
 export default Notifications;
+
 
