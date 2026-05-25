@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import './LeftProfileColumn.css';
+import logo from '../assets/logo.jpeg';
 
 const LeftProfileColumn = ({
   user = null,
@@ -48,7 +49,7 @@ const LeftProfileColumn = ({
         <div className="left-profile__avatar">
           {user.profile_pic && !imageError ? (
             <img
-              src={`http://127.0.0.1:8000${user.profile_pic}`}
+              src={`${import.meta.env.VITE_API_URL}${user.profile_pic}`}
               alt={user.name}
               className="left-profile__avatar-image"
               onError={() => setImageError(true)}
@@ -74,36 +75,32 @@ const LeftProfileColumn = ({
           </p>
         )}
 
-        {user.link && (
-          <a
-            href={user.link}
-            className="left-profile__link"
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={(e) => e.stopPropagation()}
-          >
-            🔗{' '}
-            {user.link.length > 35
-              ? `${user.link.substring(0, 35)}...`
-              : user.link}
-          </a>
-        )}
+         (
+          
+         {user.link && (
+  <a
+    href={user.link}
+    className="left-profile__link"
+    target="_blank"
+    rel="noopener noreferrer"
+    onClick={(e) => e.stopPropagation()}
+  >
+    🔗{' '}
+    {user.link.length > 35
+      ? `${user.link.substring(0, 35)}...`
+      : user.link}
+  </a>
+)}
       </div>
 
-      
-        {/* LOGO */}
-        <div className="left-profile__coming-logo">
-         <img
-            src="src/assets/logo.jpeg"
-            alt="Talib Logo"
-            className="left-profile__coming-logo-image"
-          />
-        </div>
-
-        
-
-        
-      
+      {/* LOGO */}
+      <div className="left-profile__coming-logo">
+        <img
+          src={logo}
+          alt="Talib Logo"
+          className="left-profile__coming-logo-image"
+        />
+      </div>
     </div>
   );
 };
