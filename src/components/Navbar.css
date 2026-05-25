@@ -1,0 +1,235 @@
+/* Navbar Container */
+/* ── Tabler icons font ── */
+@import url('https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css');
+
+/* ── Base ── */
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #ffffff;
+  padding: 0 24px;
+  height: 52px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 1px solid #e9e9e9;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+}
+
+/* ── Left ── */
+.navbar__left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.navbar__logo {
+  font-size: 28px;
+  font-weight: 600;
+  color: #0a66c2;
+  cursor: pointer;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  letter-spacing: -0.5px;
+}
+
+.navbar__search {
+  display: flex;
+  align-items: center;
+  background: #eef3f8;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 12px;
+  gap: 8px;
+  margin-left: 8px;
+}
+
+.navbar__search-icon {
+  font-size: 16px;
+  color: #666666;
+}
+
+.navbar__search-input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #1a1a1a;
+  font-size: 14px;
+  width: 150px;
+}
+
+.navbar__search-input::placeholder {
+  color: #8a8a8a;
+}
+
+.navbar__search-input:focus {
+  background: transparent;
+}
+
+/* ── Right ── */
+.navbar__right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.navbar__items {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* ── Nav item ── */
+.navbar__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  min-width: 80px;
+  height: 52px;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.navbar__item:hover {
+  background: #f0f2f4;
+}
+
+.navbar__item-icon {
+  font-size: 20px;
+  color: #666666;
+  line-height: 1;
+  transition: color 0.2s ease;
+}
+
+.navbar__item-label {
+  font-size: 12px;
+  color: #666666;
+  white-space: nowrap;
+  font-weight: 400;
+  transition: color 0.2s ease;
+}
+
+/* ── Active state ── */
+.navbar__item.active .navbar__item-icon {
+  color: #0a66c2;
+}
+
+.navbar__item.active .navbar__item-label {
+  color: #0a66c2;
+  font-weight: 500;
+}
+
+.navbar__item.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: #0a66c2;
+  border-radius: 2px 2px 0 0;
+}
+
+/* ── Study Rooms highlight ── */
+.navbar__item.study-rooms-highlight {
+  background: transparent;
+  border-radius: 8px;
+}
+
+
+
+.navbar__item.study-rooms-highlight.active {
+  background: #e8f3ff;
+}
+
+.navbar__item.study-rooms-highlight.active .navbar__item-icon,
+.navbar__item.study-rooms-highlight.active .navbar__item-label {
+  color: #004182;
+}
+
+/* Profile Badge */
+.navbar__profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  position: relative;
+}
+
+.navbar__profile:hover {
+  background: var(--color-bg-hover);
+}
+
+.navbar__profile-badge {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  overflow: hidden;
+}
+
+.navbar__profile-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.navbar__profile-label {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+}
+
+
+/* ── Lang select ── */
+.navbar__lang-select {
+  background: transparent;
+  border: 1px solid #c7c7c7;
+  border-radius: 4px;
+  color: #1a1a1a;
+  font-size: 13px;
+  padding: 6px 8px;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.navbar__lang-select:hover {
+  border-color: #0a66c2;
+}
+
+/* ── Premium button ── */
+.navbar__premium {
+  background: #ffffff;
+  border: 1px solid #c7c7c7;
+  color: #1a1a1a;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 7px 16px;
+  border-radius: 24px;
+  cursor: pointer;
+  white-space: nowrap;
+  margin-left: 8px;
+  transition: all 0.2s ease;
+}
+
+.navbar__premium:hover {
+  background: #f5f5f5;
+  border-color: #0a66c2;
+  color: #0a66c2;
+}

@@ -1,0 +1,760 @@
+{
+ "nav": {
+  "home": "Home",
+  "network": "Network",
+  "focus": "Focus Hub",
+  "messages": "Messages",
+  "notifications": "Notifications",
+  "ai": "AI Tutor",
+  "search": "Search",
+  "logout": "Logout",
+  "profile": "Profile",
+  "premium": "Try Premium"
+},
+
+  "rightColumn": {
+    "loginTitle": "People suggestions",
+    "loginText": "Login to see personalized suggestions",
+    "suggestionsForYou": "Suggestions for you",
+    "popular": "Popular suggestions",
+    "following": "✓ Following",
+    "follow": "+ Follow",
+    "empty": "No suggestions available",
+    "loginToSee": "Login to see suggestions",
+    "viewAll": "See all suggestions",
+    "defaultTitle": "👨‍💻 Developer"
+  },
+
+  "footer": {
+    "about": "About",
+    "accessibility": "Accessibility",
+    "conditions": "Conditions",
+    "privacy": "Privacy",
+    "copyright": "© 2026 LinkedIn Corporation"
+  },
+
+  "common": {
+    "user": "User",
+    "cancel": "Cancel",
+    "loading": "Loading..."
+  },
+  
+  "post": {
+    "user": {
+      "anonymous": "Anonymous user",
+      "you": "You"
+    },
+    "visibility": {
+      "public": "🌍 Public"
+    },
+    "time": {
+      "today": "today",
+      "daysAgo": "{{count}} day ago",
+      "daysAgo_plural": "{{count}} days ago",
+      "weeksAgo": "{{count}} week ago",
+      "weeksAgo_plural": "{{count}} weeks ago"
+    },
+    "reactions": {
+      "title": "Reactions",
+      "all": "All",
+      "loading": "Loading...",
+      "empty": "No reactions",
+      "viewProfile": "View profile",
+      "like": "Like",
+      "love": "Love",
+      "haha": "Haha",
+      "wow": "Wow",
+      "sad": "Sad",
+      "angry": "Angry"
+    },
+    "actions": {
+      "comment": "Comment",
+      "share": "Share",
+      "send": "Send"
+    },
+    "comments": {
+      "placeholder": "Write a comment...",
+      "send": "Send",
+      "reply": "Reply",
+      "delete": "Delete",
+      "count": "{{count}} comment",
+      "count_plural": "{{count}} comments",
+      "showMore": "View {{count}} more comments"
+    },
+    "shared": {
+      "original": "🔁 Original post"
+    },
+    "media": {
+      "clickToEnlarge": "🔍 Click to enlarge",
+      "enlargedImage": "Enlarged image"
+    },
+    "share": {
+      "success": "Post shared!",
+      "successMessage": "shared the post"
+    },
+    "send": {
+      "title": "Send",
+      "copyLink": "Copy link",
+      "copy": "Copy",
+      "copied": "✓ Copied!",
+      "sendToFriend": "Send to a friend",
+      "friend": "Friend"
+    }
+  },
+
+
+
+  
+  "leftProfile": {
+    "visitor": {
+      "title": "Welcome!",
+      "text": "Login to see your profile"
+    },
+    "menu": {
+      "saved": "Saved items",
+      "groups": "Groups",
+      "newsletters": "Newsletters",
+      "events": "Events"
+    }
+  },
+
+  
+  "addExperience": {
+    "trigger": "✏️ Share an experience...",
+    "titleLabel": "Experience title",
+    "titlePlaceholder": "Ex: My internship at...",
+    "contentLabel": "Experience content",
+    "contentPlaceholder": "Describe your experience in detail...",
+    "mediaLabel": "Media (photo or video)",
+    "uploadText": "Click to add a photo or video (max 10MB)",
+    "preview": "Preview",
+    "charCounter": "{{current}}/{{max}} characters",
+    "publish": "Publish",
+    "publishing": "Publishing...",
+    "errors": {
+      "unsupportedFormat": "Unsupported format. Use JPG, PNG, GIF for images or MP4 for videos.",
+      "fileTooLarge": "File must not exceed 10MB",
+      "fillAllFields": "Please fill in all fields",
+      "titleTooLong": "Title must not exceed 100 characters",
+      "contentTooLong": "Content must not exceed 1000 characters",
+      "genericError": "An error occurred while adding the experience"
+    }
+  },
+
+  
+  "auth": {
+    "signUp": "Sign Up",
+    "login": "Log In",
+    "welcomeBack": "Welcome Back",
+    "createAccount": "Create Account",
+    "emailPlaceholder": "Email",
+    "passwordPlaceholder": "Password",
+    "fullNamePlaceholder": "Full Name",
+    "loginButton": "Login",
+    "registerButton": "Register",
+    "errors": {
+      "loginError": "Login error",
+      "registerError": "Registration error"
+    }
+  },
+
+  
+  "home": {
+    "banner": "🏆 Today's Challenge: Explain a lesson in 5 lines only and win more interactions!",
+    "createPostInput": "Share an idea 🔥 or solve an exercise 💡",
+    "loginToPost": "Login to participate",
+    "feedTitle": "🔥 Challenge Arena",
+    "mostInteracted": "Most interacted 🔥",
+    "publicationCount": "{{count}} post",
+    "publicationCount_plural": "{{count}} posts",
+    "actions": {
+      "media": "Media",
+      "event": "Event",
+      "write": "Write"
+    },
+    "filters": {
+      "all": "📰 All",
+      "my": "✍️ My posts",
+      "shared": "🔄 Shared"
+    },
+    "empty": {
+      "myPosts": {
+        "title": "You haven't posted yet",
+        "text": "Share your first experience! 🚀"
+      },
+      "shared": {
+        "title": "No shares yet",
+        "text": "Share interesting posts! 💫"
+      },
+      "all": {
+        "title": "The arena is empty... Who will be the first hero? 😎",
+        "text": "Post an idea, explanation, or challenge and start the competition 🔥"
+      }
+    }
+  },
+
+  
+  "notifications": {
+    "title": "Notifications",
+    "loading": "Loading notifications...",
+    "empty": "📭 No notifications yet",
+    "markAllRead": "Mark all as read",
+    "defaultUser": "User",
+    "defaultAvatar": "Avatar",
+    "locale": "en-US",
+    "retry": "Retry",
+    "errors": {
+      "sessionExpired": "Session expired. Please log in again.",
+      "loadError": "Unable to load notifications. Check your connection.",
+      "loginRequired": "Please log in to see your notifications",
+      "forbidden": "You don't have access to these notifications.",
+      "serverError": "Server error. Please try again later."
+    }
+  },
+
+  
+  "reseau": {
+    "title": "👥 Community Members",
+    "subtitle": "Discover and connect with other members",
+    "searchPlaceholder": "Search by name, username or email...",
+    "clearSearch": "Clear search",
+    "loading": "Loading members...",
+    "memberCount": "{{count}} member",
+    "memberCount_plural": "{{count}} members",
+    "defaultUser": "User",
+    "follow": "Follow",
+    "following": "Following",
+    "loginRequired": {
+      "title": "Login Required",
+      "text": "Login to see all community members"
+    },
+    "empty": {
+      "title": "No members found",
+      "text": "Try another search"
+    },
+    "errors": {
+      "loadError": "Error loading users",
+      "fallbackError": "Fallback also failed",
+      "followError": "Error during follow/unfollow"
+    }
+  },
+  
+
+
+  "profile": {
+    "user": "User",
+    "userName": "User Name",
+    "editProfile": "Edit Profile",
+    "follow": "Follow",
+    "following": "Following",
+    "message": "Message",
+    "settings": "Settings",
+    "tabs": {
+      "posts": "Posts",
+      "followers": "Followers",
+      "following": "Following"
+    },
+    "stats": {
+      "posts": "posts",
+      "followers": "followers",
+      "following": "following"
+    },
+    "formatCount": {
+      "million": "{{count}}M",
+      "thousand": "{{count}}k"
+    }
+  },
+
+
+  "editProfile": {
+    "title": "Edit Profile",
+    "close": "Close",
+    "preview": "Preview",
+    "changePhoto": "Change Photo",
+    "save": "Save",
+    "saving": "Saving...",
+    "fields": {
+      "username": "Username",
+      "name": "Name",
+      "bio": "Biography",
+      "link": "Link"
+    },
+    "placeholders": {
+      "username": "username",
+      "name": "Your name",
+      "bio": "Tell us about yourself...",
+      "link": "https://..."
+    },
+    "help": {
+      "username": "Usernames can only contain letters, numbers, underscores and periods.",
+      "name": "Your name can only be changed once every 7 days.",
+      "bio": "150 characters max"
+    },
+    "errors": {
+      "imageTooLarge": "Image size must not exceed 5MB",
+      "invalidImage": "Please select a valid image",
+      "usernameRequired": "Username is required",
+      "usernameInvalid": "Username can only contain letters, numbers, underscores and periods",
+      "nameRequired": "Name is required",
+      "bioTooLong": "Bio must not exceed 150 characters",
+      "updateError": "Error updating profile",
+      "genericError": "An error occurred. Please try again."
+    }
+  },
+
+  
+  "aiChat": {
+    "title": "AI Assistant",
+    "status": "Online • Instant responses",
+    "greeting": "Hello {{name}}",
+    "clearHistory": "Clear history",
+    "newChat": "New conversation",
+    "newChatButton": "✨ New chat",
+    "confirmClear": "Are you sure you want to clear the conversation history?",
+    "typing": "AI is typing...",
+    "inputPlaceholder": "Write your message... (Press Enter to send)",
+    "inputHint": "Enter to send • Shift+Enter for new line",
+    "send": "Send",
+    "closeError": "Close error",
+    "welcome": {
+      "authenticated": "Hello {{name}}! How can I help you?",
+      "guest": "Hello! How can I help you?",
+      "description": "Ask me questions about your courses, quizzes, or request study tips."
+    },
+    "suggestions": {
+      "improveGrades": "How to improve my grades?",
+      "weaknesses": "What are my weaknesses?",
+      "studyTips": "Give me study tips",
+      "motivation": "How to stay motivated?",
+      "conjugation": "Explain conjugation to me",
+      "timeManagement": "How to better manage my time?"
+    },
+    "errors": {
+      "fetchUserInfo": "Error fetching user information",
+      "loadHistory": "Error loading chat history",
+      "sendMessage": "Error sending message",
+      "generic": "Sorry, an error occurred. Please try again.",
+      "timeout": "Request timed out. Check your connection.",
+      "sessionExpired": "Session expired. Please log in again to continue.",
+      "tooManyRequests": "Too many messages. Please wait a moment.",
+      "serverError": "Server error. Try again later."
+    }
+  },
+
+  
+  "summary": {
+    "title": "AI Summary Generator",
+    "subtitle": "Transform your documents into smart and concise summaries",
+    "locale": "en-US",
+    "generateSummary": "Generate Summary",
+    "generating": "Generating...",
+    "clear": "Clear",
+    "copiedToClipboard": "Summary copied to clipboard!",
+    "downloadPrefix": "summary_",
+    "dropZone": {
+      "text": "Drag and drop your file here or",
+      "browse": "browse",
+      "hint": "Supported formats: PDF, DOC, DOCX, TXT (Max 10MB)"
+    },
+    "loading": {
+      "analyzing": "Analyzing document...",
+      "hint": "This may take a few seconds"
+    },
+    "result": {
+      "title": "Generated Summary",
+      "copy": "Copy",
+      "download": "Download"
+    },
+    "stats": {
+      "words": "📊 {{count}} word",
+      "words_plural": "📊 {{count}} words",
+      "characters": "🔤 {{count}} character",
+      "characters_plural": "🔤 {{count}} characters"
+    },
+    "history": {
+      "title": "Summary History",
+      "load": "Load"
+    },
+    "features": {
+      "title": "Features",
+      "ai": {
+        "title": "Advanced AI",
+        "description": "Intelligent summary based on artificial intelligence"
+      },
+      "fast": {
+        "title": "Fast & Efficient",
+        "description": "Summary generation in seconds"
+      },
+      "secure": {
+        "title": "Secure",
+        "description": "Your documents are processed confidentially"
+      },
+      "responsive": {
+        "title": "Responsive",
+        "description": "Accessible on all your devices"
+      }
+    },
+    "fileSize": {
+      "bytes": "Bytes",
+      "kb": "KB",
+      "mb": "MB",
+      "gb": "GB"
+    },
+    "errors": {
+      "unsupportedFormat": "Unsupported format. Please upload a PDF, DOC, DOCX or TXT file.",
+      "fileTooLarge": "File too large. Maximum size: 10MB",
+      "noFileSelected": "Please select a file",
+      "timeout": "Request timed out. Please try again.",
+      "generationError": "Error generating summary",
+      "connectionError": "Connection error. Please check your internet connection.",
+      "uploadError": "Upload error"
+    }
+  },
+
+
+  
+  "history": {
+    "title": "QCM History",
+    "subtitle": "Track your progress",
+    "loading": "Loading your history...",
+    "errorTitle": "Loading Error",
+    "retry": "Retry",
+    "refresh": "Refresh",
+    "locale": "en-US",
+    "testCount": "{{count}} test completed",
+    "testCount_plural": "{{count}} tests completed",
+    "stats": {
+      "average": "Average",
+      "best": "Best",
+      "worst": "Lowest",
+      "total": "Total"
+    },
+    "filters": {
+      "filterByScore": "Filter by score",
+      "sortBy": "Sort by",
+      "all": "All scores",
+      "excellent": "Excellent (80-100%)",
+      "good": "Good (60-79%)",
+      "average": "Average (40-59%)",
+      "poor": "Needs improvement (0-39%)"
+    },
+    "sort": {
+      "dateDesc": "📅 Date (newest)",
+      "dateAsc": "📅 Date (oldest)",
+      "scoreDesc": "🎯 Score (highest)",
+      "scoreAsc": "🎯 Score (lowest)"
+    },
+    "scoreMessages": {
+      "excellent": "Excellent!",
+      "good": "Very good!",
+      "average": "Good start!",
+      "poor": "Needs improvement!"
+    },
+    "card": {
+      "date": "Date",
+      "score": "Score",
+      "id": "ID"
+    },
+    "empty": {
+      "title": "No results found",
+      "noTests": "You haven't completed any QCM yet. Start now!",
+      "noFilterMatch": "No tests match the selected filters."
+    },
+    "clearFilters": "Clear filters",
+    "errors": {
+      "sessionExpired": "Session expired. Please log in again.",
+      "loadError": "Unable to load history. Please try again later."
+    }
+  },
+
+  
+  "dashboard": {
+    "title": "Dashboard",
+    "subtitle": "Track your progress and performance",
+    "greeting": "Hello {{name}}",
+    "student": "Student",
+    "refresh": "Refresh",
+    "loading": "Loading your dashboard...",
+    "errorTitle": "Loading Error",
+    "retry": "Retry",
+    "stats": {
+      "level": "Current Level",
+      "averageScore": "Average Score",
+      "completedQCM": "Completed QCM",
+      "testsDone": "tests completed",
+      "undefined": "Undefined"
+    },
+    "levels": {
+      "beginner": "Keep up the effort!",
+      "intermediate": "Good progress!",
+      "advanced": "Excellent level!",
+      "default": "Level in progress"
+    },
+    "performance": {
+      "title": "Performance",
+      "excellent": "Excellent (80-100%)",
+      "good": "Good (60-79%)",
+      "average": "Average (40-59%)",
+      "poor": "Needs improvement (0-39%)"
+    },
+    "progress": {
+      "title": "Overall Progress",
+      "low": "Start by completing more QCM to see your progress",
+      "medium": "Good progress! Keep it up",
+      "high": "Excellent pace! You're on the right track"
+    },
+    "weakPoints": {
+      "title": "Weak Points to Improve",
+      "needsAttention": "Needs special attention",
+      "empty": "No weak points identified! Keep it up!"
+    },
+    "recommendations": {
+      "title": "Personalized Recommendations",
+      "conjugation": "📝 Practice conjugation with daily exercises on Quizlet or Bescherelle",
+      "grammar": "📖 Review basic grammar rules with summary sheets",
+      "vocabulary": "📚 Read more and write new words in a vocabulary notebook",
+      "spelling": "✍️ Do online dictations regularly on Orthodidacte",
+      "specific": "📌 Work specifically on: {{topic}}",
+      "beginner1": "🎯 Start with the basics and gradually increase difficulty",
+      "beginner2": "⏰ Set daily goals of 30 minutes of review",
+      "intermediate1": "🚀 Challenge yourself with more complex QCM",
+      "intermediate2": "📝 Analyze your mistakes to avoid repeating them",
+      "advanced1": "🏆 Try expert-level exercises",
+      "advanced2": "👨‍🏫 Help other students to consolidate your knowledge",
+      "lowScore": "💪 Focus on the chapters where you struggle most",
+      "highScore": "🌟 You're excellent! Keep up the pace"
+    },
+    "motivation": {
+      "excellent": "Exceptional! Keep aiming for excellence!",
+      "good": "Very good progress! Stay motivated!",
+      "average": "You're on the right track, persevere!",
+      "poor": "Every effort counts, keep training!",
+      "firstQCM": "Start your first QCM to unlock your statistics!"
+    },
+    "empty": {
+      "title": "No data available",
+      "description": "Complete your first QCM to see your statistics!"
+    },
+    "errors": {
+      "fetchUserInfo": "Error fetching user information",
+      "fetchDashboard": "Error loading dashboard",
+      "profileNotFound": "Profile not found",
+      "sessionExpired": "Session expired. Please log in again.",
+      "loadError": "Unable to load dashboard. Please try again later."
+    }
+  },
+
+  
+  "chart": {
+    "title": "📈 Score Progress",
+    "subtitle": "Performance evolution over time",
+    "locale": "en-US",
+    "refresh": "Refresh",
+    "loading": "Loading your progress...",
+    "retry": "Retry",
+    "tooltip": {
+      "score": "Score",
+      "questions": "Questions"
+    },
+    "legend": {
+      "score": "Score",
+      "movingAverage": "Moving average (3 tests)"
+    },
+    "stats": {
+      "total": "Tests completed",
+      "average": "Overall average",
+      "best": "Best score",
+      "worst": "Lowest score"
+    },
+    "trend": {
+      "positive": "📈 Positive progress! +{{points}} points",
+      "negative": "📉 Room for improvement ({{points}} points)",
+      "stable": "➡️ Stable performance"
+    },
+    "advice": {
+      "excellent": "🎉 Congratulations! Keep up the great work!",
+      "good": "💪 Good job! Keep this motivation!",
+      "improve": "📚 Tip: Review your weak points and try again!"
+    },
+    "recent": {
+      "title": "📋 Recent Results"
+    },
+    "empty": {
+      "title": "No data available",
+      "description": "Start answering QCM to see your progress!"
+    },
+    "errors": {
+      "fetchError": "Error fetching data",
+      "sessionExpired": "Session expired. Please log in again to see your progress.",
+      "loadError": "Unable to load data. Please try again later."
+    }
+  },
+
+  
+  "coach": {
+    "title": "🧠 Personal AI Coach",
+    "subtitle": "Your intelligent assistant to improve your academic performance",
+    "status": "AI Active",
+    "locale": "en-US",
+    "close": "Close",
+    "adviceType": "Advice type",
+    "analyzing": "Analyzing...",
+    "generateAdvice": "✨ Generate personalized advice",
+    "thinking": "My coach is thinking...",
+    "defaultAdvice": "I'm here to help you progress. Keep up the effort!",
+    "fallbackAdvice": "📚 Tip of the moment: Keep practicing regularly, even 15 minutes a day makes a big difference!",
+    "advice": "💡 Advice",
+    "copy": "📋 Copy",
+    "copied": "✓ Copied!",
+    "newAdvice": "🔄 New advice",
+    "getPersonalizedAdvice": "Get personalized advice",
+    "confirmClear": "Are you sure you want to clear the advice history?",
+    "noWeakPoints": "No weak points identified",
+    "types": {
+      "general": "💬 General",
+      "motivation": "⭐ Motivation",
+      "strategy": "📖 Strategy",
+      "weakpoints": "🎯 Weak Points",
+      "progress": "📈 Progress"
+    },
+    "profile": {
+      "title": "Your Learning Profile",
+      "averageScore": "Average Score",
+      "completedQCM": "Completed QCM",
+      "level": "Level",
+      "weakPoints": "⚠️ Points to improve",
+      "levels": {
+        "beginner": "🌱 Beginner",
+        "intermediate": "📚 Intermediate",
+        "advanced": "🚀 Advanced"
+      }
+    },
+    "motivations": [
+      "💪 Every small progress counts!",
+      "🌟 Perseverance is the key to success!",
+      "📚 Knowledge is the only wealth that grows when shared!",
+      "🎯 Set your goals, the rest will follow!",
+      "✨ You are capable of great things!",
+      "🚀 Keep learning every day!",
+      "🏆 Champions never give up!",
+      "📖 Failure is the beginning of success",
+      "💡 The best way to predict the future is to create it",
+      "🎓 Learning is a treasure that will follow its owner everywhere"
+    ],
+    "history": {
+      "title": "Advice History",
+      "clear": "Clear history",
+      "view": "View"
+    },
+    "tips": {
+      "title": "Tips to Maximize Your Learning",
+      "regularPractice": {
+        "title": "Regular Practice",
+        "description": "15 minutes a day is better than 2 hours a week"
+      },
+      "reviewMistakes": {
+        "title": "Review Your Mistakes",
+        "description": "Analyze your weak points to improve better"
+      },
+      "setGoals": {
+        "title": "Set Goals",
+        "description": "Small achievable goals boost motivation"
+      },
+      "varyMethods": {
+        "title": "Vary Methods",
+        "description": "Alternate between QCM, summaries and practical exercises"
+      }
+    },
+    "errors": {
+      "fetchStats": "Error fetching statistics",
+      "parseHistory": "Error parsing history",
+      "parseWeakPoints": "Error parsing weak points",
+      "fetchCoach": "Error fetching coach advice",
+      "loginRequired": "Please log in to access the AI coach",
+      "sessionExpired": "Session expired. Please log in again.",
+      "tooManyRequests": "Too many requests. Please wait a moment.",
+      "serviceUnavailable": "AI service temporarily unavailable. Try again later.",
+      "generic": "Error generating advice",
+      "connectionError": "Unable to contact server. Check your connection.",
+      "unexpected": "An unexpected error occurred."
+    }
+  },
+
+  
+  "qcm": {
+    "title": "Smart QCM Generator",
+    "subtitle": "Create questionnaires automatically from your documents",
+    "defaultTitle": "Generated QCM",
+    "generate": "Generate QCM",
+    "retry": "🔄 Retry",
+    "newQCM": "🔄 New QCM",
+    "submit": "📊 Submit My Answers",
+    "correctAnswer": "✓ Correct answer",
+    "yourChoice": "✗ Your choice",
+    "progress": "Progress: {{percentage}}%",
+    "incomplete": "Answer all questions ({{remaining}} remaining) before submitting",
+    "explanation": "The correct answer was: {{letter}}. {{answer}}",
+    "upload": {
+      "title": "Start by uploading a document",
+      "description": "We will automatically generate a QCM based on the content",
+      "chooseFile": "Choose a file",
+      "supportedFormats": "Supported formats: PDF, DOC, DOCX, TXT (Max 10MB)"
+    },
+    "loading": {
+      "title": "Generating QCM...",
+      "hint": "Smart document analysis (may take up to 2 minutes)"
+    },
+    "info": {
+      "questions": "❓ {{count}} question",
+      "questions_plural": "❓ {{count}} questions",
+      "answered": "✅ {{answered}}/{{total}} answered"
+    },
+    "results": {
+      "title": "Your Score",
+      "correct": "✅ Correct answers",
+      "incorrect": "❌ Incorrect answers",
+      "review": "📝 Review questions"
+    },
+    "scoreMessages": {
+      "excellent": "Excellent! Keep it up! 🎉",
+      "good": "Very good! Some improvements possible 👍",
+      "average": "Good start! Keep training 💪",
+      "poor": "Needs review! Persevere 📚"
+    },
+    "debug": {
+      "question": "Question",
+      "correctAnswer": "Correct answer",
+      "type": "Type",
+      "newLevel": "🎯 New level"
+    },
+    "errors": {
+      "unsupportedFormat": "Unsupported format. Please upload a PDF, DOC, DOCX or TXT file.",
+      "fileTooLarge": "File too large. Maximum size: 10MB",
+      "noFileSelected": "Please select a file",
+      "invalidFormat": "Invalid response format from server",
+      "timeout": "Request timed out. Please try again (file may be too large).",
+      "sessionExpired": "Session expired. Please log in again.",
+      "sessionExpiredSave": "Session expired. Please log in again to save your score.",
+      "generationError": "Error generating QCM",
+      "generateError": "Error generating QCM",
+      "nodeError": "Display error. Please refresh the page and try again.",
+      "connectionError": "Connection error. Please check that the server is running on http://localhost:8000",
+      "saveScoreError": "Error saving score",
+      "saveErrorDisplay": "Error saving score, but your result is displayed."
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
+

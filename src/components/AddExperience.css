@@ -1,0 +1,353 @@
+/* ================================================
+   ADD EXPERIENCE COMPONENT STYLES
+   Modern Post Creation Form
+   Inspired by LinkedIn/Facebook
+   ================================================ */
+
+/* Main Container */
+.add-experience {
+  width: 100%;
+}
+
+/* Trigger Button (Collapsed State) */
+.add-experience__trigger {
+  width: 100%;
+  padding: var(--space-md) var(--space-lg);
+  background-color: var(--color-bg-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-2xl);
+  text-align: left;
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  outline: none;
+}
+
+.add-experience__trigger:hover {
+  background-color: var(--color-bg-light);
+  border-color: var(--color-primary);
+}
+
+/* Form Container */
+.add-experience__form {
+  background-color: var(--color-bg-white);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  padding: var(--space-xl);
+  margin-top: var(--space-md);
+  box-shadow: var(--shadow-md);
+  animation: fadeInUp 0.3s ease-out;
+}
+
+/* Error Message */
+.add-experience__error {
+  background-color: #ffebee;
+  color: var(--color-error);
+  padding: var(--space-md);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-sm);
+  margin-bottom: var(--space-lg);
+  border: 1px solid #ffcdd2;
+  line-height: 1.5;
+}
+
+.add-experience__error div {
+  margin-bottom: var(--space-xs);
+}
+
+.add-experience__error div:last-child {
+  margin-bottom: 0;
+}
+
+/* Input Group */
+.add-experience__group {
+  margin-bottom: var(--space-lg);
+}
+
+.add-experience__label {
+  display: block;
+  margin-bottom: var(--space-sm);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+}
+
+.add-experience__input {
+  width: 100%;
+  padding: var(--space-md) var(--space-lg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-base);
+  transition: border-color var(--transition-fast);
+  outline: none;
+  background-color: var(--color-bg-white);
+  font-family: inherit;
+}
+
+.add-experience__input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(10, 102, 194, 0.1);
+}
+
+.add-experience__input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.add-experience__input:disabled {
+  background-color: var(--color-bg-light);
+  cursor: not-allowed;
+}
+
+/* Textarea */
+.add-experience__textarea {
+  width: 100%;
+  padding: var(--space-md) var(--space-lg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-base);
+  min-height: 120px;
+  resize: vertical;
+  transition: border-color var(--transition-fast);
+  outline: none;
+  background-color: var(--color-bg-white);
+  font-family: inherit;
+  line-height: 1.6;
+  position: relative;
+}
+
+.add-experience__textarea:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(10, 102, 194, 0.1);
+}
+
+.add-experience__textarea::placeholder {
+  color: var(--color-text-muted);
+}
+
+.add-experience__textarea:disabled {
+  background-color: var(--color-bg-light);
+  cursor: not-allowed;
+}
+
+/* Textarea with Emoji Button */
+.add-experience__textarea-wrapper {
+  position: relative;
+}
+
+.add-experience__emoji-btn {
+  position: absolute;
+  bottom: var(--space-sm);
+  right: var(--space-sm);
+  background-color: var(--color-bg-white);
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  transition: var(--transition-fast);
+  z-index: 1;
+}
+
+.add-experience__emoji-btn:hover {
+  background-color: var(--color-bg-hover);
+  transform: scale(1.1);
+}
+
+.add-experience__emoji-select {
+  width: 32px;
+  height: 32px;
+  opacity: 0;
+  position: absolute;
+  cursor: pointer;
+}
+
+/* Character Counter */
+.add-experience__counter {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  text-align: right;
+  margin-top: var(--space-xs);
+}
+
+.add-experience__counter.warning {
+  color: var(--color-warning);
+}
+
+.add-experience__counter.limit {
+  color: var(--color-error);
+}
+
+/* Media Upload Area */
+.add-experience__upload {
+  border: 2px dashed var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-xl);
+  text-align: center;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  background-color: var(--color-bg-elevated);
+}
+
+.add-experience__upload:hover {
+  border-color: var(--color-primary);
+  background-color: var(--color-primary-subtle);
+}
+
+.add-experience__upload-icon {
+  font-size: 32px;
+  margin-bottom: var(--space-sm);
+}
+
+.add-experience__upload-text {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+/* Media Preview */
+.add-experience__preview {
+  margin-top: var(--space-lg);
+  position: relative;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  max-height: 300px;
+  background-color: var(--color-bg-light);
+}
+
+.add-experience__preview-image {
+  width: 100%;
+  max-height: 300px;
+  object-fit: cover;
+  display: block;
+}
+
+.add-experience__preview-video {
+  width: 100%;
+  max-height: 300px;
+  display: block;
+}
+
+.add-experience__preview-remove {
+  position: absolute;
+  top: var(--space-sm);
+  right: var(--space-sm);
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-lg);
+  transition: var(--transition-fast);
+}
+
+.add-experience__preview-remove:hover {
+  background-color: rgba(0, 0, 0, 0.9);
+  transform: scale(1.1);
+}
+
+/* Button Group */
+.add-experience__buttons {
+  display: flex;
+  gap: var(--space-md);
+  justify-content: flex-end;
+  margin-top: var(--space-xl);
+}
+
+/* Submit Button */
+.add-experience__submit {
+  padding: var(--space-sm) var(--space-xl);
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius-2xl);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.add-experience__submit:hover:not(:disabled) {
+  background-color: var(--color-primary-dark);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-primary);
+}
+
+.add-experience__submit:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Cancel Button */
+.add-experience__cancel {
+  padding: var(--space-sm) var(--space-xl);
+  background-color: transparent;
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-2xl);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.add-experience__cancel:hover:not(:disabled) {
+  background-color: var(--color-bg-hover);
+  border-color: #999;
+}
+
+.add-experience__cancel:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ================================================
+   RESPONSIVE
+   ================================================ */
+@media (max-width: 768px) {
+  .add-experience__form {
+    padding: var(--space-lg);
+    border-radius: var(--radius-sm);
+  }
+
+  .add-experience__buttons {
+    flex-direction: column-reverse;
+  }
+
+  .add-experience__submit,
+  .add-experience__cancel {
+    width: 100%;
+  }
+
+  .add-experience__upload {
+    padding: var(--space-lg);
+  }
+
+  .add-experience__upload-icon {
+    font-size: 28px;
+  }
+}
+
+@media (max-width: 480px) {
+  .add-experience__form {
+    padding: var(--space-md);
+  }
+
+  .add-experience__input,
+  .add-experience__textarea {
+    padding: var(--space-sm) var(--space-md);
+  }
+
+  .add-experience__upload-text {
+    font-size: var(--font-size-xs);
+  }
+}

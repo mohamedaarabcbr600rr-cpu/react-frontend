@@ -1,0 +1,334 @@
+/* FollowingTab.css - Clean Modern Design (Same as FollowersTab) */
+
+.following-container {
+  background: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+/* Empty State */
+.following-empty {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 60px 32px;
+  text-align: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.following-empty-icon {
+  color: #c4c4c4;
+  margin-bottom: 16px;
+}
+
+.following-empty-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #262626;
+  margin: 0 0 8px 0;
+}
+
+.following-empty-text {
+  font-size: 14px;
+  color: #737373;
+  margin: 0;
+}
+
+/* Card */
+.following-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid #f0f0f0;
+  transition: background-color 0.2s ease;
+  animation: slideInUp 0.3s ease-out both;
+}
+
+.following-card:last-child {
+  border-bottom: none;
+}
+
+.following-card:hover {
+  background-color: #fafafa;
+}
+
+/* User Info Section */
+.following-info {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex: 1;
+  min-width: 0;
+  cursor: pointer;
+}
+
+/* Avatar */
+.following-avatar-wrapper {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.following-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.following-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.2s ease;
+}
+
+.following-card:hover .following-avatar img {
+  transform: scale(1.05);
+}
+
+.following-avatar-fallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 22px;
+  color: white;
+}
+
+.following-online-badge {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 12px;
+  height: 12px;
+  background-color: #31a24c;
+  border-radius: 50%;
+  border: 2px solid white;
+  animation: pulse 2s infinite;
+}
+
+/* User Details */
+.following-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.following-name-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.following-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: #262626;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.following-verified-badge {
+  display: inline-flex;
+  align-items: center;
+}
+
+.following-username {
+  font-size: 13px;
+  color: #737373;
+  margin: 0 0 4px 0;
+}
+
+.following-headline {
+  font-size: 13px;
+  color: #5a6874;
+  margin: 0 0 4px 0;
+  line-height: 1.4;
+}
+
+.following-bio {
+  font-size: 13px;
+  color: #6c757d;
+  margin: 4px 0 0 0;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.following-default {
+  font-size: 12px;
+  color: #9ca3af;
+  margin: 4px 0 0 0;
+}
+
+/* Unfollow Button */
+.following-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 20px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  border: none;
+  flex-shrink: 0;
+}
+
+.following-btn.not-following {
+  background: #0095f6;
+  color: white;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.following-btn.not-following:hover {
+  background: #0081d6;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 149, 246, 0.3);
+}
+
+.following-btn.following {
+  background: #efefef;
+  color: #262626;
+  border: 1px solid #dbdbdb;
+}
+
+.following-btn.following:hover {
+  background: #e4e4e4;
+  border-color: #c0c0c0;
+}
+
+/* Animations */
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(49, 162, 76, 0.7);
+  }
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 4px rgba(49, 162, 76, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(49, 162, 76, 0);
+  }
+}
+
+/* Dark Mode */
+@media (prefers-color-scheme: dark) {
+  .following-container,
+  .following-empty {
+    background: #1a1a1a;
+  }
+
+  .following-card {
+    border-bottom-color: #2c2c2c;
+  }
+
+  .following-card:hover {
+    background-color: #262626;
+  }
+
+  .following-name {
+    color: #fafafa;
+  }
+
+  .following-username {
+    color: #a8a8a8;
+  }
+
+  .following-headline {
+    color: #a8a8a8;
+  }
+
+  .following-bio {
+    color: #8e8e8e;
+  }
+
+  .following-default {
+    color: #6c6c6c;
+  }
+
+  .following-btn.following {
+    background: #262626;
+    border-color: #363636;
+    color: #fafafa;
+  }
+
+  .following-btn.following:hover {
+    background: #363636;
+  }
+
+  .following-avatar {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  .following-online-badge {
+    border-color: #1a1a1a;
+  }
+}
+
+/* Mobile Responsive */
+@media (max-width: 480px) {
+  .following-card {
+    padding: 14px 16px;
+  }
+
+  .following-avatar {
+    width: 48px;
+    height: 48px;
+  }
+
+  .following-name {
+    font-size: 14px;
+  }
+
+  .following-btn {
+    padding: 6px 14px;
+    font-size: 13px;
+  }
+
+  .following-btn span {
+    display: none;
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .following-card {
+    animation: none;
+  }
+
+  .following-btn:hover {
+    transform: none;
+  }
+
+  .following-avatar img {
+    transition: none;
+  }
+
+  .following-card:hover .following-avatar img {
+    transform: none;
+  }
+}

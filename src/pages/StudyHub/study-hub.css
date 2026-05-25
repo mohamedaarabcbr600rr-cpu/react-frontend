@@ -1,0 +1,333 @@
+
+/* ================================================
+   SUBJECT SELECTOR - 3D PREMIUM UI
+   ================================================ */
+
+.subject-selector {
+  text-align: center;
+  color: #fff;
+}
+
+/* GRID */
+.subjects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.8rem;
+  max-width: 1050px;
+  margin: 3.5rem auto;
+  padding: 0 20px;
+}
+
+/* CARD 3D */
+.subject-card {
+  position: relative;
+  padding: 2.2rem 1.5rem;
+  border-radius: 1.2rem;
+
+  cursor: pointer;
+  text-align: center;
+
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(16px);
+
+  border: 1px solid rgba(255, 255, 255, 0.12);
+
+  transition: all 0.4s ease;
+
+  transform: perspective(900px) translateZ(0);
+
+  box-shadow:
+    0 10px 25px rgba(0, 0, 0, 0.25),
+    inset 0 0 20px rgba(255, 255, 255, 0.03);
+}
+
+/* 3D HOVER EFFECT */
+.subject-card:hover {
+  transform: perspective(900px) rotateX(6deg) rotateY(-6deg) translateY(-8px);
+
+  background: rgba(255, 255, 255, 0.12);
+
+  border-color: rgba(0, 255, 255, 0.4);
+
+  box-shadow:
+    0 25px 50px rgba(0, 0, 0, 0.35),
+    0 0 25px rgba(0, 255, 255, 0.15),
+    inset 0 0 20px rgba(0, 255, 255, 0.05);
+}
+
+/* SELECTED STATE (ACTIVE CARD) */
+.subject-card.selected {
+  border-color: rgba(0, 255, 255, 0.7);
+
+  background: rgba(0, 255, 255, 0.08);
+
+  box-shadow:
+    0 0 25px rgba(0, 255, 255, 0.25),
+    0 0 60px rgba(0, 255, 255, 0.12);
+}
+
+/* ICON 3D NEON ORB */
+.subject-icon {
+  width: 85px;
+  height: 85px;
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 2.4rem;
+
+  margin: 0 auto 1.2rem;
+
+  background: radial-gradient(circle at top, #00ffff, #0a0a1a);
+
+  box-shadow:
+    0 0 20px rgba(0, 255, 255, 0.4),
+    inset 0 0 15px rgba(255, 255, 255, 0.1);
+
+  transition: all 0.4s ease;
+
+  transform: translateZ(20px);
+}
+
+/* ICON HOVER GLOW */
+.subject-card:hover .subject-icon {
+  transform: translateZ(30px) scale(1.08);
+
+  box-shadow:
+    0 0 30px rgba(0, 255, 255, 0.6),
+    0 0 60px rgba(255, 0, 100, 0.2);
+}
+
+/* TEXT STYLE INSIDE CARD */
+.subject-card h3 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-top: 0.5rem;
+
+  color: #fff;
+  letter-spacing: 0.5px;
+}
+
+.subject-card p {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.65);
+  margin-top: 0.5rem;
+}
+
+/* FLOAT ANIMATION (soft AI feeling) */
+@keyframes floatCard {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+  100% { transform: translateY(0px); }
+}
+
+.subject-card {
+  animation: floatCard 6s ease-in-out infinite;
+}
+
+.subject-card:nth-child(2n) {
+  animation-delay: 1s;
+}
+
+.subject-card:nth-child(3n) {
+  animation-delay: 2s;
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+  .subjects-grid {
+    gap: 1.2rem;
+  }
+
+  .subject-card {
+    padding: 1.6rem;
+  }
+
+  .subject-icon {
+    width: 70px;
+    height: 70px;
+    font-size: 2rem;
+  }
+}
+/* Document Uploader */
+.document-uploader {
+  max-width: 600px;
+  margin: 0 auto;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 1rem;
+  padding: 2rem;
+  color: white;
+}
+
+.title-input {
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  border: none;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+}
+
+.dropzone {
+  border: 2px dashed rgba(255, 255, 255, 0.3);
+  border-radius: 0.5rem;
+  padding: 2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.dropzone.active {
+  border-color: #3b82f6;
+  background: rgba(59, 130, 246, 0.1);
+}
+
+.or-divider {
+  text-align: center;
+  margin: 1rem 0;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  border: none;
+  margin: 1rem 0;
+  resize: vertical;
+}
+
+.upload-btn {
+  width: 100%;
+  padding: 1rem;
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  border: none;
+  border-radius: 0.5rem;
+  color: white;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* Focus Fullscreen */
+.focus-fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, #0f172a, #1e1b4b);
+  color: white;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+}
+
+.fullscreen-controls {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+}
+
+.focus-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  padding: 2rem;
+}
+
+.timer-display {
+  font-size: 6rem;
+  font-weight: bold;
+  font-family: monospace;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 1rem 2rem;
+  border-radius: 2rem;
+}
+
+.current-task-card {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 1rem;
+  padding: 2rem;
+  max-width: 500px;
+  width: 100%;
+  text-align: center;
+}
+
+.current-task-card p {
+  font-size: 1.5rem;
+  margin: 1rem 0;
+}
+
+.task-meta {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.ai-tip {
+  background: rgba(139, 92, 246, 0.2);
+  border-left: 4px solid #8b5cf6;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  max-width: 500px;
+}
+
+.ai-icon {
+  font-weight: bold;
+  color: #8b5cf6;
+}
+
+.finish-task-btn {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 2rem;
+  color: white;
+  font-size: 1.25rem;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* Review Mode */
+.focus-fullscreen.review-mode {
+  overflow-y: auto;
+}
+
+.review-container {
+  max-width: 600px;
+  margin: 2rem auto;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 1rem;
+  padding: 2rem;
+}
+
+.review-question {
+  margin-bottom: 1.5rem;
+}
+
+.review-question textarea {
+  width: 100%;
+  margin-top: 0.5rem;
+  background: rgba(0, 0, 0, 0.3);
+  color: white;
+}
+
+.submit-review-btn {
+  width: 100%;
+  padding: 1rem;
+  background: linear-gradient(135deg, #8b5cf6, #6366f1);
+  border: none;
+  border-radius: 0.5rem;
+  color: white;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+}

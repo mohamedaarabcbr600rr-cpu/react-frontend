@@ -1,0 +1,273 @@
+/* ================= RESET GLOBAL ================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+}
+
+/* ================= APP ================= */
+.app {
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  min-height: 100vh;
+  background: #f5f7fb;
+  font-family: "Segoe UI", sans-serif;
+  overflow-x: hidden;
+}
+
+.app.dark {
+  background: #0f172a;
+  color: white;
+}
+
+/* ================= TOPBAR ================= */
+.topbar {
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  background: white;
+  border-bottom: 1px solid #eee;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.app.dark .topbar {
+  background: #1e293b;
+  border-bottom-color: #334155;
+}
+
+.menu-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+  transition: 0.2s;
+}
+
+.app.dark .menu-btn {
+  color: white;
+}
+
+.theme-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  transition: 0.2s;
+}
+
+.app.dark .theme-btn {
+  color: white;
+}
+
+/* ================= CONTENT ================= */
+.content {
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  padding: 16px;
+  padding-bottom: 80px;
+  overflow-y: auto;
+}
+
+/* ================= DRAWER (SWIPE STYLE) ================= */
+.drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 280px;
+  background: white;
+  z-index: 1001;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: 2px 0 12px rgba(0,0,0,0.1);
+}
+
+.app.dark .drawer {
+  background: #1e293b;
+}
+
+.drawer-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 500;
+}
+
+.drawer-item:hover {
+  background: rgba(99,102,241,0.1);
+}
+
+.drawer-item.active {
+  background: linear-gradient(135deg, #6366f1, #3b82f6);
+  color: white;
+}
+
+/* ================= OVERLAY ================= */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(2px);
+  z-index: 1000;
+}
+
+/* ================= BOTTOM NAV ================= */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 65px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background: white;
+  border-top: 1px solid #eee;
+  z-index: 1000;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.app.dark .bottom-nav {
+  background: #1e293b;
+  border-top-color: #334155;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 12px;
+}
+
+.nav-item.active {
+  background: linear-gradient(135deg, #6366f1, #3b82f6);
+  color: white;
+}
+
+/* ================= FLOATING ACTION BUTTON ================= */
+.fab {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  width: 56px;
+  height: 56px;
+  border-radius: 28px;
+  background: linear-gradient(135deg, #6366f1, #3b82f6);
+  color: white;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.fab:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+}
+
+/* ================= RESPONSIVE ================= */
+@media (min-width: 769px) {
+  .menu-btn {
+    display: none;
+  }
+  
+  .bottom-nav {
+    display: none;
+  }
+  
+  .fab {
+    display: none;
+  }
+  
+  .app {
+    flex-direction: row;
+  }
+  
+  .topbar {
+    display: none;
+  }
+  
+  .drawer {
+    display: none;
+  }
+  
+  /* Sidebar pour desktop */
+  .sidebar-desktop {
+    width: 260px;
+    padding: 20px;
+    background: rgba(255,255,255,0.7);
+    backdrop-filter: blur(18px);
+    border-right: 1px solid rgba(0,0,0,0.05);
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    overflow-y: auto;
+  }
+  
+  .app.dark .sidebar-desktop {
+    background: rgba(30,41,59,0.7);
+  }
+  
+  .menu-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: 0.2s;
+    margin-bottom: 4px;
+  }
+  
+  .menu-item:hover {
+    background: rgba(99,102,241,0.1);
+  }
+  
+  .menu-item.active {
+    background: linear-gradient(135deg, #6366f1, #3b82f6);
+    color: white;
+  }
+  
+  .content {
+    padding-bottom: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar-desktop {
+    display: none;
+  }
+}

@@ -1,0 +1,43 @@
+/* Profile.css - Styles pour la page Profil */
+
+.profile-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* ================================================
+   RESPONSIVE - TABLETTE
+   ================================================ */
+@media (max-width: 768px) {
+  .profile-container {
+    padding: 16px;
+  }
+}
+
+/* ================================================
+   RESPONSIVE - MOBILE
+   ================================================ */
+@media (max-width: 480px) {
+  .profile-container {
+    padding: 12px;
+  }
+}
+
+/* ================================================
+   DARK MODE
+   ================================================ */
+@media (prefers-color-scheme: dark) {
+  .profile-container {
+    color: #f0f0f0;
+  
+    /* Background handled by parent */
+  }
+}
+
+/* ================================================
+   RTL SUPPORT (Arabic)
+   ================================================ */
+[dir="rtl"] .profile-container {
+  direction: rtl;
+}

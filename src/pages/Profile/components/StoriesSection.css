@@ -1,0 +1,99 @@
+/* pages/Profile/components/StoriesSection.css */
+.stories-container {
+  background: white;
+  border-bottom: 1px solid #dbdbdb;
+  padding: 16px 0;
+  overflow-x: auto;
+  position: relative;
+}
+
+.stories-scroll {
+  display: flex;
+  gap: 16px;
+  padding: 0 16px;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.stories-scroll::-webkit-scrollbar {
+  height: 4px;
+}
+
+.stories-scroll::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.stories-scroll::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 10px;
+}
+
+.story-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: transform 0.2s;
+}
+
+.story-item:hover {
+  transform: scale(1.05);
+}
+
+.story-avatar-wrapper {
+  width: 70px;
+  height: 70px;
+}
+
+.story-avatar {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid #dbdbdb;
+  background: #fafafa;
+}
+
+.story-avatar.has-story {
+  border: 3px solid #e4405f;
+  padding: 2px;
+}
+
+.story-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.add-story-avatar {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+}
+
+.add-icon {
+  font-size: 32px;
+  color: white;
+  font-weight: bold;
+}
+
+.story-username {
+  font-size: 12px;
+  color: #262626;
+  text-align: center;
+  max-width: 70px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.story-item.add-story .story-username {
+  color: #e4405f;
+  font-weight: 500;
+}

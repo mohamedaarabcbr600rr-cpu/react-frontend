@@ -1,0 +1,763 @@
+{
+  "nav": {
+  "home": "Accueil",
+  "network": "Réseau",
+  "focus": "Focus Hub",
+  "messages": "Messagerie",
+  "notifications": "Notifications",
+  "ai": "Assistant IA",
+  "search": "Rechercher",
+  "logout": "Déconnexion",
+  "profile": "Moi",
+  "premium": "Essayer Premium"
+},
+
+  "rightColumn": {
+    "loginTitle": "Suggestions de personnes",
+    "loginText": "Connectez-vous pour voir des suggestions personnalisées",
+    "suggestionsForYou": "Suggestions pour vous",
+    "popular": "Suggestions populaires",
+    "following": "✓ Abonné",
+    "follow": "+ Suivre",
+    "empty": "Aucune suggestion pour le moment",
+    "loginToSee": "Connectez-vous pour voir des suggestions",
+    "viewAll": "Voir toutes les suggestions",
+    "defaultTitle": "👨‍💻 Développeur"
+  },
+
+  "footer": {
+    "about": "À propos",
+    "accessibility": "Accessibilité",
+    "conditions": "Conditions",
+    "privacy": "Confidentialité",
+    "copyright": "© 2026 LinkedIn Corporation"
+  },
+
+  "common": {
+    "user": "Utilisateur",
+    "cancel": "Annuler",
+     "loading": "Chargement..."
+  },
+
+  "post": {
+    "user": {
+      "anonymous": "Utilisateur anonyme",
+      "you": "Vous"
+    },
+    "visibility": {
+      "public": "🌍 Public"
+    },
+    "time": {
+      "today": "aujourd'hui",
+      "daysAgo": "Il y a {{count}} jour",
+      "daysAgo_plural": "Il y a {{count}} jours",
+      "weeksAgo": "Il y a {{count}} semaine",
+      "weeksAgo_plural": "Il y a {{count}} semaines"
+    },
+    "reactions": {
+      "title": "Réactions",
+      "all": "Tout",
+      "loading": "Chargement...",
+      "empty": "Aucune réaction",
+      "viewProfile": "Voir le profil",
+      "like": "J'aime",
+      "love": "J'adore",
+      "haha": "Haha",
+      "wow": "Wow",
+      "sad": "Triste",
+      "angry": "Colère"
+    },
+    "actions": {
+      "comment": "Commenter",
+      "share": "Partager",
+      "send": "Envoyer"
+    },
+    "comments": {
+      "placeholder": "Écrivez un commentaire...",
+      "send": "Envoyer",
+      "reply": "Répondre",
+      "delete": "Supprimer",
+      "count": "{{count}} commentaire",
+      "count_plural": "{{count}} commentaires",
+      "showMore": "Voir les {{count}} autres commentaires"
+    },
+    "shared": {
+      "original": "🔁 Post original"
+    },
+    "media": {
+      "clickToEnlarge": "🔍 Cliquez pour agrandir",
+      "enlargedImage": "Image agrandie"
+    },
+    "share": {
+      "success": "Publication partagée!",
+      "successMessage": "a partagé la publication"
+    },
+    "send": {
+      "title": "Envoyer",
+      "copyLink": "Copier le lien",
+      "copy": "Copier",
+      "copied": "✓ Copié!",
+      "sendToFriend": "Envoyer à un ami",
+      "friend": "Ami"
+    }
+  },
+
+
+  
+  "leftProfile": {
+    "visitor": {
+      "title": "Bienvenue !",
+      "text": "Connectez-vous pour voir votre profil"
+    },
+    "menu": {
+      "saved": "Éléments enregistrés",
+      "groups": "Groupes",
+      "newsletters": "Newsletters",
+      "events": "Événements"
+    }
+  },
+
+  
+  "addExperience": {
+    "trigger": "✏️ Partager une expérience...",
+    "titleLabel": "Titre de l'expérience",
+    "titlePlaceholder": "Ex: Mon stage chez...",
+    "contentLabel": "Contenu de l'expérience",
+    "contentPlaceholder": "Décrivez votre expérience en détail...",
+    "mediaLabel": "Média (photo ou vidéo)",
+    "uploadText": "Cliquez pour ajouter une photo ou une vidéo (max 10MB)",
+    "preview": "Aperçu",
+    "charCounter": "{{current}}/{{max}} caractères",
+    "publish": "Publier",
+    "publishing": "Publication...",
+    "errors": {
+      "unsupportedFormat": "Format non supporté. Utilisez JPG, PNG, GIF pour les images ou MP4 pour les vidéos.",
+      "fileTooLarge": "Le fichier ne doit pas dépasser 10MB",
+      "fillAllFields": "Veuillez remplir tous les champs",
+      "titleTooLong": "Le titre ne doit pas dépasser 100 caractères",
+      "contentTooLong": "Le contenu ne doit pas dépasser 1000 caractères",
+      "genericError": "Une erreur est survenue lors de l'ajout de l'expérience"
+    }
+  },
+
+  
+  "auth": {
+    "signUp": "S'inscrire",
+    "login": "Se connecter",
+    "welcomeBack": "Bon retour",
+    "createAccount": "Créer un compte",
+    "emailPlaceholder": "Email",
+    "passwordPlaceholder": "Mot de passe",
+    "fullNamePlaceholder": "Nom complet",
+    "loginButton": "Connexion",
+    "registerButton": "S'inscrire",
+    "errors": {
+      "loginError": "Erreur de connexion",
+      "registerError": "Erreur d'inscription"
+    }
+  },
+
+  
+  "home": {
+    "banner": "🏆 Défi du jour : Explique une leçon en 5 lignes seulement et gagne plus d'interactions !",
+    "createPostInput": "Partage une idée 🔥 ou résous un exercice 💡",
+    "loginToPost": "Connecte-toi pour participer",
+    "feedTitle": "🔥 L'arène des défis",
+    "mostInteracted": "Les plus interactifs 🔥",
+    "publicationCount": "{{count}} publication",
+    "publicationCount_plural": "{{count}} publications",
+    "actions": {
+      "media": "Média",
+      "event": "Événement",
+      "write": "Rédiger"
+    },
+    "filters": {
+      "all": "📰 Toutes",
+      "my": "✍️ Mes posts",
+      "shared": "🔄 Partagés"
+    },
+    "empty": {
+      "myPosts": {
+        "title": "Vous n'avez pas encore publié",
+        "text": "Partagez votre première expérience! 🚀"
+      },
+      "shared": {
+        "title": "Aucun partage pour le moment",
+        "text": "Partagez des publications intéressantes! 💫"
+      },
+      "all": {
+        "title": "L'arène est vide... Qui sera le premier héros ? 😎",
+        "text": "Publie une idée, une explication ou un défi et lance la compétition 🔥"
+      }
+    }
+  },
+
+  
+  "notifications": {
+    "title": "Notifications",
+    "loading": "Chargement des notifications...",
+    "empty": "📭 Aucune notification pour le moment",
+    "markAllRead": "Tout marquer comme lu",
+    "defaultUser": "Utilisateur",
+    "defaultAvatar": "Avatar",
+    "locale": "fr-FR",
+    "retry": "Réessayer",
+    "errors": {
+      "sessionExpired": "Session expirée. Veuillez vous reconnecter.",
+      "loadError": "Impossible de charger les notifications. Vérifiez votre connexion.",
+      "loginRequired": "Veuillez vous connecter pour voir vos notifications",
+      "forbidden": "Vous n'avez pas accès à ces notifications.",
+      "serverError": "Erreur serveur. Veuillez réessayer plus tard."
+    }
+  },
+
+  
+  "reseau": {
+    "title": "👥 Membres de la communauté",
+    "subtitle": "Découvrez et connectez-vous avec d'autres membres",
+    "searchPlaceholder": "Rechercher par nom, pseudo ou email...",
+    "clearSearch": "Effacer la recherche",
+    "loading": "Chargement des membres...",
+    "memberCount": "{{count}} membre",
+    "memberCount_plural": "{{count}} membres",
+    "defaultUser": "Utilisateur",
+    "follow": "Suivre",
+    "following": "Abonné",
+    "loginRequired": {
+      "title": "Connexion requise",
+      "text": "Connectez-vous pour voir tous les membres de la communauté"
+    },
+    "empty": {
+      "title": "Aucun membre trouvé",
+      "text": "Essayez une autre recherche"
+    },
+    "errors": {
+      "loadError": "Erreur lors du chargement des utilisateurs",
+      "fallbackError": "Fallback également en échec",
+      "followError": "Erreur lors du follow/unfollow"
+    }
+  },
+
+  
+  "profile": {
+    "user": "Utilisateur",
+    "userName": "Nom d'utilisateur",
+    "editProfile": "Modifier le profil",
+    "follow": "Suivre",
+    "following": "Abonné",
+    "message": "Message",
+    "settings": "Paramètres",
+    "tabs": {
+      "posts": "Publications",
+      "followers": "Followers",
+      "following": "Following"
+    },
+    "stats": {
+      "posts": "posts",
+      "followers": "followers",
+      "following": "following"
+    },
+    "formatCount": {
+      "million": "{{count}}M",
+      "thousand": "{{count}}k"
+    }
+  },
+
+  "editProfile": {
+    "title": "Modifier le profil",
+    "close": "Fermer",
+    "preview": "Aperçu",
+    "changePhoto": "Modifier la photo",
+    "save": "Enregistrer",
+    "saving": "Enregistrement...",
+    "fields": {
+      "username": "Nom d'utilisateur",
+      "name": "Nom",
+      "bio": "Biographie",
+      "link": "Lien"
+    },
+    "placeholders": {
+      "username": "nom_utilisateur",
+      "name": "Votre nom",
+      "bio": "Parlez-nous de vous...",
+      "link": "https://..."
+    },
+    "help": {
+      "username": "Les noms d'utilisateur ne peuvent contenir que des lettres, des chiffres, des traits de soulignement et des points.",
+      "name": "Ton nom ne peut être modifié qu'une fois tous les 7 jours.",
+      "bio": "150 caractères maximum"
+    },
+    "errors": {
+      "imageTooLarge": "La taille de l'image ne doit pas dépasser 5MB",
+      "invalidImage": "Veuillez sélectionner une image valide",
+      "usernameRequired": "Le nom d'utilisateur est requis",
+      "usernameInvalid": "Le nom d'utilisateur ne peut contenir que des lettres, des chiffres, des traits de soulignement et des points",
+      "nameRequired": "Le nom est requis",
+      "bioTooLong": "La biographie ne doit pas dépasser 150 caractères",
+      "updateError": "Erreur lors de la mise à jour",
+      "genericError": "Une erreur est survenue. Veuillez réessayer."
+    }
+  },
+
+  
+  "aiChat": {
+    "title": "Assistant IA",
+    "status": "En ligne • Réponses instantanées",
+    "greeting": "Bonjour {{name}}",
+    "clearHistory": "Effacer l'historique",
+    "newChat": "Nouvelle conversation",
+    "newChatButton": "✨ Nouveau chat",
+    "confirmClear": "Voulez-vous vraiment effacer l'historique de la conversation ?",
+    "typing": "L'IA est en train d'écrire...",
+    "inputPlaceholder": "Écrivez votre message... (Appuyez sur Entrée pour envoyer)",
+    "inputHint": "Entrée pour envoyer • Maj+Entrée pour nouvelle ligne",
+    "send": "Envoyer",
+    "closeError": "Fermer l'erreur",
+    "welcome": {
+      "authenticated": "Bonjour {{name}} ! Comment puis-je vous aider ?",
+      "guest": "Bonjour ! Comment puis-je vous aider ?",
+      "description": "Posez-moi des questions sur vos cours, vos QCM, ou demandez des conseils d'étude."
+    },
+    "suggestions": {
+      "improveGrades": "Comment améliorer ma moyenne ?",
+      "weaknesses": "Quels sont mes points faibles ?",
+      "studyTips": "Donne-moi des conseils d'étude",
+      "motivation": "Comment rester motivé ?",
+      "conjugation": "Explique-moi la conjugaison",
+      "timeManagement": "Comment mieux gérer mon temps ?"
+    },
+    "errors": {
+      "fetchUserInfo": "Erreur lors de la récupération des informations utilisateur",
+      "loadHistory": "Erreur lors du chargement de l'historique",
+      "sendMessage": "Erreur lors de l'envoi du message",
+      "generic": "Désolé, une erreur s'est produite. Veuillez réessayer.",
+      "timeout": "La requête a expiré. Vérifiez votre connexion.",
+      "sessionExpired": "Session expirée. Veuillez vous reconnecter pour continuer.",
+      "tooManyRequests": "Trop de messages. Veuillez patienter quelques instants.",
+      "serverError": "Erreur du serveur. Réessayez plus tard."
+    }
+  } ,
+
+  
+  "summary": {
+    "title": "Générateur de Résumé IA",
+    "subtitle": "Transformez vos documents en résumés intelligents et concis",
+    "locale": "fr-FR",
+    "generateSummary": "Générer le résumé",
+    "generating": "Génération en cours...",
+    "clear": "Effacer",
+    "copiedToClipboard": "Résumé copié dans le presse-papier !",
+    "downloadPrefix": "resume_",
+    "dropZone": {
+      "text": "Glissez-déposez votre fichier ici ou",
+      "browse": "parcourez",
+      "hint": "Formats supportés : PDF, DOC, DOCX, TXT (Max 10MB)"
+    },
+    "loading": {
+      "analyzing": "Analyse du document en cours...",
+      "hint": "Cela peut prendre quelques secondes"
+    },
+    "result": {
+      "title": "Résumé Généré",
+      "copy": "Copier",
+      "download": "Télécharger"
+    },
+    "stats": {
+      "words": "📊 {{count}} mot",
+      "words_plural": "📊 {{count}} mots",
+      "characters": "🔤 {{count}} caractère",
+      "characters_plural": "🔤 {{count}} caractères"
+    },
+    "history": {
+      "title": "Historique des résumés",
+      "load": "Charger"
+    },
+    "features": {
+      "title": "Fonctionnalités",
+      "ai": {
+        "title": "IA Avancée",
+        "description": "Résumé intelligent basé sur l'intelligence artificielle"
+      },
+      "fast": {
+        "title": "Rapide & Efficace",
+        "description": "Génération de résumé en quelques secondes"
+      },
+      "secure": {
+        "title": "Sécurisé",
+        "description": "Vos documents sont traités de façon confidentielle"
+      },
+      "responsive": {
+        "title": "Responsive",
+        "description": "Accessible sur tous vos appareils"
+      }
+    },
+    "fileSize": {
+      "bytes": "octets",
+      "kb": "Ko",
+      "mb": "Mo",
+      "gb": "Go"
+    },
+    "errors": {
+      "unsupportedFormat": "Format non supporté. Veuillez uploader un fichier PDF, DOC, DOCX ou TXT.",
+      "fileTooLarge": "Fichier trop volumineux. Taille maximum : 10MB",
+      "noFileSelected": "Veuillez sélectionner un fichier",
+      "timeout": "La requête a expiré. Veuillez réessayer.",
+      "generationError": "Erreur lors de la génération du résumé",
+      "connectionError": "Erreur de connexion. Veuillez vérifier votre connexion internet.",
+      "uploadError": "Erreur lors de l'upload"
+    }
+  },
+
+  
+  "history": {
+    "title": "Historique des QCM",
+    "subtitle": "Suivez votre progression",
+    "loading": "Chargement de votre historique...",
+    "errorTitle": "Erreur de chargement",
+    "retry": "Réessayer",
+    "refresh": "Actualiser",
+    "locale": "fr-FR",
+    "testCount": "{{count}} test effectué",
+    "testCount_plural": "{{count}} tests effectués",
+    "stats": {
+      "average": "Moyenne",
+      "best": "Meilleur",
+      "worst": "Plus bas",
+      "total": "Total"
+    },
+    "filters": {
+      "filterByScore": "Filtrer par score",
+      "sortBy": "Trier par",
+      "all": "Tous les scores",
+      "excellent": "Excellent (80-100%)",
+      "good": "Bon (60-79%)",
+      "average": "Moyen (40-59%)",
+      "poor": "À améliorer (0-39%)"
+    },
+    "sort": {
+      "dateDesc": "📅 Date (plus récent)",
+      "dateAsc": "📅 Date (plus ancien)",
+      "scoreDesc": "🎯 Score (décroissant)",
+      "scoreAsc": "🎯 Score (croissant)"
+    },
+    "scoreMessages": {
+      "excellent": "Excellent !",
+      "good": "Très bien !",
+      "average": "Bon début !",
+      "poor": "À améliorer !"
+    },
+    "card": {
+      "date": "Date",
+      "score": "Score",
+      "id": "ID"
+    },
+    "empty": {
+      "title": "Aucun résultat trouvé",
+      "noTests": "Vous n'avez encore effectué aucun QCM. Commencez dès maintenant !",
+      "noFilterMatch": "Aucun test ne correspond aux filtres sélectionnés."
+    },
+    "clearFilters": "Effacer les filtres",
+    "errors": {
+      "sessionExpired": "Session expirée. Veuillez vous reconnecter.",
+      "loadError": "Impossible de charger l'historique. Veuillez réessayer plus tard."
+    }
+  },
+
+  
+  "dashboard": {
+    "title": "Tableau de bord",
+    "subtitle": "Suivez votre progression et vos performances",
+    "greeting": "Bonjour {{name}}",
+    "student": "Étudiant",
+    "refresh": "Actualiser",
+    "loading": "Chargement de votre tableau de bord...",
+    "errorTitle": "Erreur de chargement",
+    "retry": "Réessayer",
+    "stats": {
+      "level": "Niveau actuel",
+      "averageScore": "Score moyen",
+      "completedQCM": "QCM complétés",
+      "testsDone": "tests réalisés",
+      "undefined": "Non défini"
+    },
+    "levels": {
+      "beginner": "Continuez vos efforts !",
+      "intermediate": "Bonne progression !",
+      "advanced": "Excellent niveau !",
+      "default": "Niveau en progression"
+    },
+    "performance": {
+      "title": "Performance",
+      "excellent": "Excellent (80-100%)",
+      "good": "Bon (60-79%)",
+      "average": "Moyen (40-59%)",
+      "poor": "À améliorer (0-39%)"
+    },
+    "progress": {
+      "title": "Progression globale",
+      "low": "Commencez par compléter plus de QCM pour voir votre progression",
+      "medium": "Bonne progression ! Continuez comme ça",
+      "high": "Excellent rythme ! Vous êtes sur la bonne voie"
+    },
+    "weakPoints": {
+      "title": "Points faibles à améliorer",
+      "needsAttention": "Nécessite une attention particulière",
+      "empty": "Aucun point faible identifié ! Continuez sur cette lancée !"
+    },
+    "recommendations": {
+      "title": "Recommandations personnalisées",
+      "conjugation": "📝 Pratiquez la conjugaison avec des exercices quotidiens sur Quizlet ou Bescherelle",
+      "grammar": "📖 Révisez les règles grammaticales de base avec des fiches synthétiques",
+      "vocabulary": "📚 Lisez plus et notez les nouveaux mots dans un carnet de vocabulaire",
+      "spelling": "✍️ Faites des dictées en ligne régulièrement sur Orthodidacte",
+      "specific": "📌 Travaillez spécifiquement sur: {{topic}}",
+      "beginner1": "🎯 Commencez par les bases et augmentez progressivement la difficulté",
+      "beginner2": "⏰ Fixez-vous des objectifs quotidiens de 30 minutes de révision",
+      "intermediate1": "🚀 Challengez-vous avec des QCM plus complexes",
+      "intermediate2": "📝 Analysez vos erreurs pour ne pas les répéter",
+      "advanced1": "🏆 Essayez des exercices de niveau expert",
+      "advanced2": "👨‍🏫 Aidez d'autres étudiants pour consolider vos connaissances",
+      "lowScore": "💪 Concentrez-vous sur les chapitres où vous avez le plus de difficultés",
+      "highScore": "🌟 Vous êtes excellent ! Maintenez ce rythme"
+    },
+    "motivation": {
+      "excellent": "Exceptionnel ! Continuez à viser l'excellence !",
+      "good": "Très bonne progression ! Restez motivé !",
+      "average": "Vous êtes sur la bonne voie, persévérez !",
+      "poor": "Chaque effort compte, continuez à vous entraîner !",
+      "firstQCM": "Commencez votre premier QCM pour débloquer vos statistiques !"
+    },
+    "empty": {
+      "title": "Aucune donnée disponible",
+      "description": "Complétez votre premier QCM pour voir vos statistiques !"
+    },
+    "errors": {
+      "fetchUserInfo": "Erreur lors de la récupération des informations utilisateur",
+      "fetchDashboard": "Erreur lors du chargement du tableau de bord",
+      "profileNotFound": "Profil non trouvé",
+      "sessionExpired": "Session expirée. Veuillez vous reconnecter.",
+      "loadError": "Impossible de charger le tableau de bord. Veuillez réessayer plus tard."
+    }
+  },
+
+  
+  "chart": {
+    "title": "📈 Progression des scores",
+    "subtitle": "Évolution de vos performances au fil du temps",
+    "locale": "fr-FR",
+    "refresh": "Rafraîchir",
+    "loading": "Chargement de votre progression...",
+    "retry": "Réessayer",
+    "tooltip": {
+      "score": "Score",
+      "questions": "Questions"
+    },
+    "legend": {
+      "score": "Score",
+      "movingAverage": "Moyenne mobile (3 tests)"
+    },
+    "stats": {
+      "total": "Tests complétés",
+      "average": "Moyenne générale",
+      "best": "Meilleur score",
+      "worst": "Plus bas score"
+    },
+    "trend": {
+      "positive": "📈 Progression positive ! +{{points}} points",
+      "negative": "📉 Marge de progression ({{points}} points)",
+      "stable": "➡️ Performance stable"
+    },
+    "advice": {
+      "excellent": "🎉 Félicitations ! Continuez sur cette lancée !",
+      "good": "💪 Bon travail ! Gardez cette motivation !",
+      "improve": "📚 Conseil : Revoyez vos points faibles et réessayez !"
+    },
+    "recent": {
+      "title": "📋 Derniers résultats"
+    },
+    "empty": {
+      "title": "Aucune donnée disponible",
+      "description": "Commencez à répondre aux QCM pour voir votre progression !"
+    },
+    "errors": {
+      "fetchError": "Erreur lors de la récupération des données",
+      "sessionExpired": "Session expirée. Veuillez vous reconnecter pour voir votre progression.",
+      "loadError": "Impossible de charger les données. Veuillez réessayer plus tard."
+    }
+  },
+
+  
+  "coach": {
+    "title": "🧠 AI Coach Personnel",
+    "subtitle": "Votre assistant intelligent pour améliorer vos performances académiques",
+    "status": "IA Active",
+    "locale": "fr-FR",
+    "close": "Fermer",
+    "adviceType": "Type de conseil",
+    "analyzing": "Analyse en cours...",
+    "generateAdvice": "✨ Générer un conseil personnalisé",
+    "thinking": "Mon coach réfléchit...",
+    "defaultAdvice": "Je suis là pour vous aider à progresser. Continuez vos efforts !",
+    "fallbackAdvice": "📚 Conseil du moment : Continuez à pratiquer régulièrement, même 15 minutes par jour font une grande différence !",
+    "advice": "💡 Conseil",
+    "copy": "📋 Copier",
+    "copied": "✓ Copié !",
+    "newAdvice": "🔄 Nouveau conseil",
+    "getPersonalizedAdvice": "Obtenir un conseil personnalisé",
+    "confirmClear": "Voulez-vous vraiment effacer l'historique des conseils ?",
+    "noWeakPoints": "Aucun point faible identifié",
+    "types": {
+      "general": "💬 Général",
+      "motivation": "⭐ Motivation",
+      "strategy": "📖 Stratégie",
+      "weakpoints": "🎯 Points faibles",
+      "progress": "📈 Progression"
+    },
+    "profile": {
+      "title": "Votre profil d'apprentissage",
+      "averageScore": "Score moyen",
+      "completedQCM": "QCM complétés",
+      "level": "Niveau",
+      "weakPoints": "⚠️ Points à améliorer",
+      "levels": {
+        "beginner": "🌱 Débutant",
+        "intermediate": "📚 Intermédiaire",
+        "advanced": "🚀 Avancé"
+      }
+    },
+    "motivations": [
+      "💪 Chaque petit progrès compte !",
+      "🌟 La persévérance est la clé du succès !",
+      "📚 Le savoir est le seul bien qui s'accroît quand on le partage !",
+      "🎯 Fixez-vous des objectifs, le reste suivra !",
+      "✨ Vous êtes capable de grandes choses !",
+      "🚀 Continuez à apprendre chaque jour !",
+      "🏆 Les champions ne lâchent jamais rien !",
+      "📖 L'échec est le commencement de la réussite",
+      "💡 La meilleure façon de prédire l'avenir est de le créer",
+      "🎓 L'apprentissage est un trésor qui suivra son propriétaire partout"
+    ],
+    "history": {
+      "title": "Historique des conseils",
+      "clear": "Effacer l'historique",
+      "view": "Voir"
+    },
+    "tips": {
+      "title": "Conseils pour maximiser votre apprentissage",
+      "regularPractice": {
+        "title": "Pratique régulière",
+        "description": "15 minutes par jour valent mieux que 2 heures par semaine"
+      },
+      "reviewMistakes": {
+        "title": "Révisez vos erreurs",
+        "description": "Analysez vos points faibles pour mieux progresser"
+      },
+      "setGoals": {
+        "title": "Fixez des objectifs",
+        "description": "Des petits objectifs atteignables boostent la motivation"
+      },
+      "varyMethods": {
+        "title": "Variez les méthodes",
+        "description": "Alternez QCM, résumés et exercices pratiques"
+      }
+    },
+    "errors": {
+      "fetchStats": "Erreur lors de la récupération des statistiques",
+      "parseHistory": "Erreur lors du parsing de l'historique",
+      "parseWeakPoints": "Erreur lors du parsing des points faibles",
+      "fetchCoach": "Erreur lors de la récupération du conseil",
+      "loginRequired": "Veuillez vous connecter pour accéder au coach IA",
+      "sessionExpired": "Session expirée. Veuillez vous reconnecter.",
+      "tooManyRequests": "Trop de demandes. Veuillez patienter quelques instants.",
+      "serviceUnavailable": "Le service IA est temporairement indisponible. Réessayez plus tard.",
+      "generic": "Erreur lors de la génération du conseil",
+      "connectionError": "Impossible de contacter le serveur. Vérifiez votre connexion.",
+      "unexpected": "Une erreur inattendue s'est produite."
+    }
+  },
+
+  
+  "qcm": {
+    "title": "Générateur de QCM Intelligent",
+    "subtitle": "Créez des questionnaires automatiquement à partir de vos documents",
+    "defaultTitle": "QCM Généré",
+    "generate": "Générer le QCM",
+    "retry": "🔄 Réessayer",
+    "newQCM": "🔄 Nouveau QCM",
+    "submit": "📊 Soumettre mes réponses",
+    "correctAnswer": "✓ Bonne réponse",
+    "yourChoice": "✗ Votre choix",
+    "progress": "Progression : {{percentage}}%",
+    "incomplete": "Répondez à toutes les questions ({{remaining}} restantes) avant de soumettre",
+    "explanation": "La bonne réponse était : {{letter}}. {{answer}}",
+    "upload": {
+      "title": "Commencez par uploader un document",
+      "description": "Nous générerons automatiquement un QCM basé sur le contenu",
+      "chooseFile": "Choisir un fichier",
+      "supportedFormats": "Formats supportés : PDF, DOC, DOCX, TXT (Max 10MB)"
+    },
+    "loading": {
+      "title": "Génération du QCM en cours...",
+      "hint": "Analyse intelligente du document (peut prendre jusqu'à 2 minutes)"
+    },
+    "info": {
+      "questions": "❓ {{count}} question",
+      "questions_plural": "❓ {{count}} questions",
+      "answered": "✅ {{answered}}/{{total}} répondues"
+    },
+    "results": {
+      "title": "Votre Score",
+      "correct": "✅ Réponses correctes",
+      "incorrect": "❌ Réponses incorrectes",
+      "review": "📝 Revoir les questions"
+    },
+    "scoreMessages": {
+      "excellent": "Excellent ! Continuez comme ça ! 🎉",
+      "good": "Très bien ! Quelques améliorations possibles 👍",
+      "average": "Bon début ! Continuez à vous entraîner 💪",
+      "poor": "Besoin de révision ! Persévérez 📚"
+    },
+    "debug": {
+      "question": "السؤال",
+      "correctAnswer": "الإجابة الصحيحة",
+      "type": "نوع",
+      "newLevel": "🎯 Nouveau niveau"
+    },
+    "errors": {
+      "unsupportedFormat": "Format non supporté. Veuillez uploader un fichier PDF, DOC, DOCX ou TXT.",
+      "fileTooLarge": "Fichier trop volumineux. Taille maximum : 10MB",
+      "noFileSelected": "Veuillez sélectionner un fichier",
+      "invalidFormat": "Format de réponse invalide du serveur",
+      "timeout": "La requête a expiré. Veuillez réessayer (le fichier est peut-être trop volumineux).",
+      "sessionExpired": "Session expirée. Veuillez vous reconnecter.",
+      "sessionExpiredSave": "Session expirée. Veuillez vous reconnecter pour sauvegarder votre score.",
+      "generationError": "Erreur lors de la génération du QCM",
+      "generateError": "Erreur lors de la génération du QCM",
+      "nodeError": "Erreur d'affichage. Veuillez rafraîchir la page et réessayer.",
+      "connectionError": "Erreur de connexion. Veuillez vérifier que le serveur est démarré sur http://localhost:8000",
+      "saveScoreError": "Erreur lors de la sauvegarde du score",
+      "saveErrorDisplay": "Erreur lors de la sauvegarde du score, mais votre résultat est affiché."
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
+}
+
+
+
+
+  
+
+  
+
+
+
