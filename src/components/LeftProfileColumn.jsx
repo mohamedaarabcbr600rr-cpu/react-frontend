@@ -75,7 +75,7 @@ const LeftProfileColumn = ({
           </p>
         )}
 
-         (
+         
           
          {user.link && (
   <a
