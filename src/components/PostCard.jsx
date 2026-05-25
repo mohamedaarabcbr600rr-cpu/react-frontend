@@ -103,7 +103,7 @@ const PostCard = ({
           let userInfo = like.user;
           if (!userInfo || !userInfo.name) {
             try {
-              const response = await fetch(`http://127.0.0.1:8000/api/users/${like.user_id}`);
+              const response = await fetch(`${import.meta.env.VITE_API_URL || "http://127.0.0.1:8000"}/api/users/${like.user_id}`);
               userInfo = response.ok ? await response.json() : { name: t("post.user.anonymous"), profile_pic: null };
             } catch {
               userInfo = { name: t("post.user.anonymous"), profile_pic: null };
@@ -142,7 +142,7 @@ const PostCard = ({
     if (userData?.profile_pic && !hasError) {
       return (
         <img
-          src={`http://127.0.0.1:8000${userData.profile_pic}`}
+          src={`${import.meta.env.VITE_API_URL || "http://127.0.0.1:8000"}${userData.profile_pic}`}
           alt={userData.name}
           className="post-card__avatar-image"
           onClick={(e) => handleProfileClick(userData.id, e)}
@@ -170,7 +170,7 @@ const PostCard = ({
     if (userData?.profile_pic && !hasError) {
       return (
         <img
-          src={`http://127.0.0.1:8000${userData.profile_pic}`}
+          src={`${import.meta.env.VITE_API_URL || "http://127.0.0.1:8000"}${userData.profile_pic}`}
           alt={userData.name}
           className="reactions-modal__avatar-img"
           onError={() => setImageErrors(prev => ({ ...prev, [userId]: true }))}
@@ -675,7 +675,7 @@ const PostCard = ({
                       <div key={friend.id} className="friend-item" onClick={() => handleSendToFriend(friend)}>
                         <div className="friend-avatar">
                           {friend.profile_pic
-                            ? <img src={`http://127.0.0.1:8000${friend.profile_pic}`} alt={friend.name} className="friend-avatar-image" />
+                            ? <img src={`${import.meta.env.VITE_API_URL || "http://127.0.0.1:8000"}${friend.profile_pic}`} alt={friend.name} className="friend-avatar-image" />
                             : getInitials(friend.name)}
                         </div>
                         <div className="friend-info">
