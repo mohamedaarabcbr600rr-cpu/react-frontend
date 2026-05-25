@@ -17,7 +17,7 @@ const HistoryTab = () => {
 
   // 📡 Configuration axios avec token
   const axiosInstance = axios.create({
-    baseURL: `${import.meta.env.VITE_API_URL}/api\",
+    baseURL: `${import.meta.env.VITE_API_URL}/api`,
   });
 
   // Interceptor pour ajouter le token à chaque requête
@@ -332,6 +332,7 @@ const HistoryTab = () => {
 };
 
 export default HistoryTab;
+
 
 
 
