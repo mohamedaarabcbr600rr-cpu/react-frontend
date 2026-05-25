@@ -289,12 +289,10 @@ const handleFollow = async (targetUserId, targetUserData = null) => {
     setCurrentUserFollowing(res.data);
     
     // Rafraîchir le profil si nécessaire
-    if (profileUser && targetUserId === profileUser.id) {
-      await fetchProfileData();
-    } else {
+   
       // Juste rafraîchir les compteurs
       await fetchProfileData();
-    }
+    
     
     console.log("✅ Profil rafraîchi");
     
