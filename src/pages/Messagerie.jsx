@@ -176,7 +176,7 @@ const Messagerie = ({ authUserId, baseUrl = import.meta.env.VITE_API_URL }) => {
   const [showEmoji, setShowEmoji] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [loading, setLoading] = useState(false);
-
+  const [unreadPerUser, setUnreadPerUser] = useState({});
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
   const fileInputRef = useRef(null);
@@ -204,23 +204,13 @@ const Messagerie = ({ authUserId, baseUrl = import.meta.env.VITE_API_URL }) => {
 useEffect(() => {
   const fetchMutualConnections = async () => {
     if (!authUserId) return;
-    
     try {
       setLoading(true);
-      
-      // Récupérer les personnes que JE suis
       const followingRes = await api.get(`/users/${authUserId}/following`);
-      const followingList = followingRes.data;
-      
-      // Récupérer les personnes qui ME suivent
       const followersRes = await api.get(`/users/${authUserId}/followers`);
-      const followersList = followersRes.data;
-      
-      // Garder seulement ceux qui sont dans les DEUX listes (amis mutuels)
-      const mutualConnections = followingList.filter(following => 
-        followersList.some(follower => follower.id === following.id)
+      const mutualConnections = followingRes.data.filter(following => 
+        followersRes.data.some(follower => follower.id === following.id)
       );
-      
       setConnections(mutualConnections);
     } catch (err) {
       console.error("Error fetching mutual connections:", err);
@@ -229,7 +219,6 @@ useEffect(() => {
       setLoading(false);
     }
   };
-  
   fetchMutualConnections();
 }, [authUserId]);
 
@@ -428,17 +417,18 @@ useEffect(() => {
             </div>
           )}
           {filtered.map(user => {
+            
             const online = isOnline(user.last_seen);
             const preview = getPreview(user.id);
             const isActive = selectedUser?.id === user.id;
             return (
               <div
-                key={user.id}
-                className={`wa-contact ${isActive ? "wa-contact--active" : ""}`}
-                onClick={() => startConversation(user)}
-              >
-                <Avatar name={user.name} size={50} online={online} profilePic={user.profile_pic} />
-                <div className="wa-contact-info">
+  key={user.id}
+  className={`wa-contact ${isActive ? "wa-contact--active" : ""}`}
+  onClick={() => startConversation(user)}
+>
+  <Avatar name={user.name} size={50} online={online} profilePic={user.profile_pic} />
+  <div className="wa-contact-info">
                   <div className="wa-contact-top">
                     <span className="wa-contact-name">{user.name}</span>
                     {preview && (
@@ -449,9 +439,21 @@ useEffect(() => {
                       </span>
                     )}
                   </div>
-                  <span className="wa-contact-preview">
-                    {preview || (online ? "Online" : "Tap to chat")}
-                  </span>
+                  <div style={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
+  <span className="wa-contact-preview">
+    {preview || (online ? "Online" : "Tap to chat")}
+  </span>
+  {unreadPerUser[user.id] > 0 && (
+    <span style={{
+      background: '#25D366', color: 'white', borderRadius: '50%',
+      minWidth: '20px', height: '20px', fontSize: '11px',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      padding: '0 4px'
+    }}>
+      {unreadPerUser[user.id]}
+    </span>
+  )}
+</div>
                 </div>
               </div>
             );
