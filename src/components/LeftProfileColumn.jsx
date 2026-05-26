@@ -49,7 +49,7 @@ const LeftProfileColumn = ({
         <div className="left-profile__avatar">
           {user.profile_pic && !imageError ? (
             <img
-              src={`${import.meta.env.VITE_API_URL}${user.profile_pic}`}
+              src={user.profile_pic?.startsWith('http') ? user.profile_pic : `${import.meta.env.VITE_API_URL}${user.profile_pic}`}
               alt={user.name}
               className="left-profile__avatar-image"
               onError={() => setImageError(true)}
