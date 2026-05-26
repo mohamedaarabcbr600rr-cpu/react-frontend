@@ -142,7 +142,7 @@ const PostCard = ({
     if (userData?.profile_pic && !hasError) {
       return (
         <img
-          src={`${import.meta.env.VITE_API_URL}${userData.profile_pic}`}
+          src={userData.profile_pic?.startsWith('http') ? userData.profile_pic : `${import.meta.env.VITE_API_URL}${userData.profile_pic}`}
           alt={userData.name}
           className="post-card__avatar-image"
           onClick={(e) => handleProfileClick(userData.id, e)}

@@ -165,7 +165,7 @@ const Accueil = ({
             >
               {user && user.profile_pic && !avatarError ? (
                 <img
-                  src={`${import.meta.env.VITE_API_URL}${user.profile_pic}`}
+                  src={user.profile_pic?.startsWith('http') ? user.profile_pic : `${import.meta.env.VITE_API_URL}${user.profile_pic}`}
                   alt={user.name}
                   className="create-post__avatar-image"
                   onError={() => {
