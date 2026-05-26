@@ -43,6 +43,24 @@ const { i18n } = useTranslation();
     return savedUser ? JSON.parse(savedUser) : null;
   });
 
+// ✅ UNREAD COUNTS (for Navbar badges)
+const [unreadMessages, setUnreadMessages] = useState(0);
+const [unreadNotifications, setUnreadNotifications] = useState(0);
+
+useEffect(() => {
+  if (!user) return;
+  const fetchCounts = async () => {
+    try {
+      const res = await axios.get('/api/notifications/unread-count');
+      setUnreadNotifications(res.data.unread_count || 0);
+    } catch {}
+  };
+  fetchCounts();
+  const interval = setInterval(fetchCounts, 30000);
+  return () => clearInterval(interval);
+}, [user]);
+
+
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [experiences, setExperiences] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -289,6 +307,8 @@ const [adminToken, setAdminToken] = useState(() =>
 
       <Navbar
         user={user}
+        unreadMessages={unreadMessages}
+        unreadNotifications={unreadNotifications}
         searchTerm={searchTerm}
         onSearch={handleSearch}
         onLogout={handleLogout}

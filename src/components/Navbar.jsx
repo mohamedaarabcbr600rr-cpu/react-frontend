@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import './Navbar.css';
 import { useTranslation } from "react-i18next";
 
-const Navbar = ({ user, searchTerm, onSearch, onLogout, getInitials }) => {
+const Navbar = ({ user, searchTerm, onSearch, onLogout, getInitials, unreadMessages = 0, unreadNotifications = 0 }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -120,20 +120,34 @@ const Navbar = ({ user, searchTerm, onSearch, onLogout, getInitials }) => {
             </div>
 
             {/* NAV ITEMS */}
-            {navItems.map(item => (
-              <div
-                key={item.id}
-                className={`navbar__item ${
-                  isActive(item.id) ? 'active' : ''
-                } ${item.id === 'focus-hub' ? 'focus-hub-highlight' : ''}`}
-                onClick={() => handleNavigation(item.id)}
-              >
-                <i className={`ti ${item.icon} navbar__item-icon`} />
-                <span className="navbar__item-label">
-                  {item.label}
-                </span>
-              </div>
-            ))}
+           {navItems.map(item => (
+  <div
+    key={item.id}
+    className={`navbar__item ${isActive(item.id) ? 'active' : ''} ${item.id === 'focus-hub' ? 'focus-hub-highlight' : ''}`}
+    onClick={() => handleNavigation(item.id)}
+  >
+    <div style={{ position: 'relative' }}>
+      <i className={`ti ${item.icon} navbar__item-icon`} />
+      {item.id === 'messagerie' && unreadMessages > 0 && (
+        <span style={{
+          position: 'absolute', top: '-6px', right: '-6px',
+          background: 'red', color: 'white', borderRadius: '50%',
+          width: '16px', height: '16px', fontSize: '10px',
+          display: 'flex', alignItems: 'center', justifyContent: 'center'
+        }}>{unreadMessages}</span>
+      )}
+      {item.id === 'notifications' && unreadNotifications > 0 && (
+        <span style={{
+          position: 'absolute', top: '-6px', right: '-6px',
+          background: 'red', color: 'white', borderRadius: '50%',
+          width: '16px', height: '16px', fontSize: '10px',
+          display: 'flex', alignItems: 'center', justifyContent: 'center'
+        }}>{unreadNotifications}</span>
+      )}
+    </div>
+    <span className="navbar__item-label">{item.label}</span>
+  </div>
+))}
 
           </div>
 
