@@ -51,8 +51,8 @@ useEffect(() => {
   if (!user) return;
   const fetchCounts = async () => {
     try {
-      const res = await axios.get('/api/notifications/unread-count');
-      setUnreadNotifications(res.data.unread_count || 0);
+      const msgRes = await axios.get('/api/messages/unread-count');
+setUnreadMessages(msgRes.data.unread_count || 0);
     } catch {}
   };
   fetchCounts();
