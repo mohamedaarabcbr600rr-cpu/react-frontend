@@ -45,8 +45,8 @@ const isOnline = (lastSeen) => {
   return (new Date() - new Date(lastSeen)) / 1000 < 120;
 };
 
-// ─── Avatar ──────────────────────────────────────────────────────────────────
-const Avatar = ({ name, size = 48, online = false }) => {
+const Avatar = ({ name, size = 48, online = false, profilePic = null }) => {
+  const [imgError, setImgError] = useState(false);
   const colors = [
     ["#128C7E", "#075E54"],
     ["#25D366", "#128C7E"],
@@ -58,19 +58,32 @@ const Avatar = ({ name, size = 48, online = false }) => {
   const idx = name ? name.charCodeAt(0) % colors.length : 0;
   const [bg1, bg2] = colors[idx];
 
+  const imageUrl = profilePic
+    ? (profilePic.startsWith('http') ? profilePic : `${import.meta.env.VITE_API_URL}${profilePic}`)
+    : null;
+
   return (
     <div className="wa-avatar-wrap">
-      <div
-        className="wa-avatar"
-        style={{
-          width: size,
-          height: size,
-          background: `linear-gradient(135deg, ${bg1}, ${bg2})`,
-          fontSize: size * 0.35,
-        }}
-      >
-        {getInitials(name)}
-      </div>
+      {imageUrl && !imgError ? (
+        <img
+          src={imageUrl}
+          alt={name}
+          style={{ width: size, height: size, borderRadius: '50%', objectFit: 'cover' }}
+          onError={() => setImgError(true)}
+        />
+      ) : (
+        <div
+          className="wa-avatar"
+          style={{
+            width: size,
+            height: size,
+            background: `linear-gradient(135deg, ${bg1}, ${bg2})`,
+            fontSize: size * 0.35,
+          }}
+        >
+          {getInitials(name)}
+        </div>
+      )}
       {online && <span className="wa-online-dot" />}
     </div>
   );
@@ -424,7 +437,7 @@ useEffect(() => {
                 className={`wa-contact ${isActive ? "wa-contact--active" : ""}`}
                 onClick={() => startConversation(user)}
               >
-                <Avatar name={user.name} size={50} online={online} />
+                <Avatar name={user.name} size={50} online={online} profilePic={user.profile_pic} />
                 <div className="wa-contact-info">
                   <div className="wa-contact-top">
                     <span className="wa-contact-name">{user.name}</span>
@@ -458,7 +471,7 @@ useEffect(() => {
             >
               ‹
             </button>
-            <Avatar name={selectedUser.name} size={42} online={isOnline(selectedUser.last_seen)} />
+            <Avatar name={selectedUser.name} size={42} online={isOnline(selectedUser.last_seen)} profilePic={selectedUser.profile_pic} />
             <div className="wa-chat-header-info">
               <span className="wa-chat-name">{selectedUser.name}</span>
               <span className="wa-chat-status">
