@@ -18,9 +18,9 @@ const StoryViewer = ({ stories, initialStoryIndex, onClose, currentUserId }) => 
     if (!url) return null;
     if (url.startsWith('http')) return url;
     if (url.startsWith('/storage')) {
-      return `import.meta.env.VITE_API_URL${url}`;
+      return `${import.meta.env.VITE_API_URL}${url}`;
     }
-    return `import.meta.env.VITE_API_URL/storage/${url}`;
+    return `${import.meta.env.VITE_API_URL}/storage/${url}`;
   };
 
   // Marquer la story comme vue
@@ -223,6 +223,7 @@ const StoryViewer = ({ stories, initialStoryIndex, onClose, currentUserId }) => 
 };
 
 export default StoryViewer;
+
 
 
 

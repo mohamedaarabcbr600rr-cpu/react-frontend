@@ -118,9 +118,9 @@ const RightColumn = ({ user = null, openLogin, onProfileClick }) => {
   const getImageUrl = (profilePic) => {
     if (!profilePic) return null;
     if (profilePic.startsWith('http://') || profilePic.startsWith('https://')) return profilePic;
-    if (profilePic.startsWith('/storage')) return `import.meta.env.VITE_API_URL${profilePic}`;
-    if (profilePic.startsWith('storage/')) return `import.meta.env.VITE_API_URL/${profilePic}`;
-    return `import.meta.env.VITE_API_URL/storage/${profilePic}`;
+    if (profilePic.startsWith('/storage')) return `${import.meta.env.VITE_API_URL}${profilePic}`;
+    if (profilePic.startsWith('storage/')) return `${import.meta.env.VITE_API_URL}/${profilePic}`;
+    return `${import.meta.env.VITE_API_URL}/storage/${profilePic}`;
   };
 
   const getAvatarUrl = (name) => {
@@ -258,6 +258,7 @@ const RightColumn = ({ user = null, openLogin, onProfileClick }) => {
 };
 
 export default RightColumn;
+
 
 
 

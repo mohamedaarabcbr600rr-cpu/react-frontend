@@ -141,7 +141,7 @@ const EditProfileModal = ({ isOpen, onClose, user, onUpdate }) => {
               >
                 {previewImage ? (
                   <img
-                    src={previewImage.startsWith('data:') ? previewImage : `import.meta.env.VITE_API_URL${previewImage}`}
+                    src={previewImage.startsWith('data:') ? previewImage : `${import.meta.env.VITE_API_URL}${previewImage}`}
                     alt={t('editProfile.preview')}
                     className="avatar-upload-image"
                   />
@@ -284,6 +284,7 @@ const EditProfileModal = ({ isOpen, onClose, user, onUpdate }) => {
 };
 
 export default EditProfileModal;
+
 
 
 

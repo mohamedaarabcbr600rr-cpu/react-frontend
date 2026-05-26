@@ -24,8 +24,8 @@ const FollowersTab = ({ followers = [], onFollowToggle, currentUserId }) => {
   const getImageUrl = (profilePic) => {
     if (!profilePic) return null;
     if (profilePic.startsWith('http')) return profilePic;
-    if (profilePic.startsWith('/storage')) return `import.meta.env.VITE_API_URL${profilePic}`;
-    return `import.meta.env.VITE_API_URL/storage/${profilePic}`;
+    if (profilePic.startsWith('/storage')) return `${import.meta.env.VITE_API_URL}${profilePic}`;
+    return `${import.meta.env.VITE_API_URL}/storage/${profilePic}`;
   };
 
   const getInitials = (name) => {
@@ -163,6 +163,7 @@ const FollowersTab = ({ followers = [], onFollowToggle, currentUserId }) => {
 };
 
 export default FollowersTab;
+
 
 
 
