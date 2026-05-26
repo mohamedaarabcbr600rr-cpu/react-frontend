@@ -3,7 +3,7 @@ import axios from "axios";
 import "./Messagerie.css";
 
 const api = axios.create({
-  baseURL: "import.meta.env.VITE_API_URL/api",
+  baseURL: `${import.meta.env.VITE_API_URL}/api`,
   headers: { "Accept": "application/json" }
 });
 
@@ -150,7 +150,7 @@ const EmptyState = ({ hasUser, userName }) => (
 );
 
 // ─── Main Component ───────────────────────────────────────────────────────────
-const Messagerie = ({ authUserId, baseUrl = "import.meta.env.VITE_API_URL" }) => {
+const Messagerie = ({ authUserId, baseUrl = import.meta.env.VITE_API_URL }) => {
   const [connections, setConnections] = useState([]);
   const [conversationId, setConversationId] = useState(null);
   const [messages, setMessages] = useState([]);
