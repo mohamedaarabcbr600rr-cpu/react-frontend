@@ -101,7 +101,7 @@ const SummaryTab = () => {
 
     try {
       const res = await axios.post(
-        "import.meta.env.VITE_API_URL/api/generate-summary",
+        `${import.meta.env.VITE_API_URL}/api/generate-summary`,
         formData,
         {
           headers: {
