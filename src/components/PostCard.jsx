@@ -675,7 +675,7 @@ const PostCard = ({
                       <div key={friend.id} className="friend-item" onClick={() => handleSendToFriend(friend)}>
                         <div className="friend-avatar">
                           {friend.profile_pic
-                            ? <img src={`${import.meta.env.VITE_API_URL}${friend.profile_pic}`} alt={friend.name} className="friend-avatar-image" />
+                            ? <img src={friend.profile_pic?.startsWith('http') ? friend.profile_pic : `${import.meta.env.VITE_API_URL}${friend.profile_pic}`} alt={friend.name} className="friend-avatar-image" />
                             : getInitials(friend.name)}
                         </div>
                         <div className="friend-info">
