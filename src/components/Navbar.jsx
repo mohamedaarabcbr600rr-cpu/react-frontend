@@ -16,12 +16,13 @@ const Navbar = ({ user, searchTerm, onSearch, onLogout, getInitials }) => {
   };
 
   // ✅ IMAGE HANDLER
-  const getImageUrl = (profilePic) => {
+ const getImageUrl = (profilePic) => {
     if (!profilePic) return null;
     if (profilePic.startsWith('http')) return profilePic;
-    if (profilePic.startsWith('/storage')) return `import.meta.env.VITE_API_URL${profilePic}`;
-    return `import.meta.env.VITE_API_URL/storage/${profilePic}`;
-  };
+    const base = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
+    if (profilePic.startsWith('/storage')) return `${base}${profilePic}`;
+    return `${base}/storage/${profilePic}`;
+};
 
   // ✅ ROUTES MAP
   const getPathFromId = (id) => {
