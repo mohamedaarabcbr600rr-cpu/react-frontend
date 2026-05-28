@@ -222,6 +222,12 @@ useEffect(() => {
   fetchMutualConnections();
 }, [authUserId]);
 
+useEffect(() => {
+  if (!conversationId || !selectedUser) return;
+  // Quand on ouvre une conversation, reset le compteur
+  setUnreadPerUser(prev => ({ ...prev, [selectedUser.id]: 0 }));
+}, [conversationId, selectedUser]);
+
   // ── Poll messages ──────────────────────────────────────────────────────────
   useEffect(() => {
     if (!conversationId) return;
@@ -379,6 +385,23 @@ useEffect(() => {
     }
     return null;
   };
+  
+  useEffect(() => {
+  if (!authUserId) return;
+  const fetchUnread = async () => {
+    try {
+      const res = await api.get('/messages/conversations');
+      const unread = {};
+      res.data.forEach(conv => {
+        unread[conv.other_user_id] = conv.unread_count;
+      });
+      setUnreadPerUser(unread);
+    } catch {}
+  };
+  fetchUnread();
+  const interval = setInterval(fetchUnread, 5000);
+  return () => clearInterval(interval);
+}, [authUserId]);
 
   return (
     <div className="wa-root">
