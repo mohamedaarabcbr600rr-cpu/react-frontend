@@ -25,12 +25,12 @@
     "defaultTitle": "👨‍💻 Developer"
   },
 
-  "footer": {
+   "footer": {
     "about": "About",
     "accessibility": "Accessibility",
-    "conditions": "Conditions",
-    "privacy": "Privacy",
-    "copyright": "© 2026 LinkedIn Corporation"
+    "terms": "Terms of Service",
+    "privacy": "Privacy Policy",
+    "copyright": "© 2026 Studmo. All rights reserved."
   },
 
   "common": {
