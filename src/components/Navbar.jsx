@@ -71,12 +71,13 @@ const Navbar = ({ user, searchTerm, onSearch, onLogout, getInitials, unreadMessa
       
       {/* LEFT */}
       <div className="navbar__left">
-        <span
-          className="navbar__logo"
-          onClick={() => handleNavigation('accueil')}
-        >
-          in
-        </span>
+  <img
+    src="/src/assets/logoapp.png"
+    alt="Talib Logo"
+    className="navbar__logo"
+    onClick={() => handleNavigation('accueil')}
+    style={{ width: '40px', height: '40px', cursor: 'pointer', objectFit: 'contain' }}
+  />
 
         <div className="navbar__search">
           <i className="ti ti-search navbar__search-icon" />
