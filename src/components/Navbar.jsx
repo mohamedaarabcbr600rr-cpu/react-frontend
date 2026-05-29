@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './Navbar.css';
 import { useTranslation } from "react-i18next";
+import logoapp from '../assets/logoapp.png';
 
 const Navbar = ({ user, searchTerm, onSearch, onLogout, getInitials, unreadMessages = 0, unreadNotifications = 0 }) => {
   const navigate = useNavigate();
@@ -9,22 +10,19 @@ const Navbar = ({ user, searchTerm, onSearch, onLogout, getInitials, unreadMessa
 
   const { t, i18n } = useTranslation();
 
-  // ✅ CHANGE LANGUAGE (PRO VERSION)
   const changeLang = (lng) => {
     i18n.changeLanguage(lng);
     localStorage.setItem("lang", lng);
   };
 
-  // ✅ IMAGE HANDLER
- const getImageUrl = (profilePic) => {
+  const getImageUrl = (profilePic) => {
     if (!profilePic) return null;
     if (profilePic.startsWith('http')) return profilePic;
     const base = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
     if (profilePic.startsWith('/storage')) return `${base}${profilePic}`;
     return `${base}/storage/${profilePic}`;
-};
+  };
 
-  // ✅ ROUTES MAP
   const getPathFromId = (id) => {
     const pathMap = {
       accueil: '/',
@@ -38,7 +36,6 @@ const Navbar = ({ user, searchTerm, onSearch, onLogout, getInitials, unreadMessa
     return pathMap[id] || '/';
   };
 
-  // ✅ ACTIVE ITEM
   const isActive = (id) => {
     const pathMap = {
       accueil: '/',
@@ -52,7 +49,6 @@ const Navbar = ({ user, searchTerm, onSearch, onLogout, getInitials, unreadMessa
     return location.pathname === pathMap[id];
   };
 
-  // 🔥 IMPORTANT: MEMO pour re-render langue
   const navItems = useMemo(() => [
     { id: 'accueil', icon: 'ti-home', label: t('nav.home') },
     { id: 'reseau', icon: 'ti-users', label: t('nav.network') },
@@ -68,16 +64,16 @@ const Navbar = ({ user, searchTerm, onSearch, onLogout, getInitials, unreadMessa
 
   return (
     <div className="navbar">
-      
+
       {/* LEFT */}
       <div className="navbar__left">
-  <img
-    src="/src/assets/logoapp.png"
-    alt="Talib Logo"
-    className="navbar__logo"
-    onClick={() => handleNavigation('accueil')}
-    style={{ width: '40px', height: '40px', cursor: 'pointer', objectFit: 'contain' }}
-  />
+        <img
+          src={logoapp}
+          alt="Talib Logo"
+          className="navbar__logo"
+          onClick={() => handleNavigation('accueil')}
+          style={{ width: '40px', height: '40px', cursor: 'pointer', objectFit: 'contain' }}
+        />
 
         <div className="navbar__search">
           <i className="ti ti-search navbar__search-icon" />
@@ -121,34 +117,34 @@ const Navbar = ({ user, searchTerm, onSearch, onLogout, getInitials, unreadMessa
             </div>
 
             {/* NAV ITEMS */}
-           {navItems.map(item => (
-  <div
-    key={item.id}
-    className={`navbar__item ${isActive(item.id) ? 'active' : ''} ${item.id === 'focus-hub' ? 'focus-hub-highlight' : ''}`}
-    onClick={() => handleNavigation(item.id)}
-  >
-    <div style={{ position: 'relative' }}>
-      <i className={`ti ${item.icon} navbar__item-icon`} />
-      {item.id === 'messagerie' && unreadMessages > 0 && (
-        <span style={{
-          position: 'absolute', top: '-6px', right: '-6px',
-          background: 'red', color: 'white', borderRadius: '50%',
-          width: '16px', height: '16px', fontSize: '10px',
-          display: 'flex', alignItems: 'center', justifyContent: 'center'
-        }}>{unreadMessages}</span>
-      )}
-      {item.id === 'notifications' && unreadNotifications > 0 && (
-        <span style={{
-          position: 'absolute', top: '-6px', right: '-6px',
-          background: 'red', color: 'white', borderRadius: '50%',
-          width: '16px', height: '16px', fontSize: '10px',
-          display: 'flex', alignItems: 'center', justifyContent: 'center'
-        }}>{unreadNotifications}</span>
-      )}
-    </div>
-    <span className="navbar__item-label">{item.label}</span>
-  </div>
-))}
+            {navItems.map(item => (
+              <div
+                key={item.id}
+                className={`navbar__item ${isActive(item.id) ? 'active' : ''} ${item.id === 'focus-hub' ? 'focus-hub-highlight' : ''}`}
+                onClick={() => handleNavigation(item.id)}
+              >
+                <div style={{ position: 'relative' }}>
+                  <i className={`ti ${item.icon} navbar__item-icon`} />
+                  {item.id === 'messagerie' && unreadMessages > 0 && (
+                    <span style={{
+                      position: 'absolute', top: '-6px', right: '-6px',
+                      background: 'red', color: 'white', borderRadius: '50%',
+                      width: '16px', height: '16px', fontSize: '10px',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center'
+                    }}>{unreadMessages}</span>
+                  )}
+                  {item.id === 'notifications' && unreadNotifications > 0 && (
+                    <span style={{
+                      position: 'absolute', top: '-6px', right: '-6px',
+                      background: 'red', color: 'white', borderRadius: '50%',
+                      width: '16px', height: '16px', fontSize: '10px',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center'
+                    }}>{unreadNotifications}</span>
+                  )}
+                </div>
+                <span className="navbar__item-label">{item.label}</span>
+              </div>
+            ))}
 
           </div>
 
@@ -182,10 +178,3 @@ const Navbar = ({ user, searchTerm, onSearch, onLogout, getInitials, unreadMessa
 };
 
 export default Navbar;
-
-
-
-
-
-
-
