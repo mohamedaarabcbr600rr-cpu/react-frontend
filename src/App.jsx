@@ -51,9 +51,15 @@ useEffect(() => {
   if (!user) return;
   const fetchCounts = async () => {
     try {
-      const msgRes = await axios.get('/api/messages/unread-count');
-setUnreadMessages(msgRes.data.unread_count || 0);
-    } catch {}
+      const [msgRes, notifRes] = await Promise.all([
+        axios.get('/api/messages/unread-count'),
+        axios.get('/api/notifications/unread-count')
+      ]);
+      setUnreadMessages(msgRes.data.unread_count || 0);
+      setUnreadNotifications(notifRes.data.unread_count || 0);
+    } catch (err) {
+      console.error('fetchCounts error:', err);
+    }
   };
   fetchCounts();
   const interval = setInterval(fetchCounts, 30000);
