@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import './LeftProfileColumn.css';
-import logo from '../assets/logo.jpeg';
+import logo from '../assets/logo.png';
 
 const LeftProfileColumn = ({
   user = null,
