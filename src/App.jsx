@@ -1,22 +1,22 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import axios from "./axios";
 import Navbar from "./components/Navbar";
 import Accueil from "./pages/Accueil";
-import Profile from "./pages/Profile/Profile";
 import AuthModal from './components/Auth/AuthModal';
-import Messagerie from './pages/Messagerie';
-import Reseau from './pages/Reseau';
-
-import Notifications from './pages/Notifications';
-import AITutor from "./pages/AITutor/AITutor";
-import StudyHub from "./pages/StudyHub/StudyHub";
-
 import { useTranslation } from "react-i18next";
 import "./i18n";
-import Admin from "./admin-dashboard/admin";
-import AdminLogin from "./admin-dashboard/AdminLogin";
-import ProtectedRoute from "./admin-dashboard/ProtectedRoute";
+
+// ✅ Lazy loading - chargés seulement quand nécessaire
+const Profile = lazy(() => import('./pages/Profile/Profile'));
+const Messagerie = lazy(() => import('./pages/Messagerie'));
+const Reseau = lazy(() => import('./pages/Reseau'));
+const Notifications = lazy(() => import('./pages/Notifications'));
+const AITutor = lazy(() => import('./pages/AITutor/AITutor'));
+const StudyHub = lazy(() => import('./pages/StudyHub/StudyHub'));
+const Admin = lazy(() => import('./admin-dashboard/admin'));
+const AdminLogin = lazy(() => import('./admin-dashboard/AdminLogin'));
+const ProtectedRoute = lazy(() => import('./admin-dashboard/ProtectedRoute'));
  
   
 // ✅ Composant principal qui contient toute la logique
@@ -325,6 +325,7 @@ const [adminToken, setAdminToken] = useState(() =>
       />
 
       <div style={{ animation: "slideInRight 0.3s ease-out", background: "white" }}>
+        <Suspense fallback={<div style={{textAlign:'center', padding:'50px'}}>Chargement...</div>}>
         <Routes>
           {/* ACCUEIL */}
           <Route path="/" element={
@@ -450,6 +451,7 @@ const [adminToken, setAdminToken] = useState(() =>
             </ProtectedContent>
           } />
         </Routes>
+        </Suspense>
       </div>
 
       {showLoginModal && (
