@@ -324,8 +324,7 @@ const [adminToken, setAdminToken] = useState(() =>
 }}
       />
 
-      <div style={{ animation: "slideInRight 0.3s ease-out", background: "white" }}>
-        <Suspense fallback={<div style={{textAlign:'center', padding:'50px'}}>Chargement...</div>}>
+      <main style={{ animation: "slideInRight 0.3s ease-out", background: "white" }}>        <Suspense fallback={<div style={{textAlign:'center', padding:'50px'}}>Chargement...</div>}>
         <Routes>
           {/* ACCUEIL */}
           <Route path="/" element={
@@ -452,7 +451,7 @@ const [adminToken, setAdminToken] = useState(() =>
           } />
         </Routes>
         </Suspense>
-      </div>
+      </main>
 
       {showLoginModal && (
         <div style={styles.modalOverlay} onClick={() => setShowLoginModal(false)}>
