@@ -30,7 +30,7 @@ const AuthModal = ({ setUser, closeModal }) => {
   };
 
   // LOGIN
- const handleLogin = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
 
@@ -44,14 +44,11 @@ const AuthModal = ({ setUser, closeModal }) => {
 
       localStorage.setItem("token", res.data.token);
       setUser(res.data.user);
-      closeModal();
 
+      closeModal();
     } catch (error) {
-      if (error.response?.status === 403) {
-        alert("⚠️ Veuillez vérifier votre email avant de vous connecter. Vérifiez votre boîte mail !");
-      } else {
-        alert(t("auth.errors.loginError"));
-      }
+      console.error(error.response?.data || error.message);
+      alert(t("auth.errors.loginError"));
     } finally {
       setLoading(false);
     }
@@ -72,11 +69,15 @@ const AuthModal = ({ setUser, closeModal }) => {
         password_confirmation: registerPassword,
       });
 
-      // ✅ Afficher message de vérification
-      alert(`✅ Inscription réussie ! Un email de vérification a été envoyé à ${registerEmail}. Vérifie ta boîte mail avant de te connecter.`);
-      
+      const res = await axios.post("/api/login", {
+        email: registerEmail,
+        password: registerPassword,
+      });
+
+      localStorage.setItem("token", res.data.token);
+      setUser(res.data.user);
+
       closeModal();
-      
     } catch (error) {
       console.error(error.response?.data || error.message);
       alert(t("auth.errors.registerError"));
