@@ -229,11 +229,11 @@
   padding-top: var(--space-sm);
 }
 
-.right-column__footer-links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-md);
-  margin-bottom: var(--space-md);
+.right-column__footer-link {
+  color: #666666;
+  font-size: var(--font-size-xs);
+  cursor: pointer;
+  transition: var(--transition-fast);
 }
 
 .right-column__footer-link {
@@ -249,7 +249,7 @@
 }
 
 .right-column__footer-copyright {
-  color: var(--color-text-muted);
+  color: #666666;
   font-size: var(--font-size-xs);
 }
 
