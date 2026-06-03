@@ -151,8 +151,8 @@ const Notifications = ({ user, onNavigateToExperience }) => {
     </div>
   );
 
-  return (
-    <div className="notifications-container">
+ return (
+    <div className="notifications-container" style={{ minHeight: '500px' }}>
       <div className="notifications-header">
         <h2>
           {t('notifications.title')}
