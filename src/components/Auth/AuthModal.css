@@ -129,8 +129,8 @@
   width: 100%;
   max-width: 420px;
   height: 460px;
-
   perspective: 1600px;
+  contain: layout;  /* ✅ fix CLS */
 }
 
 .card-3d-wrapper {
