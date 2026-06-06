@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import {
   MessageCircle,
   FileText,
@@ -26,15 +27,16 @@ const AITutor = () => {
   const [activeTab, setActiveTab] = useState("chat");
   const [darkMode, setDarkMode] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const { t } = useTranslation();
 
   const menu = [
-    { id: "chat", icon: <MessageCircle size={20} />, label: "Chat" },
-    { id: "qcm", icon: <FileText size={20} />, label: "QCM" },
-    { id: "summary", icon: <LayoutDashboard size={20} />, label: "Summary" },
-    { id: "dashboard", icon: <BarChart3 size={20} />, label: "Dashboard" },
-    { id: "history", icon: <History size={20} />, label: "History" },
-    { id: "score", icon: <BarChart3 size={20} />, label: "Score" },
-    { id: "coach", icon: <Brain size={20} />, label: "Coach" }
+    { id: "chat", icon: <MessageCircle size={20} />, label: t("tutor.menu.chat") },
+    { id: "qcm", icon: <FileText size={20} />, label: t("tutor.menu.qcm") },
+    { id: "summary", icon: <LayoutDashboard size={20} />, label: t("tutor.menu.summary") },
+    { id: "dashboard", icon: <BarChart3 size={20} />, label: t("tutor.menu.dashboard") },
+    { id: "history", icon: <History size={20} />, label: t("tutor.menu.history") },
+    { id: "score", icon: <BarChart3 size={20} />, label: t("tutor.menu.score") },
+    { id: "coach", icon: <Brain size={20} />, label: t("tutor.menu.coach") }
   ];
 
   useEffect(() => {
@@ -54,11 +56,11 @@ const AITutor = () => {
 
       {/* ================= TOPBAR MOBILE ================= */}
       <div className="topbar">
-        <button className="menu-btn" onClick={() => setDrawerOpen(true)}>
+        <button className="menu-btn" onClick={() => setDrawerOpen(true)} aria-label={t("tutor.openMenu")}>
           ☰
         </button>
-        <h3>🤖 AI Tutor</h3>
-        <button className="theme-btn" onClick={() => setDarkMode(!darkMode)}>
+        <h3>{t("tutor.title")}</h3>
+        <button className="theme-btn" onClick={() => setDarkMode(!darkMode)} aria-label={t("tutor.toggleTheme")}>
           {darkMode ? <Sun size={18} /> : <Moon size={18} />}
         </button>
       </div>
@@ -66,20 +68,23 @@ const AITutor = () => {
       {/* ================= SIDEBAR DESKTOP ================= */}
       <div className="sidebar-desktop">
         <div style={{ marginBottom: 24, padding: "0 12px" }}>
-          <h3>🤖 AI Tutor</h3>
+          <h3>{t("tutor.title")}</h3>
         </div>
         {menu.map((item) => (
           <div
             key={item.id}
             className={`menu-item ${activeTab === item.id ? "active" : ""}`}
             onClick={() => setActiveTab(item.id)}
+            role="button"
+            tabIndex={0}
+            aria-label={item.label}
           >
             {item.icon}
             <span>{item.label}</span>
           </div>
         ))}
-        <div className="toggle" onClick={() => setDarkMode(!darkMode)}>
-          {darkMode ? "☀️ Light Mode" : "🌙 Dark Mode"}
+        <div className="toggle" onClick={() => setDarkMode(!darkMode)} role="button" tabIndex={0}>
+          {darkMode ? t("tutor.lightMode") : t("tutor.darkMode")}
         </div>
       </div>
 
@@ -113,7 +118,7 @@ const AITutor = () => {
             }}
           >
             <div style={{ marginBottom: 24, padding: "0 12px" }}>
-              <h3>🤖 AI Tutor</h3>
+              <h3>{t("tutor.title")}</h3>
             </div>
             {menu.map((item) => (
               <motion.div
@@ -121,13 +126,16 @@ const AITutor = () => {
                 className={`drawer-item ${activeTab === item.id ? "active" : ""}`}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => handleSelect(item.id)}
+                role="button"
+                tabIndex={0}
+                aria-label={item.label}
               >
                 {item.icon}
                 <span>{item.label}</span>
               </motion.div>
             ))}
-            <div className="toggle" onClick={() => setDarkMode(!darkMode)}>
-              {darkMode ? "☀️ Light Mode" : "🌙 Dark Mode"}
+            <div className="toggle" onClick={() => setDarkMode(!darkMode)} role="button" tabIndex={0}>
+              {darkMode ? t("tutor.lightMode") : t("tutor.darkMode")}
             </div>
           </motion.div>
         )}
@@ -156,6 +164,8 @@ const AITutor = () => {
         whileTap={{ scale: 0.9 }}
         whileHover={{ scale: 1.05 }}
         onClick={() => setActiveTab("chat")}
+        aria-label={t("tutor.goToChat")}
+        title={t("tutor.goToChat")}
       >
         🤖
       </motion.button>
@@ -168,6 +178,9 @@ const AITutor = () => {
             className={`nav-item ${activeTab === item.id ? "active" : ""}`}
             whileTap={{ scale: 0.85 }}
             onClick={() => setActiveTab(item.id)}
+            role="button"
+            tabIndex={0}
+            aria-label={item.label}
           >
             {item.icon}
             <span style={{ fontSize: 10 }}>{item.label}</span>
@@ -180,10 +193,3 @@ const AITutor = () => {
 };
 
 export default AITutor;
-
-
-
-
-
-
-
