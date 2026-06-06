@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import axios from "axios";
 import "./Messagerie.css";
 
@@ -29,14 +30,14 @@ const getInitials = (name = "") =>
 const formatTime = (dateStr) =>
   new Date(dateStr).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 
-const formatDate = (dateStr) => {
+const formatDate = (dateStr, t) => {
   const d = new Date(dateStr);
   const today = new Date();
   const yesterday = new Date(today);
   yesterday.setDate(today.getDate() - 1);
 
-  if (d.toDateString() === today.toDateString()) return "Today";
-  if (d.toDateString() === yesterday.toDateString()) return "Yesterday";
+  if (d.toDateString() === today.toDateString()) return t("messagerie.dates.today");
+  if (d.toDateString() === yesterday.toDateString()) return t("messagerie.dates.yesterday");
   return d.toLocaleDateString([], { day: "numeric", month: "short", year: "numeric" });
 };
 
@@ -90,7 +91,7 @@ const Avatar = ({ name, size = 48, online = false, profilePic = null }) => {
 };
 
 // ─── MessageBubble ────────────────────────────────────────────────────────────
-const MessageBubble = ({ msg, authUserId, baseUrl }) => {
+const MessageBubble = ({ msg, authUserId, baseUrl, t }) => {
   const isOwn = msg.user_id === authUserId;
 
   return (
@@ -101,7 +102,7 @@ const MessageBubble = ({ msg, authUserId, baseUrl }) => {
           <img
             className="wa-bubble-img"
             src={`${baseUrl}/storage/${msg.file_path}`}
-            alt="attachment"
+            alt={t("messagerie.attachment")}
             onClick={() => window.open(`${baseUrl}/storage/${msg.file_path}`, "_blank")}
           />
         )}
@@ -142,21 +143,19 @@ const TypingIndicator = () => (
 );
 
 // ─── EmptyState ───────────────────────────────────────────────────────────────
-const EmptyState = ({ hasUser, userName }) => (
+const EmptyState = ({ hasUser, userName, t }) => (
   <div className="wa-empty">
     {hasUser ? (
       <>
         <div className="wa-empty-icon">👋</div>
-        <p className="wa-empty-title">Start a conversation with {userName}</p>
-        <p className="wa-empty-sub">Send a message and start chatting securely.</p>
+        <p className="wa-empty-title">{t("messagerie.empty.withUser", { name: userName })}</p>
+        <p className="wa-empty-sub">{t("messagerie.empty.withUserSub")}</p>
       </>
     ) : (
       <>
         <div className="wa-empty-icon">💬</div>
-        <p className="wa-empty-title">Your Messages</p>
-        <p className="wa-empty-sub">
-          Select a contact from the list to start a conversation.
-        </p>
+        <p className="wa-empty-title">{t("messagerie.empty.noUser")}</p>
+        <p className="wa-empty-sub">{t("messagerie.empty.noUserSub")}</p>
       </>
     )}
   </div>
@@ -183,6 +182,7 @@ const Messagerie = ({ authUserId, baseUrl = import.meta.env.VITE_API_URL }) => {
   const typingTimeoutRef = useRef(null);
   const pollingRef = useRef(null);
   const typingPollRef = useRef(null);
+  const { t } = useTranslation();
 
   // Quick emoji list
   const emojis = ["😊","😂","❤️","👍","🙏","😍","🤔","😢","🎉","🔥","✅","💯","😎","🤗","😅","👏","💪","🥰","😏","🤣","😭","🤩","💀","😡","🤦","🙄","👀","💬","🎊","✨"];
@@ -199,34 +199,33 @@ const Messagerie = ({ authUserId, baseUrl = import.meta.env.VITE_API_URL }) => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, otherUserTyping]);
 
-  // ── Load connections ────────────────────────────────────────────────────────
   // ── Load mutual connections (amis uniquement) ────────────────────────────────
-useEffect(() => {
-  const fetchMutualConnections = async () => {
-    if (!authUserId) return;
-    try {
-      setLoading(true);
-      const followingRes = await api.get(`/users/${authUserId}/following`);
-      const followersRes = await api.get(`/users/${authUserId}/followers`);
-      const mutualConnections = followingRes.data.filter(following => 
-        followersRes.data.some(follower => follower.id === following.id)
-      );
-      setConnections(mutualConnections);
-    } catch (err) {
-      console.error("Error fetching mutual connections:", err);
-      setConnections([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-  fetchMutualConnections();
-}, [authUserId]);
+  useEffect(() => {
+    const fetchMutualConnections = async () => {
+      if (!authUserId) return;
+      try {
+        setLoading(true);
+        const followingRes = await api.get(`/users/${authUserId}/following`);
+        const followersRes = await api.get(`/users/${authUserId}/followers`);
+        const mutualConnections = followingRes.data.filter(following => 
+          followersRes.data.some(follower => follower.id === following.id)
+        );
+        setConnections(mutualConnections);
+      } catch (err) {
+        console.error(t("messagerie.errors.fetchConnections"), err);
+        setConnections([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchMutualConnections();
+  }, [authUserId]);
 
-useEffect(() => {
-  if (!conversationId || !selectedUser) return;
-  // Quand on ouvre une conversation, reset le compteur
-  setUnreadPerUser(prev => ({ ...prev, [selectedUser.id]: 0 }));
-}, [conversationId, selectedUser]);
+  useEffect(() => {
+    if (!conversationId || !selectedUser) return;
+    // Quand on ouvre une conversation, reset le compteur
+    setUnreadPerUser(prev => ({ ...prev, [selectedUser.id]: 0 }));
+  }, [conversationId, selectedUser]);
 
   // ── Poll messages ──────────────────────────────────────────────────────────
   useEffect(() => {
@@ -243,8 +242,8 @@ useEffect(() => {
                 !document.hasFocus() &&
                 Notification.permission === "granted"
               ) {
-                new Notification(newest.user?.name || "New message", {
-                  body: newest.content || "Sent you a message",
+                new Notification(newest.user?.name || t("messagerie.notifications.newMessage"), {
+                  body: newest.content || t("messagerie.notifications.sentMessage"),
                   icon: "/favicon.ico",
                 });
               }
@@ -293,7 +292,7 @@ useEffect(() => {
       setSidebarOpen(false);
       setTimeout(() => inputRef.current?.focus(), 100);
     } catch (err) {
-      console.error(err);
+      console.error(t("messagerie.errors.startConversation"), err);
     } finally {
       setLoading(false);
     }
@@ -332,7 +331,7 @@ useEffect(() => {
       setMessages(prev => prev.map(m => m.id === optimistic.id ? res.data : m));
     } catch (err) {
       setMessages(prev => prev.filter(m => m.id !== optimistic.id));
-      console.error(err);
+      console.error(t("messagerie.errors.sendMessage"), err);
     }
   };
 
@@ -364,7 +363,7 @@ useEffect(() => {
 
   // ── Group messages by date ─────────────────────────────────────────────────
   const groupedMessages = messages.reduce((acc, msg) => {
-    const date = formatDate(msg.created_at);
+    const date = formatDate(msg.created_at, t);
     if (!acc[date]) acc[date] = [];
     acc[date].push(msg);
     return acc;
@@ -380,28 +379,28 @@ useEffect(() => {
   const getPreview = (userId) => {
     if (selectedUser?.id === userId && messages.length > 0) {
       const last = messages[messages.length - 1];
-      if (last.user_id === authUserId) return `You: ${last.content || "📎"}`;
-      return last.content || "📎 Attachment";
+      if (last.user_id === authUserId) return `${t("messagerie.you")}: ${last.content || "📎"}`;
+      return last.content || t("messagerie.attachment");
     }
     return null;
   };
   
   useEffect(() => {
-  if (!authUserId) return;
-  const fetchUnread = async () => {
-    try {
-      const res = await api.get('/messages/conversations');
-      const unread = {};
-      res.data.forEach(conv => {
-        unread[conv.other_user_id] = conv.unread_count;
-      });
-      setUnreadPerUser(unread);
-    } catch {}
-  };
-  fetchUnread();
-  const interval = setInterval(fetchUnread, 5000);
-  return () => clearInterval(interval);
-}, [authUserId]);
+    if (!authUserId) return;
+    const fetchUnread = async () => {
+      try {
+        const res = await api.get('/messages/conversations');
+        const unread = {};
+        res.data.forEach(conv => {
+          unread[conv.other_user_id] = conv.unread_count;
+        });
+        setUnreadPerUser(unread);
+      } catch {}
+    };
+    fetchUnread();
+    const interval = setInterval(fetchUnread, 5000);
+    return () => clearInterval(interval);
+  }, [authUserId]);
 
   return (
     <div className="wa-root">
@@ -410,7 +409,7 @@ useEffect(() => {
         {/* Header */}
         <div className="wa-sidebar-header">
           <Avatar name="Me" size={38} />
-          <h1 className="wa-sidebar-title">Messages</h1>
+          <h1 className="wa-sidebar-title">{t("messagerie.title")}</h1>
         </div>
 
         {/* Search */}
@@ -423,7 +422,7 @@ useEffect(() => {
             </span>
             <input
               type="text"
-              placeholder="Search or start new chat"
+              placeholder={t("messagerie.searchPlaceholder")}
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
               className="wa-search-input"
@@ -435,23 +434,22 @@ useEffect(() => {
         <div className="wa-contacts">
           {filtered.length === 0 && (
             <div className="wa-no-contacts">
-              <span>No contacts found</span>
-              <small>Start by adding friends</small>
+              <span>{t("messagerie.noContacts")}</span>
+              <small>{t("messagerie.noContactsHint")}</small>
             </div>
           )}
           {filtered.map(user => {
-            
             const online = isOnline(user.last_seen);
             const preview = getPreview(user.id);
             const isActive = selectedUser?.id === user.id;
             return (
               <div
-  key={user.id}
-  className={`wa-contact ${isActive ? "wa-contact--active" : ""}`}
-  onClick={() => startConversation(user)}
->
-  <Avatar name={user.name} size={50} online={online} profilePic={user.profile_pic} />
-  <div className="wa-contact-info">
+                key={user.id}
+                className={`wa-contact ${isActive ? "wa-contact--active" : ""}`}
+                onClick={() => startConversation(user)}
+              >
+                <Avatar name={user.name} size={50} online={online} profilePic={user.profile_pic} />
+                <div className="wa-contact-info">
                   <div className="wa-contact-top">
                     <span className="wa-contact-name">{user.name}</span>
                     {preview && (
@@ -463,20 +461,20 @@ useEffect(() => {
                     )}
                   </div>
                   <div style={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
-  <span className="wa-contact-preview">
-    {preview || (online ? "Online" : "Tap to chat")}
-  </span>
-  {unreadPerUser[user.id] > 0 && (
-    <span style={{
-      background: '#25D366', color: 'white', borderRadius: '50%',
-      minWidth: '20px', height: '20px', fontSize: '11px',
-      display: 'flex', alignItems: 'center', justifyContent: 'center',
-      padding: '0 4px'
-    }}>
-      {unreadPerUser[user.id]}
-    </span>
-  )}
-</div>
+                    <span className="wa-contact-preview">
+                      {preview || (online ? t("messagerie.status.online") : t("messagerie.status.tapToChat"))}
+                    </span>
+                    {unreadPerUser[user.id] > 0 && (
+                      <span style={{
+                        background: '#25D366', color: 'white', borderRadius: '50%',
+                        minWidth: '20px', height: '20px', fontSize: '11px',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        padding: '0 4px'
+                      }}>
+                        {unreadPerUser[user.id]}
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
             );
@@ -492,7 +490,7 @@ useEffect(() => {
             <button
               className="wa-back-btn"
               onClick={() => setSidebarOpen(true)}
-              aria-label="Back to contacts"
+              aria-label={t("messagerie.backToContacts")}
             >
               ‹
             </button>
@@ -501,10 +499,10 @@ useEffect(() => {
               <span className="wa-chat-name">{selectedUser.name}</span>
               <span className="wa-chat-status">
                 {otherUserTyping
-                  ? "typing..."
+                  ? t("messagerie.status.typing")
                   : isOnline(selectedUser.last_seen)
-                  ? "online"
-                  : "last seen recently"}
+                  ? t("messagerie.status.online")
+                  : t("messagerie.status.lastSeenRecently")}
               </span>
             </div>
           </div>
@@ -513,20 +511,20 @@ useEffect(() => {
             <button
               className="wa-back-btn wa-back-btn--mobile"
               onClick={() => setSidebarOpen(true)}
-              aria-label="Back"
+              aria-label={t("messagerie.back")}
             >
               ‹
             </button>
-            <span className="wa-chat-name">Select a chat</span>
+            <span className="wa-chat-name">{t("messagerie.selectChat")}</span>
           </div>
         )}
 
         {/* Messages */}
         <div className="wa-messages">
           {!selectedUser ? (
-            <EmptyState hasUser={false} />
+            <EmptyState hasUser={false} t={t} />
           ) : messages.length === 0 ? (
-            <EmptyState hasUser={true} userName={selectedUser.name} />
+            <EmptyState hasUser={true} userName={selectedUser.name} t={t} />
           ) : (
             Object.entries(groupedMessages).map(([date, msgs]) => (
               <div key={date}>
@@ -537,6 +535,7 @@ useEffect(() => {
                     msg={msg}
                     authUserId={authUserId}
                     baseUrl={baseUrl}
+                    t={t}
                   />
                 ))}
               </div>
@@ -554,14 +553,14 @@ useEffect(() => {
             {file && (
               <div className="wa-file-preview">
                 {filePreview ? (
-                  <img src={filePreview} alt="preview" className="wa-file-preview-img" />
+                  <img src={filePreview} alt={t("messagerie.preview")} className="wa-file-preview-img" />
                 ) : (
                   <span className="wa-file-preview-name">📎 {file.name}</span>
                 )}
                 <button
                   className="wa-remove-file"
                   onClick={() => { setFile(null); setFilePreview(null); }}
-                  aria-label="Remove file"
+                  aria-label={t("messagerie.removeFile")}
                 >
                   ✕
                 </button>
@@ -588,13 +587,13 @@ useEffect(() => {
               <button
                 className="wa-input-icon"
                 onClick={() => setShowEmoji(!showEmoji)}
-                aria-label="Emoji"
+                aria-label={t("messagerie.emoji")}
               >
                 {showEmoji ? "😁" : "😊"}
               </button>
 
               {/* File attachment */}
-              <label className="wa-input-icon" title="Attach image">
+              <label className="wa-input-icon" title={t("messagerie.attachImage")}>
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/>
                 </svg>
@@ -612,7 +611,7 @@ useEffect(() => {
                 ref={inputRef}
                 type="text"
                 className="wa-text-input"
-                placeholder="Type a message"
+                placeholder={t("messagerie.typeMessage")}
                 value={content}
                 onChange={handleTyping}
                 onKeyDown={e => {
@@ -628,7 +627,7 @@ useEffect(() => {
                 className="wa-send-btn"
                 onClick={handleSend}
                 disabled={!content.trim() && !file}
-                aria-label="Send message"
+                aria-label={t("messagerie.sendMessage")}
               >
                 <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22">
                   <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
@@ -643,10 +642,3 @@ useEffect(() => {
 };
 
 export default Messagerie;
-
-
-
-
-
-
-

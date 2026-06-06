@@ -766,7 +766,52 @@
       "score": "Score",
       "coach": "Coach"
     }
+  },
+
+  
+  "messagerie": {
+    "title": "Messages",
+    "you": "You",
+    "attachment": "📎 Attachment",
+    "preview": "Preview",
+    "searchPlaceholder": "Search or start new chat",
+    "typeMessage": "Type a message",
+    "sendMessage": "Send message",
+    "emoji": "Emoji",
+    "attachImage": "Attach image",
+    "removeFile": "Remove file",
+    "backToContacts": "Back to contacts",
+    "back": "Back",
+    "selectChat": "Select a chat",
+    "noContacts": "No contacts found",
+    "noContactsHint": "Start by adding friends",
+    "dates": {
+      "today": "Today",
+      "yesterday": "Yesterday"
+    },
+    "status": {
+      "online": "online",
+      "typing": "typing...",
+      "lastSeenRecently": "last seen recently",
+      "tapToChat": "Tap to chat"
+    },
+    "empty": {
+      "noUser": "Your Messages",
+      "noUserSub": "Select a contact from the list to start a conversation.",
+      "withUser": "Start a conversation with {{name}}",
+      "withUserSub": "Send a message and start chatting securely."
+    },
+    "notifications": {
+      "newMessage": "New message",
+      "sentMessage": "Sent you a message"
+    },
+    "errors": {
+      "fetchConnections": "Error fetching connections",
+      "startConversation": "Error starting conversation",
+      "sendMessage": "Error sending message"
+    }
   }
+
 
 
 

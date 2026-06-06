@@ -766,7 +766,52 @@
       "score": "النتيجة",
       "coach": "مدرب"
     }
+  },
+
+  
+  "messagerie": {
+    "title": "الرسائل",
+    "you": "أنت",
+    "attachment": "📎 مرفق",
+    "preview": "معاينة",
+    "searchPlaceholder": "بحث أو بدء محادثة جديدة",
+    "typeMessage": "اكتب رسالة",
+    "sendMessage": "إرسال الرسالة",
+    "emoji": "إيموجي",
+    "attachImage": "إرفاق صورة",
+    "removeFile": "إزالة الملف",
+    "backToContacts": "العودة إلى جهات الاتصال",
+    "back": "رجوع",
+    "selectChat": "اختر محادثة",
+    "noContacts": "لا توجد جهات اتصال",
+    "noContactsHint": "ابدأ بإضافة أصدقاء",
+    "dates": {
+      "today": "اليوم",
+      "yesterday": "أمس"
+    },
+    "status": {
+      "online": "متصل",
+      "typing": "يكتب...",
+      "lastSeenRecently": "آخر ظهور مؤخراً",
+      "tapToChat": "اضغط للدردشة"
+    },
+    "empty": {
+      "noUser": "رسائلك",
+      "noUserSub": "اختر جهة اتصال من القائمة لبدء محادثة.",
+      "withUser": "ابدأ محادثة مع {{name}}",
+      "withUserSub": "أرسل رسالة وابدأ الدردشة بأمان."
+    },
+    "notifications": {
+      "newMessage": "رسالة جديدة",
+      "sentMessage": "أرسل لك رسالة"
+    },
+    "errors": {
+      "fetchConnections": "خطأ في جلب جهات الاتصال",
+      "startConversation": "خطأ في بدء المحادثة",
+      "sendMessage": "خطأ في إرسال الرسالة"
+    }
   }
+
 
 
 

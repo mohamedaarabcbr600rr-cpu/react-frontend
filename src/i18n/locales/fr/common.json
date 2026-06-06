@@ -762,7 +762,52 @@
       "score": "Score",
       "coach": "Coach"
     }
+  },
+
+  
+  "messagerie": {
+    "title": "Messages",
+    "you": "Vous",
+    "attachment": "📎 Pièce jointe",
+    "preview": "Aperçu",
+    "searchPlaceholder": "Rechercher ou démarrer une discussion",
+    "typeMessage": "Écrivez un message",
+    "sendMessage": "Envoyer le message",
+    "emoji": "Emoji",
+    "attachImage": "Joindre une image",
+    "removeFile": "Supprimer le fichier",
+    "backToContacts": "Retour aux contacts",
+    "back": "Retour",
+    "selectChat": "Sélectionnez une discussion",
+    "noContacts": "Aucun contact trouvé",
+    "noContactsHint": "Commencez par ajouter des amis",
+    "dates": {
+      "today": "Aujourd'hui",
+      "yesterday": "Hier"
+    },
+    "status": {
+      "online": "En ligne",
+      "typing": "écrit...",
+      "lastSeenRecently": "vu récemment",
+      "tapToChat": "Appuyez pour discuter"
+    },
+    "empty": {
+      "noUser": "Vos messages",
+      "noUserSub": "Sélectionnez un contact dans la liste pour démarrer une conversation.",
+      "withUser": "Démarrez une conversation avec {{name}}",
+      "withUserSub": "Envoyez un message et commencez à discuter en toute sécurité."
+    },
+    "notifications": {
+      "newMessage": "Nouveau message",
+      "sentMessage": "Vous a envoyé un message"
+    },
+    "errors": {
+      "fetchConnections": "Erreur lors de la récupération des connexions",
+      "startConversation": "Erreur lors du démarrage de la conversation",
+      "sendMessage": "Erreur lors de l'envoi du message"
+    }
   }
+
 
 
 
