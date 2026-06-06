@@ -195,6 +195,11 @@
 
   
   "notifications": {
+    "messages": {
+      "like": "liked your post",
+      "comment": "commented on your post",
+      "follow": "started following you"
+    },
     "title": "Notifications",
     "loading": "Loading notifications...",
     "empty": "📭 No notifications yet",

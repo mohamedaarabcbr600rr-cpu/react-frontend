@@ -194,6 +194,11 @@
 
   
   "notifications": {
+     "messages": {
+    "like": "a aimé votre publication",
+    "comment": "a commenté votre publication",
+    "follow": "a commencé à vous suivre"
+  },
     "title": "Notifications",
     "loading": "Chargement des notifications...",
     "empty": "📭 Aucune notification pour le moment",

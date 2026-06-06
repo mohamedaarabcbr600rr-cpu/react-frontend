@@ -189,10 +189,12 @@ const Notifications = ({ user, onNavigateToExperience }) => {
                   )}
                 </div>
                 <div className="notification-content">
-                  <div className="notification-message">
-                    <span className="notification-icon">{getNotificationIcon(data.type)}</span>
-                    <strong>{data.actor_name || t('notifications.defaultUser')}</strong>{' '}{data.message}
-                  </div>
+                 <div className="notification-message">
+  <span className="notification-icon">{getNotificationIcon(data.type)}</span>
+  <strong>{data.actor_name || t('notifications.defaultUser')}</strong>
+  {' '}
+  {t(`notifications.messages.${data.type}`, { defaultValue: data.message })}
+</div>
                   <div className="notification-time">
                     {new Date(created_at).toLocaleString(t('notifications.locale'), {
                       day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit'
