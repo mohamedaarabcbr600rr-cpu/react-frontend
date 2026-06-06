@@ -742,7 +742,27 @@
       "saveScoreError": "Error saving score",
       "saveErrorDisplay": "Error saving score, but your result is displayed."
     }
+  },
+
+  
+  "tutor": {
+    "title": "🤖 AI Tutor",
+    "openMenu": "Open menu",
+    "toggleTheme": "Toggle theme",
+    "goToChat": "Go to chat",
+    "lightMode": "☀️ Light Mode",
+    "darkMode": "🌙 Dark Mode",
+    "menu": {
+      "chat": "Chat",
+      "qcm": "QCM",
+      "summary": "Summary",
+      "dashboard": "Dashboard",
+      "history": "History",
+      "score": "Score",
+      "coach": "Coach"
+    }
   }
+
 
 
 

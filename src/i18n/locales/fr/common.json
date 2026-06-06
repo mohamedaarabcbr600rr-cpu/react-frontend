@@ -738,6 +738,25 @@
       "saveScoreError": "Erreur lors de la sauvegarde du score",
       "saveErrorDisplay": "Erreur lors de la sauvegarde du score, mais votre résultat est affiché."
     }
+  },
+
+  
+  "tutor": {
+    "title": "🤖 AI Tutor",
+    "openMenu": "Ouvrir le menu",
+    "toggleTheme": "Changer le thème",
+    "goToChat": "Aller au chat",
+    "lightMode": "☀️ Mode Clair",
+    "darkMode": "🌙 Mode Sombre",
+    "menu": {
+      "chat": "Chat",
+      "qcm": "QCM",
+      "summary": "Résumé",
+      "dashboard": "Tableau de bord",
+      "history": "Historique",
+      "score": "Score",
+      "coach": "Coach"
+    }
   }
 
 
@@ -750,14 +769,6 @@
 
 
 
+
 }
-
-
-
-
-  
-
-  
-
-
 
