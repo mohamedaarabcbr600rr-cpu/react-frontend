@@ -3,18 +3,18 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import './Navbar.css';
 import { useTranslation } from "react-i18next";
 import logoapp from '../assets/logoapp.jpeg';
- 
+
 const Navbar = ({ user, searchTerm, onSearch, onLogout, getInitials, unreadMessages = 0, unreadNotifications = 0 }) => {
   const navigate = useNavigate();
   const location = useLocation();
- 
+
   const { t, i18n } = useTranslation();
- 
+
   const changeLang = (lng) => {
     i18n.changeLanguage(lng);
     localStorage.setItem("lang", lng);
   };
- 
+
   const getImageUrl = (profilePic) => {
     if (!profilePic) return null;
     if (profilePic.startsWith('http')) return profilePic;
@@ -22,7 +22,7 @@ const Navbar = ({ user, searchTerm, onSearch, onLogout, getInitials, unreadMessa
     if (profilePic.startsWith('/storage')) return `${base}${profilePic}`;
     return `${base}/storage/${profilePic}`;
   };
- 
+
   const getPathFromId = (id) => {
     const pathMap = {
       accueil: '/',
@@ -35,7 +35,7 @@ const Navbar = ({ user, searchTerm, onSearch, onLogout, getInitials, unreadMessa
     };
     return pathMap[id] || '/';
   };
- 
+
   const isActive = (id) => {
     const pathMap = {
       accueil: '/',
@@ -48,7 +48,7 @@ const Navbar = ({ user, searchTerm, onSearch, onLogout, getInitials, unreadMessa
     };
     return location.pathname === pathMap[id];
   };
- 
+
   const navItems = useMemo(() => [
     { id: 'accueil',       icon: 'ti-home',      label: t('nav.home') },
     { id: 'reseau',        icon: 'ti-users',     label: t('nav.network') },
@@ -57,26 +57,25 @@ const Navbar = ({ user, searchTerm, onSearch, onLogout, getInitials, unreadMessa
     { id: 'notifications', icon: 'ti-bell',      label: t('nav.notifications') },
     { id: 'ai',            icon: 'ti-robot',     label: t('nav.ai') },
   ], [i18n.language]);
- 
-  // Les 5 items affichés dans la bottom bar mobile (on exclut AI pour garder propre)
-  // Tu peux changer l'ordre ou les items ici
+
+  // Bottom bar mobile : Messagerie remplacé par Assistant IA
   const mobileNavItems = [
     { id: 'accueil',       icon: 'ti-home',      label: t('nav.home') },
     { id: 'reseau',        icon: 'ti-users',     label: t('nav.network') },
     { id: 'focus-hub',     icon: 'ti-dashboard', label: t('nav.focus') },
-    { id: 'messagerie',    icon: 'ti-message',   label: t('nav.messages') },
+    { id: 'ai',            icon: 'ti-robot',     label: t('nav.ai') },
     { id: 'notifications', icon: 'ti-bell',      label: t('nav.notifications') },
   ];
- 
+
   const handleNavigation = (id) => {
     navigate(getPathFromId(id));
   };
- 
+
   return (
     <>
       {/* ── TOP NAVBAR (desktop + mobile header) ── */}
       <div className="navbar">
- 
+
         {/* LEFT : logo + search */}
         <div className="navbar__left">
           <img
@@ -97,12 +96,12 @@ const Navbar = ({ user, searchTerm, onSearch, onLogout, getInitials, unreadMessa
             />
           </div>
         </div>
- 
+
         {/* RIGHT : visible seulement sur desktop (caché sur mobile via CSS) */}
         {user && (
           <div className="navbar__right">
             <div className="navbar__items">
- 
+
               {/* Profile */}
               <div
                 className={`navbar__item ${isActive('profile') ? 'active' : ''}`}
@@ -125,7 +124,7 @@ const Navbar = ({ user, searchTerm, onSearch, onLogout, getInitials, unreadMessa
                 </div>
                 <span className="navbar__item-label">{t('nav.profile')}</span>
               </div>
- 
+
               {/* Nav items */}
               {navItems.map(item => (
                 <div
@@ -156,7 +155,7 @@ const Navbar = ({ user, searchTerm, onSearch, onLogout, getInitials, unreadMessa
                 </div>
               ))}
             </div>
- 
+
             {/* Language */}
             <select
               className="navbar__lang-select"
@@ -167,13 +166,13 @@ const Navbar = ({ user, searchTerm, onSearch, onLogout, getInitials, unreadMessa
               <option value="fr">FR</option>
               <option value="ar">AR</option>
             </select>
- 
+
             {/* Logout */}
             <div className="navbar__item" onClick={onLogout}>
               <i className="ti ti-logout navbar__item-icon" />
               <span className="navbar__item-label">{t('nav.logout') || "Logout"}</span>
             </div>
- 
+
             {/* Premium */}
             <div className="navbar__premium">
               {t('nav.premium') || "Try Premium"}
@@ -181,11 +180,35 @@ const Navbar = ({ user, searchTerm, onSearch, onLogout, getInitials, unreadMessa
           </div>
         )}
       </div>
- 
+
+      {/* ── MOBILE TOP BAR : langue + déconnexion + premium ── */}
+      {user && (
+        <div className="navbar-mobile-top">
+          <select
+            className="navbar__lang-select"
+            value={i18n.language}
+            onChange={(e) => changeLang(e.target.value)}
+          >
+            <option value="en">EN</option>
+            <option value="fr">FR</option>
+            <option value="ar">AR</option>
+          </select>
+
+          <div className="navbar-mobile-top__logout" onClick={onLogout}>
+            <i className="ti ti-logout" />
+            <span>{t('nav.logout') || 'Déconnexion'}</span>
+          </div>
+
+          <div className="navbar-mobile-top__premium">
+            {t('nav.premium') || 'Essayer Premium'}
+          </div>
+        </div>
+      )}
+
       {/* ── BOTTOM NAV BAR (mobile seulement, via CSS) ── */}
       {user && (
         <nav className="navbar-mobile-bottom">
- 
+
           {/* 5 items principaux */}
           {mobileNavItems.map(item => (
             <div
@@ -209,7 +232,7 @@ const Navbar = ({ user, searchTerm, onSearch, onLogout, getInitials, unreadMessa
               <span className="navbar-mobile-bottom__label">{item.label}</span>
             </div>
           ))}
- 
+
           {/* Profile avatar */}
           <div
             className={`navbar-mobile-bottom__item ${isActive('profile') ? 'active' : ''}`}
@@ -231,16 +254,11 @@ const Navbar = ({ user, searchTerm, onSearch, onLogout, getInitials, unreadMessa
             </div>
             <span className="navbar-mobile-bottom__label">{t('nav.profile')}</span>
           </div>
- 
+
         </nav>
       )}
     </>
   );
 };
- 
+
 export default Navbar;
- 
-
-
-
-
