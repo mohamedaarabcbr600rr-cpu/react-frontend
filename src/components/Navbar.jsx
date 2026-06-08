@@ -58,11 +58,12 @@ const Navbar = ({ user, searchTerm, onSearch, onLogout, getInitials, unreadMessa
     { id: 'ai',            icon: 'ti-robot',     label: t('nav.ai') },
   ], [i18n.language]);
 
-  // Bottom bar mobile : Messagerie remplacé par Assistant IA
+  // Bottom bar mobile : 6 items (tous les principaux)
   const mobileNavItems = [
     { id: 'accueil',       icon: 'ti-home',      label: t('nav.home') },
     { id: 'reseau',        icon: 'ti-users',     label: t('nav.network') },
     { id: 'focus-hub',     icon: 'ti-dashboard', label: t('nav.focus') },
+    { id: 'messagerie',    icon: 'ti-message',   label: t('nav.messages') },
     { id: 'ai',            icon: 'ti-robot',     label: t('nav.ai') },
     { id: 'notifications', icon: 'ti-bell',      label: t('nav.notifications') },
   ];
