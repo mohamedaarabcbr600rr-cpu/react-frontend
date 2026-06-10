@@ -1628,3 +1628,18 @@
   animation: reactionPop 0.15s ease-out;
 }
 
+.post-card__delete-btn {
+  margin-left: auto;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  padding: 6px 10px;
+  border-radius: 50%;
+  opacity: 0.6;
+  transition: opacity 0.2s, background 0.2s;
+}
+.post-card__delete-btn:hover {
+  opacity: 1;
+  background: #fff0f0;
+}

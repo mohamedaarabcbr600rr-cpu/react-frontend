@@ -810,7 +810,14 @@
       "startConversation": "Error starting conversation",
       "sendMessage": "Error sending message"
     }
-  }
+  },
+
+
+  "delete": {
+  "confirm": "Delete this post?",
+  "error": "Error while deleting",
+  "title": "Delete"
+}
 
 
 

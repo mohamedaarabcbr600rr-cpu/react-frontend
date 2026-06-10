@@ -276,21 +276,42 @@ const PostCard = ({
   return (
     <div id={`experience-${exp.id}`} className="post-card">
 
-      {/* ── Header ── */}
-      <div className="post-card__header" onClick={(e) => handleProfileClick(exp.user?.id, e)} style={{ cursor: 'pointer' }}>
-        <div className="post-card__avatar">{renderAvatar(exp.user, 'medium')}</div>
-        <div className="post-card__info">
-          <div className="post-card__author-name">
-            {exp.user?.name || t("post.user.anonymous")}
-            {isOwnPost && <span className="post-card__author-badge">{t("post.user.you")}</span>}
-          </div>
-          <div className="post-card__meta">
-            <span>{formatDate(exp.created_at)}</span>
-            <span className="post-card__time-dot"></span>
-            <span>{t("post.visibility.public")}</span>
-          </div>
-        </div>
-      </div>
+     {/* ── Header ── */}
+<div className="post-card__header" onClick={(e) => handleProfileClick(exp.user?.id, e)} style={{ cursor: 'pointer' }}>
+  <div className="post-card__avatar">{renderAvatar(exp.user, 'medium')}</div>
+  <div className="post-card__info">
+    <div className="post-card__author-name">
+      {exp.user?.name || t("post.user.anonymous")}
+      {isOwnPost && <span className="post-card__author-badge">{t("post.user.you")}</span>}
+    </div>
+    <div className="post-card__meta">
+      <span>{formatDate(exp.created_at)}</span>
+      <span className="post-card__time-dot"></span>
+      <span>{t("post.visibility.public")}</span>
+    </div>
+  </div>
+
+  {/* ── Bouton supprimer ── */}
+  {isOwnPost && (
+    <button
+      className="post-card__delete-btn"
+      onClick={async (e) => {
+        e.stopPropagation();
+        if (!window.confirm(t("post.delete.confirm"))) return;
+        try {
+          await axios.delete(`/api/experiences/${exp.id}`);
+          window.location.reload();
+        } catch (err) {
+          console.error('Erreur suppression:', err);
+          alert(t("post.delete.error"));
+        }
+      }}
+      title={t("post.delete.title")}
+    >
+      🗑️
+    </button>
+  )}
+</div>
 
       {/* ── Post partagé ── */}
       {exp.shared_from && exp.original && (

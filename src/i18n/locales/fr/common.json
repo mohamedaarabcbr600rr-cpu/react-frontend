@@ -806,7 +806,14 @@
       "startConversation": "Erreur lors du démarrage de la conversation",
       "sendMessage": "Erreur lors de l'envoi du message"
     }
-  }
+  },
+
+
+  "delete": {
+  "confirm": "Supprimer cette publication ?",
+  "error": "Erreur lors de la suppression",
+  "title": "Supprimer"
+}
 
 
 
