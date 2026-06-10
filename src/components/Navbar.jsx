@@ -7,7 +7,6 @@ import logoapp from '../assets/logoapp.jpeg';
 const Navbar = ({ user, searchTerm, onSearch, onLogout, getInitials, unreadMessages = 0, unreadNotifications = 0 }) => {
   const navigate = useNavigate();
   const location = useLocation();
-
   const { t, i18n } = useTranslation();
 
   const changeLang = (lng) => {
@@ -58,7 +57,6 @@ const Navbar = ({ user, searchTerm, onSearch, onLogout, getInitials, unreadMessa
     { id: 'ai',            icon: 'ti-robot',     label: t('nav.ai') },
   ], [i18n.language]);
 
-  // Bottom bar mobile : 6 items (tous les principaux)
   const mobileNavItems = [
     { id: 'accueil',       icon: 'ti-home',      label: t('nav.home') },
     { id: 'reseau',        icon: 'ti-users',     label: t('nav.network') },
@@ -74,7 +72,7 @@ const Navbar = ({ user, searchTerm, onSearch, onLogout, getInitials, unreadMessa
 
   return (
     <>
-      {/* ── TOP NAVBAR (desktop + mobile header) ── */}
+      {/* ── TOP NAVBAR ── */}
       <div className="navbar">
 
         {/* LEFT : logo + search */}
@@ -98,11 +96,10 @@ const Navbar = ({ user, searchTerm, onSearch, onLogout, getInitials, unreadMessa
           </div>
         </div>
 
-        {/* RIGHT : visible seulement sur desktop (caché sur mobile via CSS) */}
-        {user && (
-          <div className="navbar__right">
+        {/* RIGHT : desktop */}
+        <div className="navbar__right">
+          {user ? (
             <div className="navbar__items">
-
               {/* Profile */}
               <div
                 className={`navbar__item ${isActive('profile') ? 'active' : ''}`}
@@ -155,34 +152,52 @@ const Navbar = ({ user, searchTerm, onSearch, onLogout, getInitials, unreadMessa
                   <span className="navbar__item-label">{item.label}</span>
                 </div>
               ))}
-            </div>
 
-            {/* Language */}
-            <select
-              className="navbar__lang-select"
-              value={i18n.language}
-              onChange={(e) => changeLang(e.target.value)}
-            >
-              <option value="en">EN</option>
-              <option value="fr">FR</option>
-              <option value="ar">AR</option>
-            </select>
+              {/* Language */}
+              <select
+                className="navbar__lang-select"
+                value={i18n.language}
+                onChange={(e) => changeLang(e.target.value)}
+              >
+                <option value="en">EN</option>
+                <option value="fr">FR</option>
+                <option value="ar">AR</option>
+              </select>
 
-            {/* Logout */}
-            <div className="navbar__item" onClick={onLogout}>
-              <i className="ti ti-logout navbar__item-icon" />
-              <span className="navbar__item-label">{t('nav.logout') || "Logout"}</span>
-            </div>
+              {/* Logout */}
+              <div className="navbar__item" onClick={onLogout}>
+                <i className="ti ti-logout navbar__item-icon" />
+                <span className="navbar__item-label">{t('nav.logout')}</span>
+              </div>
 
-            {/* Premium */}
-            <div className="navbar__premium">
-              {t('nav.premium') || "Try Premium"}
+              {/* Premium */}
+              <div className="navbar__premium">{t('nav.premium')}</div>
             </div>
-          </div>
-        )}
+          ) : (
+            /* ── Visiteur non connecté - desktop ── */
+            <div className="navbar__items">
+              <select
+                className="navbar__lang-select"
+                value={i18n.language}
+                onChange={(e) => changeLang(e.target.value)}
+              >
+                <option value="en">EN</option>
+                <option value="fr">FR</option>
+                <option value="ar">AR</option>
+              </select>
+              <div
+                className={`navbar__item ${isActive('accueil') ? 'active' : ''}`}
+                onClick={() => handleNavigation('accueil')}
+              >
+                <i className="ti ti-home navbar__item-icon" />
+                <span className="navbar__item-label">{t('nav.home')}</span>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* ── MOBILE TOP BAR : langue + déconnexion + premium ── */}
+      {/* ── MOBILE TOP BAR ── */}
       {user && (
         <div className="navbar-mobile-top">
           <select
@@ -197,67 +212,75 @@ const Navbar = ({ user, searchTerm, onSearch, onLogout, getInitials, unreadMessa
 
           <div className="navbar-mobile-top__logout" onClick={onLogout}>
             <i className="ti ti-logout" />
-            <span>{t('nav.logout') || 'Déconnexion'}</span>
+            <span>{t('nav.logout')}</span>
           </div>
 
           <div className="navbar-mobile-top__premium">
-            {t('nav.premium') || 'Essayer Premium'}
+            {t('nav.premium')}
           </div>
         </div>
       )}
 
-      {/* ── BOTTOM NAV BAR (mobile seulement, via CSS) ── */}
-      {user && (
-        <nav className="navbar-mobile-bottom">
+      {/* ── BOTTOM NAV BAR (mobile) ── */}
+      <nav className="navbar-mobile-bottom">
+        {user ? (
+          <>
+            {mobileNavItems.map(item => (
+              <div
+                key={item.id}
+                className={`navbar-mobile-bottom__item ${isActive(item.id) ? 'active' : ''}`}
+                onClick={() => handleNavigation(item.id)}
+              >
+                <div style={{ position: 'relative' }}>
+                  <i className={`ti ${item.icon} navbar-mobile-bottom__icon`} />
+                  {item.id === 'messagerie' && unreadMessages > 0 && (
+                    <span className="navbar-mobile-bottom__badge">
+                      {unreadMessages > 9 ? '9+' : unreadMessages}
+                    </span>
+                  )}
+                  {item.id === 'notifications' && unreadNotifications > 0 && (
+                    <span className="navbar-mobile-bottom__badge">
+                      {unreadNotifications > 9 ? '9+' : unreadNotifications}
+                    </span>
+                  )}
+                </div>
+                <span className="navbar-mobile-bottom__label">{item.label}</span>
+              </div>
+            ))}
 
-          {/* 5 items principaux */}
-          {mobileNavItems.map(item => (
+            {/* Profile avatar */}
             <div
-              key={item.id}
-              className={`navbar-mobile-bottom__item ${isActive(item.id) ? 'active' : ''}`}
-              onClick={() => handleNavigation(item.id)}
+              className={`navbar-mobile-bottom__item ${isActive('profile') ? 'active' : ''}`}
+              onClick={() => handleNavigation('profile')}
             >
-              <div style={{ position: 'relative' }}>
-                <i className={`ti ${item.icon} navbar-mobile-bottom__icon`} />
-                {item.id === 'messagerie' && unreadMessages > 0 && (
-                  <span className="navbar-mobile-bottom__badge">
-                    {unreadMessages > 9 ? '9+' : unreadMessages}
-                  </span>
-                )}
-                {item.id === 'notifications' && unreadNotifications > 0 && (
-                  <span className="navbar-mobile-bottom__badge">
-                    {unreadNotifications > 9 ? '9+' : unreadNotifications}
-                  </span>
+              <div className="navbar-mobile-bottom__avatar">
+                {user.profile_pic ? (
+                  <img
+                    src={getImageUrl(user.profile_pic)}
+                    alt={user.name}
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                      e.target.parentElement.textContent = getInitials(user.name);
+                    }}
+                  />
+                ) : (
+                  getInitials(user.name)
                 )}
               </div>
-              <span className="navbar-mobile-bottom__label">{item.label}</span>
+              <span className="navbar-mobile-bottom__label">{t('nav.profile')}</span>
             </div>
-          ))}
-
-          {/* Profile avatar */}
+          </>
+        ) : (
+          /* ── Visiteur non connecté - mobile ── */
           <div
-            className={`navbar-mobile-bottom__item ${isActive('profile') ? 'active' : ''}`}
-            onClick={() => handleNavigation('profile')}
+            className="navbar-mobile-bottom__item"
+            onClick={() => handleNavigation('accueil')}
           >
-            <div className="navbar-mobile-bottom__avatar">
-              {user.profile_pic ? (
-                <img
-                  src={getImageUrl(user.profile_pic)}
-                  alt={user.name}
-                  onError={(e) => {
-                    e.target.style.display = 'none';
-                    e.target.parentElement.textContent = getInitials(user.name);
-                  }}
-                />
-              ) : (
-                getInitials(user.name)
-              )}
-            </div>
-            <span className="navbar-mobile-bottom__label">{t('nav.profile')}</span>
+            <i className="ti ti-home navbar-mobile-bottom__icon" />
+            <span className="navbar-mobile-bottom__label">{t('nav.home')}</span>
           </div>
-
-        </nav>
-      )}
+        )}
+      </nav>
     </>
   );
 };
