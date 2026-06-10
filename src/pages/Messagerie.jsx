@@ -195,9 +195,23 @@ const Messagerie = ({ authUserId, baseUrl = import.meta.env.VITE_API_URL }) => {
   }, []);
 
   // ── Auto-scroll ────────────────────────────────────────────────────────────
-  useEffect(() => {
+ const isAtBottomRef = useRef(true);
+const messagesContainerRef = useRef(null);
+
+// Détecter si l'utilisateur est en bas
+const handleScroll = () => {
+  const container = messagesContainerRef.current;
+  if (!container) return;
+  const threshold = 100;
+  isAtBottomRef.current =
+    container.scrollHeight - container.scrollTop - container.clientHeight < threshold;
+};
+
+useEffect(() => {
+  if (isAtBottomRef.current) {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, otherUserTyping]);
+  }
+}, [messages, otherUserTyping]);
 
   // ── Load mutual connections (amis uniquement) ────────────────────────────────
   useEffect(() => {
@@ -318,6 +332,7 @@ const Messagerie = ({ authUserId, baseUrl = import.meta.env.VITE_API_URL }) => {
       created_at: new Date().toISOString(),
     };
     setMessages(prev => [...prev, optimistic]);
+    isAtBottomRef.current = true;
     setContent("");
     setFile(null);
     setFilePreview(null);
@@ -520,7 +535,12 @@ const Messagerie = ({ authUserId, baseUrl = import.meta.env.VITE_API_URL }) => {
         )}
 
         {/* Messages */}
-        <div className="wa-messages">
+        {/* Messages */}
+<div
+  className="wa-messages"
+  ref={messagesContainerRef}
+  onScroll={handleScroll}
+>
           {!selectedUser ? (
             <EmptyState hasUser={false} t={t} />
           ) : messages.length === 0 ? (
