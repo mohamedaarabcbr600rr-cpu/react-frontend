@@ -25,28 +25,23 @@ const Reseau = ({ user, openLogin }) => {
         
         // Option 1: Utiliser l'API suggestions si /api/users n'existe pas
         // Cela récupère tous les utilisateurs sauf l'utilisateur connecté et ceux qu'il suit déjà
-        const usersRes = await axios.get("/api/users/suggestions");
-        
-        // Transformer les données
-        let allUsers = [];
-        if (Array.isArray(usersRes.data)) {
-          allUsers = usersRes.data.filter(u => u.id !== user.id);
-        }
-        
-        // Récupérer les following de l'utilisateur pour avoir la liste complète
-        const followingRes = await axios.get(`/api/users/${user.id}/following`);
-        const followingIds = followingRes.data.map(f => f.id);
-        setFollowingList(followingRes.data);
-        
-        // Ajouter le statut isFollowing à chaque utilisateur
-        const usersWithFollowStatus = allUsers.map(u => ({
-          ...u,
-          isFollowing: followingIds.includes(u.id),
-          profile_pic: u.profile_pic || null
-        }));
-        
-        setUsers(usersWithFollowStatus);
-        setFilteredUsers(usersWithFollowStatus);
+       // APRÈS
+const [usersRes, followingRes] = await Promise.all([
+  axios.get("/api/users"),
+  axios.get(`/api/users/${user.id}/following`)
+]);
+
+const followingIds = followingRes.data.map(f => f.id);
+setFollowingList(followingRes.data);
+
+const usersWithFollowStatus = usersRes.data.map(u => ({
+  ...u,
+  isFollowing: followingIds.includes(u.id),
+  profile_pic: u.profile_pic || null
+}));
+
+setUsers(usersWithFollowStatus);
+setFilteredUsers(usersWithFollowStatus);
       } catch (err) {
         console.error(t('reseau.errors.loadError'), err);
         
