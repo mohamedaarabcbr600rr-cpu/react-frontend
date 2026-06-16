@@ -130,7 +130,8 @@
   max-width: 420px;
   height: 460px;
   perspective: 1600px;
-  contain: layout;  /* ✅ fix CLS */
+  -webkit-perspective: 1600px;
+  contain: layout;
 }
 
 .card-3d-wrapper {
@@ -140,16 +141,14 @@
   position: relative;
 
   transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
   transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .card-3d-wrapper.rotate {
   transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
 }
-
-/* =========================
-   CARD BASE STYLE
-========================= */
 
 .card-front,
 .card-back {
@@ -163,6 +162,9 @@
   border-radius: 28px;
 
   backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
 
   background: linear-gradient(
     145deg,
@@ -183,6 +185,7 @@
 /* BACK */
 .card-back {
   transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
 }
 
 /* LIGHT ORBS */
