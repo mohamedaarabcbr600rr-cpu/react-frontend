@@ -319,6 +319,7 @@ const [adminToken, setAdminToken] = useState(() =>
         onSearch={handleSearch}
         onLogout={handleLogout}
         getInitials={getInitials}
+        openLogin={() => setShowLoginModal(true)} 
         setLang={(lng) => {
   i18n.changeLanguage(lng);
 }}
