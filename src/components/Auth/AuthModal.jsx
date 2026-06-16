@@ -94,7 +94,7 @@ const AuthModal = ({ setUser, closeModal }) => {
         <span className={!isLogin ? "active" : ""}>{t("auth.signUp")}</span>
 
         <div
-          className={`switch-btn ${isLogin ? "login" : "register"}`}
+          className={`switch-btn ${isLogin ? "register" : "login"}`}
           onClick={() => {
             toggleMode();
             resetForms();
