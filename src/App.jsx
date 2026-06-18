@@ -17,10 +17,10 @@ const StudyHub = lazy(() => import('./pages/StudyHub/StudyHub'));
 const Admin = lazy(() => import('./admin-dashboard/admin'));
 
 // Legal pages
-import About         from './pages/About';
-import Privacy       from './pages/Privacy';
-import Terms         from './pages/Terms';
-import Accessibility from './pages/Accessibility';
+import About         from './components/About';
+import Privacy       from './components/Privacy';
+import Terms         from './components/Terms';
+import Accessibility from './components/Accessibility';
 const AdminLogin = lazy(() => import('./admin-dashboard/AdminLogin'));
 const ProtectedRoute = lazy(() => import('./admin-dashboard/ProtectedRoute'));
  
