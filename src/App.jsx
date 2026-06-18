@@ -15,6 +15,12 @@ const Notifications = lazy(() => import('./pages/Notifications'));
 const AITutor = lazy(() => import('./pages/AITutor/AITutor'));
 const StudyHub = lazy(() => import('./pages/StudyHub/StudyHub'));
 const Admin = lazy(() => import('./admin-dashboard/admin'));
+
+// Legal pages
+import About         from './pages/About';
+import Privacy       from './pages/Privacy';
+import Terms         from './pages/Terms';
+import Accessibility from './pages/Accessibility';
 const AdminLogin = lazy(() => import('./admin-dashboard/AdminLogin'));
 const ProtectedRoute = lazy(() => import('./admin-dashboard/ProtectedRoute'));
  
@@ -450,6 +456,12 @@ const [adminToken, setAdminToken] = useState(() =>
               />
             </ProtectedContent>
           } />
+        {/* LEGAL PAGES */}
+          <Route path="/about"         element={<About />}         />
+          <Route path="/privacy"       element={<Privacy />}       />
+          <Route path="/terms"         element={<Terms />}         />
+          <Route path="/accessibility" element={<Accessibility />} />
+
         </Routes>
         </Suspense>
       </main>

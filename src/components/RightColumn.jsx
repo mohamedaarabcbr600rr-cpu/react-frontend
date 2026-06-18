@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "../axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import './RightColumn.css';
 
@@ -79,23 +79,19 @@ const RightColumn = ({ user = null, openLogin, onProfileClick }) => {
     setLoading(prev => ({ ...prev, [userId]: true }));
 
     try {
-      const suggestion = suggestions.find(s => s.id === userId);
       const isCurrentlyFollowing = currentUserFollowing.some(f => f.id === userId);
 
       if (isCurrentlyFollowing) {
         // UNFOLLOW
         await axios.delete(`/api/users/${userId}/follow`);
-        // Mettre à jour la liste des following
         setCurrentUserFollowing(prev => prev.filter(f => f.id !== userId));
       } else {
         // FOLLOW
         await axios.post(`/api/users/${userId}/follow`);
-        // Ajouter à la liste des following
         const userRes = await axios.get(`/api/users/${userId}`);
         setCurrentUserFollowing(prev => [...prev, { ...userRes.data, isFollowing: true }]);
       }
 
-      // Mettre à jour le state suggestions
       setSuggestions(prev =>
         prev.map(s =>
           s.id === userId ? { ...s, isFollowing: !isCurrentlyFollowing } : s
@@ -111,10 +107,6 @@ const RightColumn = ({ user = null, openLogin, onProfileClick }) => {
     }
   };
 
-  const getInitials = (name) => {
-    return name?.split(' ').map(n => n[0]).join('').toUpperCase() || 'U';
-  };
-
   const getImageUrl = (profilePic) => {
     if (!profilePic) return null;
     if (profilePic.startsWith('http://') || profilePic.startsWith('https://')) return profilePic;
@@ -128,11 +120,12 @@ const RightColumn = ({ user = null, openLogin, onProfileClick }) => {
     return `https://ui-avatars.com/api/?background=0a66c2&color=fff&rounded=true&size=48&bold=true&name=${encodedName}`;
   };
 
+  // Footer links mapped to their React Router paths
   const footerLinks = [
-    t('footer.about'),
-    t('footer.accessibility'),
-    t('footer.terms'),
-    t('footer.privacy')
+    { labelKey: 'footer.about',         path: '/about'         },
+    { labelKey: 'footer.accessibility', path: '/accessibility' },
+    { labelKey: 'footer.terms',         path: '/terms'         },
+    { labelKey: 'footer.privacy',       path: '/privacy'       },
   ];
 
   return (
@@ -212,8 +205,8 @@ const RightColumn = ({ user = null, openLogin, onProfileClick }) => {
                 }}
                 disabled={isLoading}
               >
-                {isLoading 
-                  ? "..." 
+                {isLoading
+                  ? "..."
                   : (suggestion.isFollowing ? t("rightColumn.following") : t("rightColumn.follow"))}
               </button>
             </div>
@@ -241,27 +234,28 @@ const RightColumn = ({ user = null, openLogin, onProfileClick }) => {
 
       <div className="right-column__divider"></div>
 
-      <div className="right-column__footer">
-        <div className="right-column__footer-links">
-          {footerLinks.map((link, index) => (
-            <span key={index} className="right-column__footer-link">
-              {link}
-            </span>
+      {/* ─── Footer with React Router links ─────────────────────────────── */}
+      <footer className="right-column__footer">
+        <nav
+          className="right-column__footer-links"
+          aria-label="Site information"
+        >
+          {footerLinks.map(({ labelKey, path }) => (
+            <Link
+              key={path}
+              to={path}
+              className="right-column__footer-link"
+            >
+              {t(labelKey)}
+            </Link>
           ))}
-        </div>
+        </nav>
         <div className="right-column__footer-copyright">
           {t("footer.copyright")}
         </div>
-      </div>
+      </footer>
     </div>
   );
 };
 
 export default RightColumn;
-
-
-
-
-
-
-
