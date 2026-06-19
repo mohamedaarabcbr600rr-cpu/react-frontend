@@ -1,31 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
   <url>
     <loc>https://studmo.com/</loc>
     <priority>1.0</priority>
   </url>
+
   <url>
-    <loc>https://studmo.com/ai</loc>
-    <priority>0.8</priority>
+    <loc>https://studmo.com/about</loc>
+    <priority>0.9</priority>
   </url>
+
   <url>
-    <loc>https://studmo.com/reseau</loc>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://studmo.com/focus-hub</loc>
+    <loc>https://studmo.com/accessibility</loc>
     <priority>0.7</priority>
   </url>
+
   <url>
-    <loc>https://studmo.com/messagerie</loc>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://studmo.com/notifications</loc>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://studmo.com/profile</loc>
+    <loc>https://studmo.com/terms</loc>
     <priority>0.8</priority>
   </url>
+
+  <url>
+    <loc>https://studmo.com/privacy</loc>
+    <priority>0.8</priority>
+  </url>
+
 </urlset>
