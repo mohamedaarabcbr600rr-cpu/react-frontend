@@ -42,6 +42,40 @@ const About = () => {
         </p>
       </header>
 
+      {/* ── 1. SOCIAL PROOF ─────────────────────────────────────────────── */}
+      <div className="about-social-proof">
+        <div className="about-social-proof__inner">
+          <p className="about-social-proof__label">
+            Trusted by early students across multiple disciplines.
+          </p>
+          <div className="about-social-proof__stats">
+            <div className="about-social-proof__stat">
+              <span className="about-social-proof__icon">🚀</span>
+              <div>
+                <strong>Launched in 2026</strong>
+                <span>Currently in beta</span>
+              </div>
+            </div>
+            <div className="about-social-proof__divider" aria-hidden="true" />
+            <div className="about-social-proof__stat">
+              <span className="about-social-proof__icon">👥</span>
+              <div>
+                <strong>Growing community</strong>
+                <span>New students joining every day</span>
+              </div>
+            </div>
+            <div className="about-social-proof__divider" aria-hidden="true" />
+            <div className="about-social-proof__stat">
+              <span className="about-social-proof__icon">🌍</span>
+              <div>
+                <strong>Multiple countries</strong>
+                <span>Students from around the world</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div className="legal-container">
 
         {/* Mission */}
@@ -155,6 +189,21 @@ const About = () => {
           </div>
         </section>
 
+        {/* ── 2. MID-PAGE CTA (after Core Features) ───────────────────────── */}
+        <section className="about-mid-cta" aria-labelledby="mid-cta-heading">
+          <div className="about-mid-cta__inner">
+            <h2 id="mid-cta-heading" className="about-mid-cta__title">
+              Ready to experience a smarter way to learn?
+            </h2>
+            <p className="about-mid-cta__text">
+              Join Studmo today and become part of a growing student community powered by AI.
+            </p>
+            <Link to="/" className="legal-cta__btn legal-cta__btn--primary">
+              Join Studmo — It's Free
+            </Link>
+          </div>
+        </section>
+
         {/* Why Studmo */}
         <section className="legal-section" aria-labelledby="why-heading">
           <h2 id="why-heading" className="legal-section__title">Why Studmo Exists</h2>
@@ -212,24 +261,37 @@ const About = () => {
           </p>
         </section>
 
-        {/* Team / Founding */}
-        <section className="legal-section" aria-labelledby="team-heading">
-          <h2 id="team-heading" className="legal-section__title">Built in the open, growing fast.</h2>
-          <p>
-            Studmo is currently being built by a lean, dedicated founding team that believes in
-            radical transparency and learning in public. We're in beta, actively gathering feedback
-            from our first cohort of students, and iterating fast.
-          </p>
-          <p>
-            We welcome students, educators, researchers, and partners who believe in our mission to
-            reach out, collaborate, and help shape the future of Studmo.
-          </p>
-          <p>
-            Want to get involved?{" "}
-            <a href="mailto:contact@studmo.com" className="legal-link">
-              contact@studmo.com
-            </a>
-          </p>
+        {/* ── 3. FOUNDER SECTION ──────────────────────────────────────────── */}
+        <section className="about-founder" aria-labelledby="founder-heading">
+          <div className="legal-section__badge">Meet the Founder</div>
+          <div className="about-founder__inner">
+            <div className="about-founder__avatar" aria-hidden="true">
+              MA
+            </div>
+            <div className="about-founder__content">
+              <h2 id="founder-heading" className="about-founder__name">
+                Mohamed Aarab
+              </h2>
+              <p className="about-founder__role">Founder &amp; Builder, Studmo</p>
+              <p className="about-founder__bio">
+                Mohamed is a developer and student-focused builder who created Studmo out of a
+                genuine frustration with how students learn and connect. He built Studmo to give
+                every student — regardless of their institution or background — access to the tools
+                and community that accelerate real academic growth.
+              </p>
+              <p className="about-founder__bio">
+                From architecting the full-stack platform (Laravel + React) to integrating
+                cutting-edge AI services, Mohamed is building Studmo hands-on, in public, and
+                with a long-term mission: to become the default learning network for students worldwide.
+              </p>
+              <a
+                href="mailto:contact@studmo.com"
+                className="about-founder__contact"
+              >
+                Get in touch →
+              </a>
+            </div>
+          </div>
         </section>
 
         {/* CTA */}

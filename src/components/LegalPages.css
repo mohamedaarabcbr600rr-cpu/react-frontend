@@ -528,3 +528,190 @@
     transition: none;
   }
 }
+
+/* ==========================================================================
+   ADDITIONS à coller à la fin de LegalPages.css
+   ========================================================================== */
+
+/* ── Social Proof ─────────────────────────────────────────────────────────── */
+.about-social-proof {
+  background: rgba(255, 255, 255, 0.03);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 28px 24px;
+}
+
+.about-social-proof__inner {
+  max-width: 860px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.about-social-proof__label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #6b7280;
+  margin: 0;
+}
+
+.about-social-proof__stats {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 0;
+  justify-content: center;
+}
+
+.about-social-proof__stat {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 28px;
+}
+
+.about-social-proof__stat div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.about-social-proof__stat strong {
+  font-family: 'Sora', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #e2e2f0;
+}
+
+.about-social-proof__stat span {
+  font-size: 0.775rem;
+  color: #6b7280;
+}
+
+.about-social-proof__icon {
+  font-size: 1.4rem;
+}
+
+.about-social-proof__divider {
+  width: 1px;
+  height: 36px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+@media (max-width: 600px) {
+  .about-social-proof__divider { display: none; }
+  .about-social-proof__stat { padding: 8px 16px; }
+}
+
+/* ── Mid-page CTA ─────────────────────────────────────────────────────────── */
+.about-mid-cta {
+  margin-bottom: 56px;
+  padding: 40px 36px;
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.07) 0%, rgba(139, 92, 246, 0.07) 100%);
+  border: 1px solid rgba(6, 182, 212, 0.18);
+  border-radius: 16px;
+  text-align: center;
+}
+
+.about-mid-cta__title {
+  font-family: 'Sora', sans-serif;
+  font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+  font-weight: 600;
+  color: #f0f0ff;
+  margin: 0 0 10px;
+  letter-spacing: -0.01em;
+}
+
+.about-mid-cta__text {
+  color: #9ca3af;
+  font-size: 0.95rem;
+  margin: 0 0 24px;
+}
+
+/* ── Founder Section ──────────────────────────────────────────────────────── */
+.about-founder {
+  margin-bottom: 56px;
+  padding-bottom: 56px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.about-founder__inner {
+  display: flex;
+  gap: 28px;
+  align-items: flex-start;
+  margin-top: 20px;
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 16px;
+  padding: 32px;
+}
+
+.about-founder__avatar {
+  flex-shrink: 0;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #7c3aed 0%, #0891b2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Sora', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.05em;
+}
+
+.about-founder__content {
+  flex: 1;
+}
+
+.about-founder__name {
+  font-family: 'Sora', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #f0f0ff;
+  margin: 0 0 4px;
+}
+
+.about-founder__role {
+  font-size: 0.825rem;
+  font-weight: 600;
+  color: #a78bfa;
+  margin: 0 0 16px;
+  letter-spacing: 0.03em;
+}
+
+.about-founder__bio {
+  font-size: 0.9rem;
+  color: #9ca3af;
+  margin: 0 0 12px;
+  line-height: 1.7;
+}
+
+.about-founder__contact {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #06b6d4;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.about-founder__contact:hover {
+  color: #38bdf8;
+}
+
+@media (max-width: 540px) {
+  .about-founder__inner {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 24px 20px;
+  }
+}
