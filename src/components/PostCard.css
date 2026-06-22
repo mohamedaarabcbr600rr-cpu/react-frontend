@@ -1643,3 +1643,117 @@
   opacity: 1;
   background: #fff0f0;
 }
+
+
+/* ================================================
+   MEDIA GALLERY — MULTI IMAGES
+   ================================================ */
+
+.post-card__media--single {
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+  max-height: 500px;
+}
+
+.post-card__media-grid {
+  display: grid;
+  gap: 3px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  margin: var(--space-md) 0;
+}
+
+.post-card__media-grid--2 {
+  grid-template-columns: 1fr 1fr;
+}
+
+.post-card__media-grid--3 {
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto;
+}
+
+.post-card__media-grid-item {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  aspect-ratio: 1 / 1;
+  background-color: var(--color-bg-light);
+}
+
+.post-card__media-grid-item--main {
+  grid-row: 1 / 3;
+  aspect-ratio: unset;
+}
+
+.post-card__media-grid-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.2s ease;
+}
+
+.post-card__media-grid-item:hover .post-card__media-grid-img {
+  transform: scale(1.03);
+}
+
+.post-card__media-grid-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  font-weight: var(--font-weight-bold);
+  color: white;
+  pointer-events: none;
+}
+
+/* ── Modal navigation ── */
+.media-modal-prev,
+.media-modal-next {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  color: white;
+  font-size: 48px;
+  padding: 8px 18px;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: background 0.2s;
+  z-index: 1001;
+}
+
+.media-modal-prev { left: 16px; }
+.media-modal-next { right: 16px; }
+
+.media-modal-prev:hover,
+.media-modal-next:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.media-modal-counter {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: var(--font-size-sm);
+  margin-top: var(--space-sm);
+}
+
+/* ── Responsive ── */
+@media (max-width: 480px) {
+  .post-card__media-grid--2,
+  .post-card__media-grid--3 {
+    gap: 2px;
+  }
+
+  .media-modal-prev,
+  .media-modal-next {
+    font-size: 32px;
+    padding: 6px 12px;
+  }
+}

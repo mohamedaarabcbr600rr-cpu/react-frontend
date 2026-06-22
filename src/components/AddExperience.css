@@ -351,3 +351,49 @@
     font-size: var(--font-size-xs);
   }
 }
+
+
+/* ================================================
+   MULTI MEDIA PREVIEW GRID
+   ================================================ */
+
+.add-experience__multi-preview {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: var(--space-sm);
+  margin-top: var(--space-sm);
+}
+
+.add-experience__multi-preview-item {
+  position: relative;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  aspect-ratio: 1 / 1;
+  background-color: var(--color-bg-light);
+}
+
+.add-experience__multi-preview-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.add-experience__multi-preview-add {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1 / 1;
+  border: 2px dashed var(--color-border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 28px;
+  color: var(--color-text-muted);
+  transition: var(--transition-smooth);
+}
+
+.add-experience__multi-preview-add:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background-color: var(--color-primary-subtle);
+}
