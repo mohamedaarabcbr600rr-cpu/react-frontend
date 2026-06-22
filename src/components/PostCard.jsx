@@ -210,57 +210,56 @@ const PostCard = ({
   const currentReaction   = getCurrentReaction();
 
   /* ── Galerie multi-images (style Facebook) ── */
-  const renderMediaGallery = (medias, isShared = false) => {
-    if (!medias || medias.length === 0) return null;
-    const count = medias.length;
+ const renderMediaGallery = (medias, isShared = false) => {
+  if (!medias || medias.length === 0) return null;
+  const count = medias.length;
 
-    const openModal = (index) => { if (!isShared) setModalIndex(index); };
+  const openModal = (index) => { if (!isShared) setModalIndex(index); };
 
-    if (count === 1) {
-      const m = medias[0];
-      return (
-        <div className="post-card__media post-card__media--single" onClick={() => openModal(0)}>
-          {m.type === 'image'
-            ? <img src={m.url} alt="media" className="post-card__media-image" onError={() => setMediaError(true)} />
-            : <video src={m.url} controls className="post-card__media-image" />}
-          {!isShared && <div className="post-card__media-overlay">{t("post.media.clickToEnlarge")}</div>}
-        </div>
-      );
-    }
-
-    if (count === 2) {
-      return (
-        <div className="post-card__media-grid post-card__media-grid--2">
-          {medias.map((m, i) => (
-            <div key={i} className="post-card__media-grid-item" onClick={() => openModal(i)}>
-              <img src={m.url} alt={`media-${i}`} className="post-card__media-grid-img" />
-            </div>
-          ))}
-        </div>
-      );
-    }
-
-    // 3+
-    const visible  = medias.slice(0, 3);
-    const overflow = count - 3;
-
+  if (count === 1) {
+    const m = medias[0];
     return (
-      <div className="post-card__media-grid post-card__media-grid--3">
-        {visible.map((m, i) => (
-          <div
-            key={i}
-            className={`post-card__media-grid-item ${i === 0 ? 'post-card__media-grid-item--main' : ''}`}
-            onClick={() => openModal(i)}
-          >
+      <div className="post-card__media post-card__media--single" onClick={() => openModal(0)}>
+        {m.type === 'image'
+          ? <img src={m.url} alt="media" className="post-card__media-image" onError={() => setMediaError(true)} />
+          : <video src={m.url} controls className="post-card__media-image" />}
+        {!isShared && <div className="post-card__media-overlay">{t("post.media.clickToEnlarge")}</div>}
+      </div>
+    );
+  }
+
+  if (count === 2) {
+    return (
+      <div className="post-card__media-grid post-card__media-grid--2">
+        {medias.map((m, i) => (
+          <div key={i} className="post-card__media-grid-item" onClick={() => openModal(i)}>
             <img src={m.url} alt={`media-${i}`} className="post-card__media-grid-img" />
-            {i === 2 && overflow > 0 && (
-              <div className="post-card__media-grid-overlay">+{overflow}</div>
-            )}
           </div>
         ))}
       </div>
     );
-  };
+  }
+
+  const visible  = medias.slice(0, 3);
+  const overflow = count - 3;
+  return (
+    <div className="post-card__media-grid post-card__media-grid--3">
+      {visible.map((m, i) => (
+        <div key={i} className={`post-card__media-grid-item ${i === 0 ? 'post-card__media-grid-item--main' : ''}`} onClick={() => openModal(i)}>
+          <img src={m.url} alt={`media-${i}`} className="post-card__media-grid-img" />
+          {i === 2 && overflow > 0 && <div className="post-card__media-grid-overlay">+{overflow}</div>}
+        </div>
+      ))}
+    </div>
+  );
+};
+
+// Fonction qui normalise les deux formats vers un tableau
+const getMedias = (exp, isShared = false) => {
+  if (exp.medias && exp.medias.length > 0) return exp.medias;
+  if (exp.media_url) return [{ url: exp.media_url, type: exp.media_type || 'image' }];
+  return [];
+};
 
   return (
     <div id={`experience-${exp.id}`} className="post-card">
@@ -306,7 +305,7 @@ const PostCard = ({
           <div className="post-card__shared-content">
             {exp.original.title   && <div className="post-card__shared-title">{exp.original.title}</div>}
             {exp.original.content && <div className="post-card__shared-text">{exp.original.content.length > 200 ? `${exp.original.content.substring(0, 200)}...` : exp.original.content}</div>}
-            {renderMediaGallery(exp.original.medias, true)}
+            {renderMediaGallery(getMedias(exp.original), true)}
           </div>
         </div>
       )}
@@ -318,7 +317,7 @@ const PostCard = ({
       </div>
 
       {/* ── Galerie médias ── */}
-      {renderMediaGallery(exp.medias)}
+      {renderMediaGallery(getMedias(exp))}
 
       {/* ── Stats ── */}
       {(likesCount > 0 || commentsCount > 0) && (
@@ -565,23 +564,23 @@ const PostCard = ({
       )}
 
       {/* ── Media Modal (navigation) ── */}
-      {modalIndex !== null && exp.medias && exp.medias.length > 0 && (
-        <div className="media-modal-overlay" onClick={() => setModalIndex(null)}>
-          <button className="media-modal-close" onClick={() => setModalIndex(null)}>✕</button>
-          {modalIndex > 0 && (
-            <button className="media-modal-prev" onClick={(e) => { e.stopPropagation(); setModalIndex(i => i - 1); }}>‹</button>
-          )}
-          <div className="media-modal-content" onClick={(e) => e.stopPropagation()}>
-            {exp.medias[modalIndex]?.type === 'image'
-              ? <img src={exp.medias[modalIndex]?.url} alt="media" className="media-modal-image" />
-              : <video src={exp.medias[modalIndex]?.url} controls className="media-modal-image" />}
-            <div className="media-modal-counter">{modalIndex + 1} / {exp.medias.length}</div>
-          </div>
-          {modalIndex < exp.medias.length - 1 && (
-            <button className="media-modal-next" onClick={(e) => { e.stopPropagation(); setModalIndex(i => i + 1); }}>›</button>
-          )}
-        </div>
-      )}
+      {modalIndex !== null && getMedias(exp).length > 0 && (
+  <div className="media-modal-overlay" onClick={() => setModalIndex(null)}>
+    <button className="media-modal-close" onClick={() => setModalIndex(null)}>✕</button>
+    {modalIndex > 0 && (
+      <button className="media-modal-prev" onClick={(e) => { e.stopPropagation(); setModalIndex(i => i - 1); }}>‹</button>
+    )}
+    <div className="media-modal-content" onClick={(e) => e.stopPropagation()}>
+      {getMedias(exp)[modalIndex]?.type === 'image'
+        ? <img src={getMedias(exp)[modalIndex]?.url} alt="media" className="media-modal-image" />
+        : <video src={getMedias(exp)[modalIndex]?.url} controls className="media-modal-image" />}
+      <div className="media-modal-counter">{modalIndex + 1} / {getMedias(exp).length}</div>
+    </div>
+    {modalIndex < getMedias(exp).length - 1 && (
+      <button className="media-modal-next" onClick={(e) => { e.stopPropagation(); setModalIndex(i => i + 1); }}>›</button>
+    )}
+  </div>
+)}
 
     </div>
   );
