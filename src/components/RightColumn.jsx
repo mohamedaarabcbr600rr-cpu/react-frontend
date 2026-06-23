@@ -4,6 +4,47 @@ import { useNavigate, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import './RightColumn.css';
 
+// ─── SVG Icon Components ───────────────────────────────────────────────────────
+
+const IconLock = ({ size = 28, color = "currentColor" }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
+    stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"
+    aria-hidden="true">
+    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+  </svg>
+);
+
+const IconUsers = ({ size = 18, color = "currentColor" }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
+    stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"
+    aria-hidden="true">
+    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+    <circle cx="9" cy="7" r="4" />
+    <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+  </svg>
+);
+
+const IconStar = ({ size = 32, color = "currentColor" }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
+    stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"
+    aria-hidden="true">
+    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+  </svg>
+);
+
+const IconArrowRight = ({ size = 14, color = "currentColor" }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
+    stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+    aria-hidden="true">
+    <line x1="5" y1="12" x2="19" y2="12" />
+    <polyline points="12 5 19 12 12 19" />
+  </svg>
+);
+
+// ──────────────────────────────────────────────────────────────────────────────
+
 const RightColumn = ({ user = null, openLogin, onProfileClick }) => {
   const [suggestions, setSuggestions] = useState([]);
   const [imageErrors, setImageErrors] = useState({});
@@ -12,7 +53,6 @@ const RightColumn = ({ user = null, openLogin, onProfileClick }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  // Récupérer les following de l'utilisateur connecté
   useEffect(() => {
     const fetchUserFollowing = async () => {
       if (!user) return;
@@ -35,7 +75,6 @@ const RightColumn = ({ user = null, openLogin, onProfileClick }) => {
           ? res.data.filter(u => u.id !== user.id)
           : Array.isArray(res.data) ? res.data : [];
 
-        // Vérifier si l'utilisateur suit déjà cette personne
         const withFollow = filtered.map(u => ({
           ...u,
           isFollowing: currentUserFollowing.some(following => following.id === u.id),
@@ -60,7 +99,6 @@ const RightColumn = ({ user = null, openLogin, onProfileClick }) => {
       openLogin();
       return;
     }
-
     if (onProfileClick) {
       onProfileClick(userId);
     } else {
@@ -73,25 +111,18 @@ const RightColumn = ({ user = null, openLogin, onProfileClick }) => {
       openLogin();
       return;
     }
-
     if (loading[userId]) return;
-
     setLoading(prev => ({ ...prev, [userId]: true }));
-
     try {
       const isCurrentlyFollowing = currentUserFollowing.some(f => f.id === userId);
-
       if (isCurrentlyFollowing) {
-        // UNFOLLOW
         await axios.delete(`/api/users/${userId}/follow`);
         setCurrentUserFollowing(prev => prev.filter(f => f.id !== userId));
       } else {
-        // FOLLOW
         await axios.post(`/api/users/${userId}/follow`);
         const userRes = await axios.get(`/api/users/${userId}`);
         setCurrentUserFollowing(prev => [...prev, { ...userRes.data, isFollowing: true }]);
       }
-
       setSuggestions(prev =>
         prev.map(s =>
           s.id === userId ? { ...s, isFollowing: !isCurrentlyFollowing } : s
@@ -99,9 +130,7 @@ const RightColumn = ({ user = null, openLogin, onProfileClick }) => {
       );
     } catch (err) {
       console.error("Erreur lors du follow/unfollow:", err);
-      if (err.response?.status === 401) {
-        openLogin();
-      }
+      if (err.response?.status === 401) openLogin();
     } finally {
       setLoading(prev => ({ ...prev, [userId]: false }));
     }
@@ -120,7 +149,6 @@ const RightColumn = ({ user = null, openLogin, onProfileClick }) => {
     return `https://ui-avatars.com/api/?background=0a66c2&color=fff&rounded=true&size=48&bold=true&name=${encodedName}`;
   };
 
-  // Footer links mapped to their React Router paths
   const footerLinks = [
     { labelKey: 'footer.about',         path: '/about'         },
     { labelKey: 'footer.accessibility', path: '/accessibility' },
@@ -132,7 +160,9 @@ const RightColumn = ({ user = null, openLogin, onProfileClick }) => {
     <div className="right-column">
       {!user && (
         <div className="right-column__login-msg">
-          <span className="right-column__login-icon">🔒</span>
+          <span className="right-column__login-icon">
+            <IconLock size={28} color="#0a66c2" />
+          </span>
           <h4 className="right-column__login-title">
             {t("rightColumn.loginTitle")}
           </h4>
@@ -149,7 +179,7 @@ const RightColumn = ({ user = null, openLogin, onProfileClick }) => {
       )}
 
       <div className="right-column__title">
-        <span>👥</span>
+        <IconUsers size={18} color="#0a66c2" />
         {user ? t("rightColumn.suggestionsForYou") : t("rightColumn.popular")}
       </div>
 
@@ -215,7 +245,10 @@ const RightColumn = ({ user = null, openLogin, onProfileClick }) => {
       ) : (
         <div className="right-column__empty">
           <span className="right-column__empty-icon">
-            {user ? "🌟" : "🔒"}
+            {user
+              ? <IconStar size={32} color="#9ca3af" />
+              : <IconLock size={32} color="#9ca3af" />
+            }
           </span>
           <div>
             {user
@@ -229,12 +262,11 @@ const RightColumn = ({ user = null, openLogin, onProfileClick }) => {
         className="right-column__view-all"
         onClick={() => user ? navigate('/reseau') : openLogin()}
       >
-        {t("rightColumn.viewAll")} →
+        {t("rightColumn.viewAll")} <IconArrowRight size={13} />
       </div>
 
       <div className="right-column__divider"></div>
 
-      {/* ─── Footer with React Router links ─────────────────────────────── */}
       <footer className="right-column__footer">
         <nav
           className="right-column__footer-links"
