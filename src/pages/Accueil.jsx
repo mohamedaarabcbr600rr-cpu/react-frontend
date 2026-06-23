@@ -12,6 +12,82 @@ import RightColumn from '../components/RightColumn';
 import './Accueil.css';
 import '../styles/global.css';
 
+// ─── SVG Icon Components ───────────────────────────────────────────────────────
+
+const IconUser = ({ size = 20, color = "currentColor" }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
+    stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"
+    aria-hidden="true">
+    <circle cx="12" cy="8" r="4" />
+    <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
+  </svg>
+);
+
+const IconCamera = ({ size = 18, color = "currentColor" }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
+    stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"
+    aria-hidden="true">
+    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+    <circle cx="12" cy="13" r="4" />
+  </svg>
+);
+
+const IconCalendar = ({ size = 18, color = "currentColor" }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
+    stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"
+    aria-hidden="true">
+    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+    <line x1="16" y1="2" x2="16" y2="6" />
+    <line x1="8" y1="2" x2="8" y2="6" />
+    <line x1="3" y1="10" x2="21" y2="10" />
+  </svg>
+);
+
+const IconPen = ({ size = 18, color = "currentColor" }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
+    stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"
+    aria-hidden="true">
+    <path d="M12 20h9" />
+    <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z" />
+  </svg>
+);
+
+const IconRocket = ({ size = 40, color = "currentColor" }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
+    stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"
+    aria-hidden="true">
+    <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z" />
+    <path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z" />
+    <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0" />
+    <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5" />
+  </svg>
+);
+
+const IconFileText = ({ size = 40, color = "currentColor" }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
+    stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"
+    aria-hidden="true">
+    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+    <polyline points="14 2 14 8 20 8" />
+    <line x1="16" y1="13" x2="8" y2="13" />
+    <line x1="16" y1="17" x2="8" y2="17" />
+    <polyline points="10 9 9 9 8 9" />
+  </svg>
+);
+
+const IconShare = ({ size = 40, color = "currentColor" }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
+    stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"
+    aria-hidden="true">
+    <circle cx="18" cy="5" r="3" />
+    <circle cx="6" cy="12" r="3" />
+    <circle cx="18" cy="19" r="3" />
+    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+    <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+  </svg>
+);
+
+// ──────────────────────────────────────────────────────────────────────────────
 
 const Accueil = ({
   user = null,
@@ -55,14 +131,12 @@ const Accueil = ({
   // Effet pour scroller vers une expérience spécifique
   useEffect(() => {
     if (scrollToExpId) {
-      // Force le filtre à 'all' pour voir toutes les publications
       setFilter('all');
-      
-      // Attend que le DOM soit complètement mis à jour
+
       const tryScroll = (attempts = 0) => {
         const element = document.getElementById(`experience-${scrollToExpId}`);
         console.log(`🔍 Tentative ${attempts + 1}: recherche experience-${scrollToExpId}`, element);
-        
+
         if (element) {
           element.scrollIntoView({ behavior: 'smooth', block: 'center' });
           element.style.boxShadow = '0 0 0 3px #1877f2';
@@ -74,18 +148,17 @@ const Accueil = ({
           setTimeout(() => tryScroll(attempts + 1), 800);
         } else {
           console.error('❌ Élément introuvable après 10 tentatives');
-          console.log('📋 Expériences affichées:', 
+          console.log('📋 Expériences affichées:',
             document.querySelectorAll('[id^="experience-"]').length,
             'éléments trouvés dans le DOM'
           );
-          console.log('🔍 IDs disponibles:', 
+          console.log('🔍 IDs disponibles:',
             Array.from(document.querySelectorAll('[id^="experience-"]')).map(el => el.id)
           );
           console.log('🎯 ID recherché:', `experience-${scrollToExpId}`);
         }
       };
-      
-      // Premier essai après 800ms (laisser plus de temps au rendu)
+
       requestAnimationFrame(() => {
         setTimeout(() => tryScroll(), 300);
       });
@@ -162,18 +235,19 @@ const Accueil = ({
             <div
               className="create-post__avatar"
               onClick={user ? onProfileClick : openLogin}
+              aria-label={user ? user.name : t("home.loginToPost")}
             >
               {user && user.profile_pic && !avatarError ? (
                 <img
                   src={user.profile_pic?.startsWith('http') ? user.profile_pic : `${import.meta.env.VITE_API_URL}${user.profile_pic}`}
                   alt={user.name}
                   className="create-post__avatar-image"
-                  onError={() => {
-                    setAvatarError(true);
-                  }}
+                  onError={() => setAvatarError(true)}
                 />
               ) : (
-                user ? getInitials(user.name) : '👤'
+                user
+                  ? getInitials(user.name)
+                  : <IconUser size={22} color="#6b7280" />
               )}
             </div>
             <div
@@ -195,15 +269,21 @@ const Accueil = ({
 
           <div className="create-post__actions">
             <button className="create-post__action">
-              <span className="create-post__action-icon">📷</span>
+              <span className="create-post__action-icon">
+                <IconCamera size={18} color="#0a66c2" />
+              </span>
               <span>{t("home.actions.media")}</span>
             </button>
             <button className="create-post__action">
-              <span className="create-post__action-icon">📅</span>
+              <span className="create-post__action-icon">
+                <IconCalendar size={18} color="#e67e22" />
+              </span>
               <span>{t("home.actions.event")}</span>
             </button>
             <button className="create-post__action">
-              <span className="create-post__action-icon">✍️</span>
+              <span className="create-post__action-icon">
+                <IconPen size={18} color="#27ae60" />
+              </span>
               <span>{t("home.actions.write")}</span>
             </button>
           </div>
@@ -277,7 +357,9 @@ const Accueil = ({
             <div className="feed__empty">
               {filter === 'my' ? (
                 <>
-                  <span className="feed__empty-icon">📝</span>
+                  <span className="feed__empty-icon">
+                    <IconFileText size={40} color="#9ca3af" />
+                  </span>
                   <h3 className="feed__empty-title">
                     {t("home.empty.myPosts.title")}
                   </h3>
@@ -287,7 +369,9 @@ const Accueil = ({
                 </>
               ) : filter === 'shared' ? (
                 <>
-                  <span className="feed__empty-icon">🔄</span>
+                  <span className="feed__empty-icon">
+                    <IconShare size={40} color="#9ca3af" />
+                  </span>
                   <h3 className="feed__empty-title">
                     {t("home.empty.shared.title")}
                   </h3>
@@ -297,7 +381,9 @@ const Accueil = ({
                 </>
               ) : (
                 <>
-                  <span className="feed__empty-icon">🚀</span>
+                  <span className="feed__empty-icon">
+                    <IconRocket size={40} color="#9ca3af" />
+                  </span>
                   <h3 className="feed__empty-title">
                     {t("home.empty.all.title")}
                   </h3>
@@ -323,10 +409,3 @@ const Accueil = ({
 };
 
 export default Accueil;
-
-
-
-
-
-
-
