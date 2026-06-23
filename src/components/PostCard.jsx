@@ -4,6 +4,119 @@ import { useTranslation } from 'react-i18next';
 import axios from '../axios';
 import './PostCard.css';
 
+// ─── SVG Icon Components ───────────────────────────────────────────────────────
+
+const IconThumbUp = ({ size = 18, color = "currentColor" }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
+    stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"
+    aria-hidden="true">
+    <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z" />
+    <path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3" />
+  </svg>
+);
+
+const IconComment = ({ size = 18, color = "currentColor" }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
+    stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"
+    aria-hidden="true">
+    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+  </svg>
+);
+
+const IconShare = ({ size = 18, color = "currentColor" }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
+    stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"
+    aria-hidden="true">
+    <polyline points="17 1 21 5 17 9" />
+    <path d="M3 11V9a4 4 0 0 1 4-4h14" />
+    <polyline points="7 23 3 19 7 15" />
+    <path d="M21 13v2a4 4 0 0 1-4 4H3" />
+  </svg>
+);
+
+const IconSend = ({ size = 18, color = "currentColor" }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
+    stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"
+    aria-hidden="true">
+    <line x1="22" y1="2" x2="11" y2="13" />
+    <polygon points="22 2 15 22 11 13 2 9 22 2" />
+  </svg>
+);
+
+const IconTrash = ({ size = 16, color = "currentColor" }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
+    stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"
+    aria-hidden="true">
+    <polyline points="3 6 5 6 21 6" />
+    <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+    <path d="M10 11v6" />
+    <path d="M14 11v6" />
+    <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+  </svg>
+);
+
+const IconClose = ({ size = 16, color = "currentColor" }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
+    stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+    aria-hidden="true">
+    <line x1="18" y1="6" x2="6" y2="18" />
+    <line x1="6" y1="6" x2="18" y2="18" />
+  </svg>
+);
+
+const IconCheck = ({ size = 32, color = "#22c55e" }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
+    stroke={color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+    aria-hidden="true">
+    <polyline points="20 6 9 17 4 12" />
+  </svg>
+);
+
+const IconChevronLeft = ({ size = 32, color = "currentColor" }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
+    stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+    aria-hidden="true">
+    <polyline points="15 18 9 12 15 6" />
+  </svg>
+);
+
+const IconChevronRight = ({ size = 32, color = "currentColor" }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
+    stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+    aria-hidden="true">
+    <polyline points="9 18 15 12 9 6" />
+  </svg>
+);
+
+const IconReply = ({ size = 14, color = "currentColor" }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
+    stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+    aria-hidden="true">
+    <polyline points="9 17 4 12 9 7" />
+    <path d="M20 18v-2a4 4 0 0 0-4-4H4" />
+  </svg>
+);
+
+const IconArrowRight = ({ size = 14, color = "currentColor" }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
+    stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+    aria-hidden="true">
+    <line x1="5" y1="12" x2="19" y2="12" />
+    <polyline points="12 5 19 12 12 19" />
+  </svg>
+);
+
+const IconCopy = ({ size = 16, color = "currentColor" }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
+    stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"
+    aria-hidden="true">
+    <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+  </svg>
+);
+
+// ──────────────────────────────────────────────────────────────────────────────
+
 const PostCard = ({
   experience,
   user,
@@ -209,57 +322,55 @@ const PostCard = ({
   const displayComments   = showComments ? exp.comments : (exp.comments?.slice(0, 2) || []);
   const currentReaction   = getCurrentReaction();
 
-  /* ── Galerie multi-images (style Facebook) ── */
- const renderMediaGallery = (medias, isShared = false) => {
-  if (!medias || medias.length === 0) return null;
-  const count = medias.length;
+  /* ── Galerie multi-images ── */
+  const renderMediaGallery = (medias, isShared = false) => {
+    if (!medias || medias.length === 0) return null;
+    const count = medias.length;
+    const openModal = (index) => { if (!isShared) setModalIndex(index); };
 
-  const openModal = (index) => { if (!isShared) setModalIndex(index); };
+    if (count === 1) {
+      const m = medias[0];
+      return (
+        <div className="post-card__media post-card__media--single" onClick={() => openModal(0)}>
+          {m.type === 'image'
+            ? <img src={m.url} alt="media" className="post-card__media-image" onError={() => setMediaError(true)} />
+            : <video src={m.url} controls className="post-card__media-image" />}
+          {!isShared && <div className="post-card__media-overlay">{t("post.media.clickToEnlarge")}</div>}
+        </div>
+      );
+    }
 
-  if (count === 1) {
-    const m = medias[0];
+    if (count === 2) {
+      return (
+        <div className="post-card__media-grid post-card__media-grid--2">
+          {medias.map((m, i) => (
+            <div key={i} className="post-card__media-grid-item" onClick={() => openModal(i)}>
+              <img src={m.url} alt={`media-${i}`} className="post-card__media-grid-img" />
+            </div>
+          ))}
+        </div>
+      );
+    }
+
+    const visible  = medias.slice(0, 3);
+    const overflow = count - 3;
     return (
-      <div className="post-card__media post-card__media--single" onClick={() => openModal(0)}>
-        {m.type === 'image'
-          ? <img src={m.url} alt="media" className="post-card__media-image" onError={() => setMediaError(true)} />
-          : <video src={m.url} controls className="post-card__media-image" />}
-        {!isShared && <div className="post-card__media-overlay">{t("post.media.clickToEnlarge")}</div>}
-      </div>
-    );
-  }
-
-  if (count === 2) {
-    return (
-      <div className="post-card__media-grid post-card__media-grid--2">
-        {medias.map((m, i) => (
-          <div key={i} className="post-card__media-grid-item" onClick={() => openModal(i)}>
+      <div className="post-card__media-grid post-card__media-grid--3">
+        {visible.map((m, i) => (
+          <div key={i} className={`post-card__media-grid-item ${i === 0 ? 'post-card__media-grid-item--main' : ''}`} onClick={() => openModal(i)}>
             <img src={m.url} alt={`media-${i}`} className="post-card__media-grid-img" />
+            {i === 2 && overflow > 0 && <div className="post-card__media-grid-overlay">+{overflow}</div>}
           </div>
         ))}
       </div>
     );
-  }
+  };
 
-  const visible  = medias.slice(0, 3);
-  const overflow = count - 3;
-  return (
-    <div className="post-card__media-grid post-card__media-grid--3">
-      {visible.map((m, i) => (
-        <div key={i} className={`post-card__media-grid-item ${i === 0 ? 'post-card__media-grid-item--main' : ''}`} onClick={() => openModal(i)}>
-          <img src={m.url} alt={`media-${i}`} className="post-card__media-grid-img" />
-          {i === 2 && overflow > 0 && <div className="post-card__media-grid-overlay">+{overflow}</div>}
-        </div>
-      ))}
-    </div>
-  );
-};
-
-// Fonction qui normalise les deux formats vers un tableau
-const getMedias = (exp, isShared = false) => {
-  if (exp.medias && exp.medias.length > 0) return exp.medias;
-  if (exp.media_url) return [{ url: exp.media_url, type: exp.media_type || 'image' }];
-  return [];
-};
+  const getMedias = (exp) => {
+    if (exp.medias && exp.medias.length > 0) return exp.medias;
+    if (exp.media_url) return [{ url: exp.media_url, type: exp.media_type || 'image' }];
+    return [];
+  };
 
   return (
     <div id={`experience-${exp.id}`} className="post-card">
@@ -288,7 +399,9 @@ const getMedias = (exp, isShared = false) => {
               catch (err) { console.error(err); alert(t("post.delete.error")); }
             }}
             title={t("post.delete.title")}
-          >🗑️</button>
+          >
+            <IconTrash size={16} color="#6b7280" />
+          </button>
         )}
       </div>
 
@@ -335,7 +448,9 @@ const getMedias = (exp, isShared = false) => {
           <div className="reactions-modal" onClick={(e) => e.stopPropagation()}>
             <div className="reactions-modal__header">
               <h3 className="reactions-modal__title">{t("post.reactions.title")}</h3>
-              <button className="reactions-modal__close" onClick={() => setShowReactionsList(false)}>✕</button>
+              <button className="reactions-modal__close" onClick={() => setShowReactionsList(false)} aria-label="Fermer">
+                <IconClose size={16} color="#6b7280" />
+              </button>
             </div>
             <div className="reactions-modal__tabs">
               <button className={`reactions-modal__tab ${activeReactionFilter === 'all' ? 'active' : ''}`} onClick={() => setActiveReactionFilter('all')}>
@@ -366,7 +481,9 @@ const getMedias = (exp, isShared = false) => {
                       <div className="reactions-modal__user-name">{reactor?.name || t("post.user.anonymous")}{isMe && <span className="reactions-modal__you-badge">{t("post.user.you")}</span>}</div>
                       <div className="reactions-modal__reaction-label">{reactionLabelMap[rType] || rType}</div>
                     </div>
-                    <div className="reactions-modal__view-profile">{t("post.reactions.viewProfile")} →</div>
+                    <div className="reactions-modal__view-profile">
+                      {t("post.reactions.viewProfile")} <IconArrowRight size={13} />
+                    </div>
                   </div>
                 );
               })}
@@ -384,7 +501,10 @@ const getMedias = (exp, isShared = false) => {
             onMouseEnter={() => setShowReactionMenu(true)}
             onMouseLeave={() => setTimeout(() => setShowReactionMenu(false), 500)}
           >
-            <span>{currentReaction?.emoji || '👍'}</span>
+            {currentReaction
+              ? <span>{currentReaction.emoji}</span>
+              : <IconThumbUp size={18} color={liked ? '#1877f2' : 'currentColor'} />
+            }
             <span>{currentReaction?.label || t("post.reactions.like")}</span>
           </button>
           <div className={`reaction-menu ${showReactionMenu ? 'show' : ''}`} onMouseEnter={() => setShowReactionMenu(true)} onMouseLeave={() => setShowReactionMenu(false)}>
@@ -395,14 +515,20 @@ const getMedias = (exp, isShared = false) => {
             ))}
           </div>
         </div>
+
         <button onClick={toggleComments} className={`post-card__action ${showComments ? 'post-card__action--active' : ''}`}>
-          <span className="post-card__action-icon">💬</span><span>{t("post.actions.comment")}</span>
+          <span className="post-card__action-icon"><IconComment size={18} /></span>
+          <span>{t("post.actions.comment")}</span>
         </button>
+
         <button onClick={handleShare} className="post-card__action">
-          <span className="post-card__action-icon">🔄</span><span>{t("post.actions.share")}</span>
+          <span className="post-card__action-icon"><IconShare size={18} /></span>
+          <span>{t("post.actions.share")}</span>
         </button>
+
         <button onClick={handleSendClick} className="post-card__action">
-          <span className="post-card__action-icon">📤</span><span>{t("post.actions.send")}</span>
+          <span className="post-card__action-icon"><IconSend size={18} /></span>
+          <span>{t("post.actions.send")}</span>
         </button>
       </div>
 
@@ -413,8 +539,11 @@ const getMedias = (exp, isShared = false) => {
             <div className="comments-input-container">
               {replyingTo && (
                 <div className="reply-indicator">
-                  <span>↩ {t("post.comments.reply")} @{replyingTo.userName}</span>
-                  <button onClick={() => { setReplyingTo(null); setCommentTexts(prev => ({ ...prev, [exp.id]: '' })); }}>✕</button>
+                  <IconReply size={13} />
+                  <span>{t("post.comments.reply")} @{replyingTo.userName}</span>
+                  <button onClick={() => { setReplyingTo(null); setCommentTexts(prev => ({ ...prev, [exp.id]: '' })); }} aria-label="Annuler la réponse">
+                    <IconClose size={13} />
+                  </button>
                 </div>
               )}
               <div className="comments-avatar">{renderAvatar(user)}</div>
@@ -431,7 +560,9 @@ const getMedias = (exp, isShared = false) => {
               <button onClick={handleCommentSubmit} className={`comments-submit-btn ${(commentTexts[exp.id] || '').trim() ? 'active' : 'disabled'}`} disabled={!(commentTexts[exp.id] || '').trim()}>
                 {t("post.comments.send")}
               </button>
-              <button onClick={handleCancelComment} className="comments-cancel-btn">✕</button>
+              <button onClick={handleCancelComment} className="comments-cancel-btn" aria-label="Annuler">
+                <IconClose size={14} />
+              </button>
             </div>
           ) : (
             <div className="comments-input-container">
@@ -480,8 +611,15 @@ const getMedias = (exp, isShared = false) => {
                           setActiveCommentId(exp.id);
                           setCommentTexts(prev => ({ ...prev, [exp.id]: `@${comment.user?.name} ` }));
                           setTimeout(() => document.getElementById(`comment-input-${exp.id}`)?.focus(), 50);
-                        }}>{t("post.comments.reply")}</button>
-                        {comment.user?.id === user?.id && onDeleteComment && (<><span>•</span><button className="comment-action-btn delete" onClick={() => onDeleteComment(exp.id, comment.id)}>{t("post.comments.delete")}</button></>)}
+                        }}>
+                          <IconReply size={13} /> {t("post.comments.reply")}
+                        </button>
+                        {comment.user?.id === user?.id && onDeleteComment && (
+                          <><span>•</span>
+                          <button className="comment-action-btn delete" onClick={() => onDeleteComment(exp.id, comment.id)}>
+                            {t("post.comments.delete")}
+                          </button></>
+                        )}
                       </div>
                       {comment.replies && comment.replies.length > 0 && (
                         <div className="replies-list">
@@ -519,14 +657,21 @@ const getMedias = (exp, isShared = false) => {
           <div className="send-modal" onClick={(e) => e.stopPropagation()}>
             <div className="send-modal__header">
               <h3 className="send-modal__title">{t("post.send.title")}</h3>
-              <button className="send-modal__close" onClick={() => setShowSendModal(false)}>✕</button>
+              <button className="send-modal__close" onClick={() => setShowSendModal(false)} aria-label="Fermer">
+                <IconClose size={16} color="#6b7280" />
+              </button>
             </div>
             <div className="send-modal__body">
               <div className="copy-link-section">
                 <div className="copy-link-title">{t("post.send.copyLink")}</div>
                 <div className="copy-link-group">
                   <input type="text" className="copy-link-input" value={`${window.location.origin}/post/${exp.id}`} readOnly />
-                  <button className={`copy-link-btn ${copied ? 'copied' : ''}`} onClick={handleCopyLink}>{copied ? t("post.send.copied") : t("post.send.copy")}</button>
+                  <button className={`copy-link-btn ${copied ? 'copied' : ''}`} onClick={handleCopyLink}>
+                    {copied
+                      ? <><IconCheck size={14} color="#22c55e" /> {t("post.send.copied")}</>
+                      : <><IconCopy size={14} /> {t("post.send.copy")}</>
+                    }
+                  </button>
                 </div>
               </div>
               {friends.length > 0 && (
@@ -556,31 +701,39 @@ const getMedias = (exp, isShared = false) => {
       {showShareModal && (
         <div className="share-modal-overlay">
           <div className="share-modal">
-            <div className="share-modal__icon">✅</div>
+            <div className="share-modal__icon">
+              <IconCheck size={32} color="#22c55e" />
+            </div>
             <div className="share-modal__text">{t("post.share.success")}</div>
             <p className="share-modal__subtext">{exp.user?.name} {t("post.share.successMessage")}</p>
           </div>
         </div>
       )}
 
-      {/* ── Media Modal (navigation) ── */}
+      {/* ── Media Modal ── */}
       {modalIndex !== null && getMedias(exp).length > 0 && (
-  <div className="media-modal-overlay" onClick={() => setModalIndex(null)}>
-    <button className="media-modal-close" onClick={() => setModalIndex(null)}>✕</button>
-    {modalIndex > 0 && (
-      <button className="media-modal-prev" onClick={(e) => { e.stopPropagation(); setModalIndex(i => i - 1); }}>‹</button>
-    )}
-    <div className="media-modal-content" onClick={(e) => e.stopPropagation()}>
-      {getMedias(exp)[modalIndex]?.type === 'image'
-        ? <img src={getMedias(exp)[modalIndex]?.url} alt="media" className="media-modal-image" />
-        : <video src={getMedias(exp)[modalIndex]?.url} controls className="media-modal-image" />}
-      <div className="media-modal-counter">{modalIndex + 1} / {getMedias(exp).length}</div>
-    </div>
-    {modalIndex < getMedias(exp).length - 1 && (
-      <button className="media-modal-next" onClick={(e) => { e.stopPropagation(); setModalIndex(i => i + 1); }}>›</button>
-    )}
-  </div>
-)}
+        <div className="media-modal-overlay" onClick={() => setModalIndex(null)}>
+          <button className="media-modal-close" onClick={() => setModalIndex(null)} aria-label="Fermer">
+            <IconClose size={20} color="#ffffff" />
+          </button>
+          {modalIndex > 0 && (
+            <button className="media-modal-prev" onClick={(e) => { e.stopPropagation(); setModalIndex(i => i - 1); }} aria-label="Précédent">
+              <IconChevronLeft size={32} color="#ffffff" />
+            </button>
+          )}
+          <div className="media-modal-content" onClick={(e) => e.stopPropagation()}>
+            {getMedias(exp)[modalIndex]?.type === 'image'
+              ? <img src={getMedias(exp)[modalIndex]?.url} alt="media" className="media-modal-image" />
+              : <video src={getMedias(exp)[modalIndex]?.url} controls className="media-modal-image" />}
+            <div className="media-modal-counter">{modalIndex + 1} / {getMedias(exp).length}</div>
+          </div>
+          {modalIndex < getMedias(exp).length - 1 && (
+            <button className="media-modal-next" onClick={(e) => { e.stopPropagation(); setModalIndex(i => i + 1); }} aria-label="Suivant">
+              <IconChevronRight size={32} color="#ffffff" />
+            </button>
+          )}
+        </div>
+      )}
 
     </div>
   );
