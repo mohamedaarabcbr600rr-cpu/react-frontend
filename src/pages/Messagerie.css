@@ -700,3 +700,397 @@
     width: 420px;
   }
 }
+/*
+ * ── PASTE THESE ADDITIONS INTO YOUR Messagerie.css ──────────────────────────
+ * These additions are ADDITIVE — they do not replace your existing styles.
+ * Add them at the bottom of your existing Messagerie.css file.
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
+
+/* ── 1. ROOT LAYOUT: full viewport, no page scroll ──────────────────────────
+ * The wa-root fills the full screen. wa-chat is a flex column.
+ * ONLY wa-messages overflows and scrolls. Nothing else.
+ */
+html, body, #root {
+  height: 100%;
+  overflow: hidden; /* prevent outer page from scrolling */
+}
+
+.wa-root {
+  display: flex;
+  height: 100dvh;          /* dynamic viewport height — handles mobile keyboard */
+  height: 100vh;           /* fallback for older browsers */
+  overflow: hidden;
+  position: fixed;         /* locks layout in place on mobile when keyboard opens */
+  inset: 0;
+}
+
+.wa-chat {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* ── Chat header: never scrolls ────────────────────────────────────────────── */
+.wa-chat-header {
+  flex-shrink: 0;           /* never compress */
+  z-index: 10;
+}
+
+/* ── Messages: ONLY this scrolls ───────────────────────────────────────────── */
+.wa-messages {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch; /* smooth momentum scrolling on iOS */
+  overscroll-behavior: contain;      /* prevent scroll chaining to parent */
+  scroll-behavior: auto;             /* let JS control smooth vs instant */
+  padding-bottom: env(safe-area-inset-bottom, 0px); /* iOS home bar */
+}
+
+/* ── Input area: always sticks to bottom ───────────────────────────────────── */
+.wa-input-area {
+  flex-shrink: 0;
+  padding-bottom: env(safe-area-inset-bottom, 0px); /* iOS home bar */
+  z-index: 10;
+}
+
+/* ── Sidebar fixed height ───────────────────────────────────────────────────── */
+.wa-sidebar {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.wa-contacts {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+
+/* ── 2. SKELETON LOADERS ─────────────────────────────────────────────────────
+ * Messenger-style animated shimmer skeletons.
+ */
+@keyframes wa-shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+.wa-skeleton {
+  border-radius: 8px;
+  background: linear-gradient(
+    90deg,
+    rgba(120, 120, 128, 0.12) 25%,
+    rgba(120, 120, 128, 0.24) 50%,
+    rgba(120, 120, 128, 0.12) 75%
+  );
+  background-size: 800px 100%;
+  animation: wa-shimmer 1.4s ease-in-out infinite;
+}
+
+.wa-skeleton-contact {
+  pointer-events: none;
+  cursor: default;
+}
+
+.wa-skeleton-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.wa-skeleton-name {
+  width: 120px;
+  height: 13px;
+  border-radius: 6px;
+}
+
+.wa-skeleton-time {
+  width: 36px;
+  height: 11px;
+  border-radius: 4px;
+}
+
+.wa-skeleton-preview {
+  width: 180px;
+  height: 11px;
+  border-radius: 4px;
+  margin-top: 6px;
+}
+
+/* Message skeletons */
+.wa-messages-skeleton {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.wa-skeleton-bubble {
+  height: 42px;
+  border-radius: 18px;
+  max-width: 65%;
+}
+
+.wa-skeleton-bubble.other {
+  align-self: flex-start;
+  border-bottom-left-radius: 4px;
+}
+
+.wa-skeleton-bubble.own {
+  align-self: flex-end;
+  border-bottom-right-radius: 4px;
+}
+
+
+/* ── 3. OPTIMISTIC MESSAGE STATES ────────────────────────────────────────────
+ * Sending: slightly dimmed. Failed: red tint.
+ */
+.wa-bubble--sending {
+  opacity: 0.75;
+  transition: opacity 0.2s ease;
+}
+
+.wa-bubble--failed {
+  border: 1px solid #ff4444;
+}
+
+/* Tick icons */
+.wa-ticks {
+  font-size: 12px;
+  margin-left: 3px;
+  color: rgba(255, 255, 255, 0.6);
+  display: inline-block;
+  line-height: 1;
+}
+
+.wa-ticks.seen {
+  color: #53bdeb; /* WhatsApp blue ticks */
+}
+
+.wa-ticks.sending {
+  font-size: 10px;
+  opacity: 0.7;
+}
+
+
+/* ── 4. UNREAD BADGE ─────────────────────────────────────────────────────────
+ * Clean badge replacing the inline style.
+ */
+.wa-unread-badge {
+  background: #25D366;
+  color: #fff;
+  border-radius: 50%;
+  min-width: 20px;
+  height: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 5px;
+  flex-shrink: 0;
+}
+
+
+/* ── 5. MULTIPLE IMAGE PREVIEWS ──────────────────────────────────────────────
+ * Strip of image thumbnails above the input before sending.
+ */
+.wa-file-preview-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px 12px 0;
+  max-height: 120px;
+  overflow-y: auto;
+}
+
+.wa-file-preview-item {
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.wa-file-preview-img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  display: block;
+  border-radius: 10px;
+}
+
+.wa-file-preview-doc {
+  width: 100px;
+  height: 60px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  padding: 4px 6px;
+  font-size: 11px;
+  gap: 4px;
+  overflow: hidden;
+}
+
+.wa-file-preview-doc span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wa-remove-file {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.65);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+
+/* ── 6. MULTI-IMAGE BUBBLE GRID ──────────────────────────────────────────────
+ * Images inside a bubble use a CSS grid that adapts to count.
+ */
+.wa-bubble-images {
+  display: grid;
+  gap: 2px;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 4px;
+  max-width: 280px;
+}
+
+.wa-bubble-images--1 { grid-template-columns: 1fr; }
+.wa-bubble-images--2 { grid-template-columns: 1fr 1fr; }
+.wa-bubble-images--3 { grid-template-columns: 1fr 1fr; }
+.wa-bubble-images--3 .wa-bubble-img:first-child { grid-column: 1 / -1; }
+.wa-bubble-images--4 { grid-template-columns: 1fr 1fr; }
+
+.wa-bubble-img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  display: block;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.wa-bubble-img:hover { opacity: 0.92; }
+
+.wa-bubble-img--preview {
+  opacity: 0.85;
+  pointer-events: none; /* no click on optimistic previews */
+}
+
+
+/* ── 7. TOUCH / MOBILE IMPROVEMENTS ─────────────────────────────────────────
+ * Better tap targets, reduced tap delay, smooth interactions.
+ */
+.wa-contact,
+.wa-send-btn,
+.wa-input-icon,
+.wa-emoji-btn,
+.wa-back-btn {
+  -webkit-tap-highlight-color: transparent; /* remove grey flash on tap */
+  touch-action: manipulation;               /* remove 300ms delay */
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.wa-contact {
+  -webkit-tap-highlight-color: transparent;
+  cursor: pointer;
+  transition: background 0.12s ease;
+  will-change: transform; /* GPU layer for smooth hover */
+}
+
+/* ── 8. SCROLL PERFORMANCE ───────────────────────────────────────────────────
+ * GPU-accelerated rendering for the message list.
+ */
+.wa-messages {
+  will-change: scroll-position;
+  contain: strict;           /* layout containment — browser optimizes paint */
+  transform: translateZ(0);  /* promote to GPU layer */
+}
+
+/* Each message row avoids layout recalc on siblings */
+.wa-msg-row {
+  contain: layout;
+}
+
+
+/* ── 9. SMOOTH MESSAGE APPEAR ANIMATION ──────────────────────────────────────
+ * New messages slide in softly.
+ */
+@keyframes wa-msg-in-own {
+  from { opacity: 0; transform: translateY(8px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes wa-msg-in-other {
+  from { opacity: 0; transform: translateY(8px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.wa-msg-row.own .wa-bubble {
+  animation: wa-msg-in-own 0.18s ease-out both;
+}
+
+.wa-msg-row.other .wa-bubble {
+  animation: wa-msg-in-other 0.18s ease-out both;
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .wa-msg-row.own .wa-bubble,
+  .wa-msg-row.other .wa-bubble {
+    animation: none;
+  }
+}
+
+
+/* ── 10. MOBILE KEYBOARD HANDLING ────────────────────────────────────────────
+ * On small screens the keyboard pushes the viewport up.
+ * position: fixed + dvh ensures header and input stay visible.
+ */
+@media (max-width: 768px) {
+  .wa-root {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 100%;       /* fixed+inset handles keyboard push */
+  }
+
+  .wa-messages {
+    /* padding so last message isn't hidden behind the input */
+    padding-bottom: 8px;
+  }
+}
+
+/* ── 11. SIDEBAR SCROLL ───────────────────────────────────────────────────── */
+.wa-sidebar-header {
+  flex-shrink: 0;
+}
+
+.wa-search-wrap {
+  flex-shrink: 0;
+}
