@@ -33,7 +33,7 @@
 /* ── Root Layout ──────────────────────────────────────── */
 .wa-root {
   display: flex;
-  height: 100vh;
+  height: 100dvh;          /* ← was 100vh */
   width: 100%;
   font-family: var(--font);
   background: var(--wa-chat-bg);
@@ -216,6 +216,8 @@
   position: relative;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' opacity='0.04'%3E%3Ccircle cx='40' cy='40' r='16' fill='none' stroke='%23128C7E' stroke-width='2'/%3E%3C/svg%3E");
   min-width: 0;
+  min-height: 0;           /* ← ADD THIS — prevents flex child from overflowing */
+  overflow: hidden;        /* ← ADD THIS */
 }
 
 /* ── Chat Header ──────────────────────────────────────── */
@@ -228,6 +230,8 @@
   box-shadow: 0 4px 10px rgba(79, 195, 247, 0.25);
   min-height: 64px;
   color: #ffffff;
+  flex-shrink: 0;          /* ← ADD THIS */
+  z-index: 10;             /* ← ADD THIS */
 }
 
 .wa-chat-header--empty {
@@ -274,6 +278,7 @@
   display: flex;
   flex-direction: column;
   gap: 3px;
+  min-height: 0;           /* ← ADD THIS — critical for Firefox + Safari */
 }
 
 /* ── Date Separator ───────────────────────────────────── */
@@ -474,6 +479,8 @@
   background: var(--wa-input-bg);
   border-top: 1px solid var(--wa-border);
   padding: 10px 16px 14px;
+  flex-shrink: 0;          /* ← ADD THIS */
+  z-index: 10;             /* ← ADD THIS */
 }
 
 .wa-file-preview {
@@ -656,7 +663,7 @@
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%;
+    height: 100%;           /* stays 100% of fixed parent = full screen */
     min-width: unset;
     transform: translateX(-100%);
     transition: transform 0.28s cubic-bezier(.4,0,.2,1);
@@ -669,8 +676,9 @@
 
   .wa-chat {
     width: 100%;
-    height: 100%;
+    height: 100dvh;         /* ← was unset on mobile */
   }
+
 
   .wa-back-btn {
     display: block;
