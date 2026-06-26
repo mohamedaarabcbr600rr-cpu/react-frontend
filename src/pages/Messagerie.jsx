@@ -175,6 +175,7 @@ const Messagerie = ({ authUserId, baseUrl = import.meta.env.VITE_API_URL }) => {
   const [showEmoji, setShowEmoji] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [loadingMessages, setLoadingMessages] = useState(false);
   const [unreadPerUser, setUnreadPerUser] = useState({});
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
@@ -269,10 +270,12 @@ useEffect(() => {
             }
             return res.data;
           });
+          // ← New messages arrived — loading screen can go
+          setLoadingMessages(false);
           // Mark as seen
           api.post(`/messages/${conversationId}/seen`, { user_id: authUserId }).catch(() => {});
         })
-        .catch(() => {});
+        .catch(() => { setLoadingMessages(false); });
     };
 
     fetchMessages();
@@ -294,24 +297,26 @@ useEffect(() => {
   }, [conversationId, authUserId]);
 
   // ── Start conversation ─────────────────────────────────────────────────────
-  const startConversation = useCallback(async (user) => {
+ const startConversation = useCallback(async (user) => {
     if (selectedUser?.id === user.id) {
       setSidebarOpen(false);
       return;
     }
     setLoading(true);
+    setLoadingMessages(true);
     try {
       const res = await api.post("/messages/conversations", {
         user_id: user.id,
         auth_user_id: authUserId,
       });
+      // ← Do NOT clear messages here — keep previous visible while loading
       setConversationId(res.data.id);
       setSelectedUser(user);
-      setMessages([]);
       setSidebarOpen(false);
       setTimeout(() => inputRef.current?.focus(), 100);
     } catch (err) {
       console.error(t("messagerie.errors.startConversation"), err);
+      setLoadingMessages(false);
     } finally {
       setLoading(false);
     }
@@ -540,15 +545,19 @@ useEffect(() => {
         )}
 
         {/* Messages */}
-        {/* Messages */}
 <div
   className="wa-messages"
   ref={messagesContainerRef}
   onScroll={handleScroll}
 >
+          {loadingMessages && (
+            <div className="wa-loading-overlay">
+              <div className="wa-loading-spinner" />
+            </div>
+          )}
           {!selectedUser ? (
             <EmptyState hasUser={false} t={t} />
-          ) : messages.length === 0 ? (
+          ) : messages.length === 0 && !loadingMessages ? (
             <EmptyState hasUser={true} userName={selectedUser.name} t={t} />
           ) : (
             Object.entries(groupedMessages).map(([date, msgs]) => (

@@ -708,3 +708,29 @@
     width: 420px;
   }
 }
+
+/* ── Conversation Loading Overlay ─────────────────────── */
+.wa-loading-overlay {
+  position: absolute;
+  inset: 64px 0 0 0;       /* below header */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(236, 229, 221, 0.6);
+  backdrop-filter: blur(2px);
+  z-index: 5;
+  pointer-events: none;
+}
+
+.wa-loading-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid rgba(18, 140, 126, 0.2);
+  border-top-color: var(--wa-dark-green);
+  border-radius: 50%;
+  animation: waSpin 0.7s linear infinite;
+}
+
+@keyframes waSpin {
+  to { transform: rotate(360deg); }
+}
