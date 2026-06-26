@@ -198,18 +198,23 @@ const Messagerie = ({ authUserId, baseUrl = import.meta.env.VITE_API_URL }) => {
  const isAtBottomRef = useRef(true);
 const messagesContainerRef = useRef(null);
 
-// Détecter si l'utilisateur est en bas
 const handleScroll = () => {
   const container = messagesContainerRef.current;
   if (!container) return;
-  const threshold = 100;
-  isAtBottomRef.current =
-    container.scrollHeight - container.scrollTop - container.clientHeight < threshold;
+  const distanceFromBottom =
+    container.scrollHeight - container.scrollTop - container.clientHeight;
+  isAtBottomRef.current = distanceFromBottom < 80;
 };
+
+const scrollToBottom = useCallback((behavior = "smooth") => {
+  const container = messagesContainerRef.current;
+  if (!container) return;
+  container.scrollTo({ top: container.scrollHeight, behavior });
+}, []);
 
 useEffect(() => {
   if (isAtBottomRef.current) {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    scrollToBottom("smooth");
   }
 }, [messages, otherUserTyping]);
 
@@ -331,8 +336,8 @@ useEffect(() => {
       seen: false,
       created_at: new Date().toISOString(),
     };
+   isAtBottomRef.current = true;          // ← moved BEFORE setMessages
     setMessages(prev => [...prev, optimistic]);
-    isAtBottomRef.current = true;
     setContent("");
     setFile(null);
     setFilePreview(null);
