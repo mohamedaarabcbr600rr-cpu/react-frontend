@@ -2,7 +2,6 @@
    Messagerie — WhatsApp-style, clean & responsive
    ═══════════════════════════════════════════════════════ */
 
-
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -30,14 +29,27 @@
   --font: 'Nunito', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-/* ── Root Layout ──────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════
+   ROOT LAYOUT — full viewport, nothing ever page-scrolls
+   ══════════════════════════════════════════════════════ */
+
+html, body, #root {
+  height: 100%;
+  overflow: hidden;
+}
+
 .wa-root {
   display: flex;
-  height: 100vh;
+  /* dvh = dynamic viewport height: shrinks when mobile keyboard opens */
+  height: 100dvh;
+  height: 100vh; /* fallback for older browsers */
   width: 100%;
   font-family: var(--font);
   background: var(--wa-chat-bg);
   overflow: hidden;
+  /* fixed positioning locks the shell when the soft keyboard appears on iOS */
+  position: fixed;
+  inset: 0;
 }
 
 /* ── Sidebar ──────────────────────────────────────────── */
@@ -48,9 +60,11 @@
   border-right: 1px solid var(--wa-border);
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow: hidden;   /* sidebar itself never scrolls — only .wa-contacts does */
   flex-shrink: 0;
+  height: 100%;       /* fills wa-root */
 }
+
 .wa-sidebar-header {
   display: flex;
   align-items: center;
@@ -59,6 +73,7 @@
   background: linear-gradient(135deg, #44b0f4, #4FC3F7);
   color: #ffffff;
   box-shadow: 0 4px 10px rgba(79, 195, 247, 0.25);
+  flex-shrink: 0;     /* never compressed */
 }
 
 .wa-sidebar-title {
@@ -72,6 +87,7 @@
   padding: 10px 14px;
   background: var(--wa-sidebar-bg);
   border-bottom: 1px solid var(--wa-border);
+  flex-shrink: 0;     /* never compressed */
 }
 
 .wa-search-box {
@@ -103,10 +119,12 @@
   color: var(--wa-text-sub);
 }
 
-/* ── Contacts List ────────────────────────────────────── */
+/* ── Contacts List — ONLY this section scrolls inside the sidebar ─────────── */
 .wa-contacts {
   flex: 1;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
 }
 
 .wa-no-contacts {
@@ -134,6 +152,11 @@
   cursor: pointer;
   border-bottom: 1px solid var(--wa-border);
   transition: background 0.15s;
+  /* touch improvements */
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .wa-contact:hover {
@@ -207,18 +230,36 @@
   border-radius: 50%;
 }
 
-/* ── Chat Panel ───────────────────────────────────────── */
+/* ── Unread badge ─────────────────────────────────────── */
+.wa-unread-badge {
+  background: var(--wa-green);
+  color: #fff;
+  border-radius: 50%;
+  min-width: 20px;
+  height: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 5px;
+  flex-shrink: 0;
+}
+
+/* ── Chat Panel — flex column, children never overflow ───────────────────── */
 .wa-chat {
   flex: 1;
   display: flex;
   flex-direction: column;
+  height: 100%;        /* fills wa-root */
+  min-width: 0;
+  overflow: hidden;    /* critical: clips children so only wa-messages scrolls */
   background: var(--wa-chat-bg);
   position: relative;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' opacity='0.04'%3E%3Ccircle cx='40' cy='40' r='16' fill='none' stroke='%23128C7E' stroke-width='2'/%3E%3C/svg%3E");
-  min-width: 0;
 }
 
-/* ── Chat Header ──────────────────────────────────────── */
+/* ── Chat Header — always visible, never scrolls ──────── */
 .wa-chat-header {
   display: flex;
   align-items: center;
@@ -228,6 +269,8 @@
   box-shadow: 0 4px 10px rgba(79, 195, 247, 0.25);
   min-height: 64px;
   color: #ffffff;
+  flex-shrink: 0;      /* never compressed */
+  z-index: 10;
 }
 
 .wa-chat-header--empty {
@@ -243,6 +286,8 @@
   cursor: pointer;
   padding: 0 6px;
   font-weight: 300;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
 .wa-chat-header-info {
@@ -266,14 +311,26 @@
   color: rgba(255,255,255,0.75);
 }
 
-/* ── Messages Area ────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════
+   MESSAGES AREA — THE ONLY THING THAT SCROLLS
+   ══════════════════════════════════════════════════════ */
 .wa-messages {
-  flex: 1;
+  flex: 1;             /* takes all remaining height between header and input */
   overflow-y: auto;
+  overflow-x: hidden;
   padding: 10px 12px;
   display: flex;
   flex-direction: column;
   gap: 3px;
+  /* smooth momentum on iOS */
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  /* GPU-accelerated layer for smooth scrolling */
+  will-change: scroll-position;
+  contain: strict;
+  transform: translateZ(0);
+  /* bottom padding for iOS home bar */
+  padding-bottom: max(10px, env(safe-area-inset-bottom));
 }
 
 /* ── Date Separator ───────────────────────────────────── */
@@ -293,20 +350,17 @@
   box-shadow: var(--wa-shadow-sm);
 }
 
-/* ── Message Bubbles ─────────────────────────────────── */
+/* ── Message row ─────────────────────────────────────── */
 .wa-msg-row {
   display: flex;
   padding: 2px 10px;
+  contain: layout;     /* prevents sibling reflow when a new message arrives */
 }
 
-.wa-msg-row.own {
-  justify-content: flex-end;
-}
+.wa-msg-row.own   { justify-content: flex-end; }
+.wa-msg-row.other { justify-content: flex-start; }
 
-.wa-msg-row.other {
-  justify-content: flex-start;
-}
-
+/* ── Bubble ──────────────────────────────────────────── */
 .wa-bubble {
   max-width: 70%;
   padding: 8px 12px 6px;
@@ -314,12 +368,20 @@
   position: relative;
   word-break: break-word;
   box-shadow: var(--wa-shadow-sm);
-  animation: msgPop 0.18s ease-out;
 }
 
-@keyframes msgPop {
-  from { transform: scale(0.96); opacity: 0.8; }
-  to   { transform: scale(1); opacity: 1; }
+/* Smooth appear animation */
+@keyframes wa-msg-in {
+  from { opacity: 0; transform: translateY(8px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.wa-msg-row.own   .wa-bubble { animation: wa-msg-in 0.18s ease-out both; }
+.wa-msg-row.other .wa-bubble { animation: wa-msg-in 0.18s ease-out both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .wa-msg-row.own   .wa-bubble,
+  .wa-msg-row.other .wa-bubble { animation: none; }
 }
 
 .wa-bubble.own {
@@ -332,12 +394,11 @@
   border-top-left-radius: 4px;
 }
 
-/* Bubble tail */
+/* Bubble tails */
 .wa-bubble.own::after {
   content: "";
   position: absolute;
-  top: 0;
-  right: -7px;
+  top: 0; right: -7px;
   border-width: 0 0 8px 8px;
   border-style: solid;
   border-color: transparent transparent transparent var(--wa-bubble-out);
@@ -346,12 +407,15 @@
 .wa-bubble.other::after {
   content: "";
   position: absolute;
-  top: 0;
-  left: -7px;
+  top: 0; left: -7px;
   border-width: 0 8px 8px 0;
   border-style: solid;
   border-color: transparent var(--wa-bubble-in) transparent transparent;
 }
+
+/* Optimistic / failed states */
+.wa-bubble--sending { opacity: 0.72; transition: opacity 0.2s ease; }
+.wa-bubble--failed  { border: 1px solid #ff4444; }
 
 .wa-bubble-text {
   font-size: 14.5px;
@@ -361,6 +425,7 @@
   white-space: pre-wrap;
 }
 
+/* ── Single image (legacy) ───────────────────────────── */
 .wa-bubble-img {
   max-width: 260px;
   max-height: 260px;
@@ -369,8 +434,38 @@
   display: block;
   cursor: pointer;
   margin-bottom: 4px;
+  transition: opacity 0.15s ease;
 }
 
+.wa-bubble-img:hover         { opacity: 0.92; }
+.wa-bubble-img--preview      { opacity: 0.82; pointer-events: none; }
+
+/* ── Multi-image grid inside a bubble ────────────────── */
+.wa-bubble-images {
+  display: grid;
+  gap: 2px;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 4px;
+  max-width: 280px;
+}
+
+.wa-bubble-images--1 { grid-template-columns: 1fr; }
+.wa-bubble-images--2 { grid-template-columns: 1fr 1fr; }
+.wa-bubble-images--3 { grid-template-columns: 1fr 1fr; }
+.wa-bubble-images--3 .wa-bubble-img:first-child { grid-column: 1 / -1; }
+.wa-bubble-images--4 { grid-template-columns: 1fr 1fr; }
+
+/* Images inside the grid fill the cell */
+.wa-bubble-images .wa-bubble-img {
+  max-width: 100%;
+  max-height: 160px;
+  height: 160px;
+  object-fit: cover;
+  margin-bottom: 0;
+}
+
+/* ── Bubble meta (time + ticks) ──────────────────────── */
 .wa-bubble-meta {
   display: flex;
   justify-content: flex-end;
@@ -386,16 +481,18 @@
 }
 
 .wa-ticks {
-  font-size: 14px;
+  font-size: 12px;
   color: var(--wa-text-sub);
   font-weight: 700;
+  display: inline-block;
+  line-height: 1;
+  margin-left: 2px;
 }
 
-.wa-ticks.seen {
-  color: var(--wa-tick-seen);
-}
+.wa-ticks.seen    { color: var(--wa-tick-seen); }
+.wa-ticks.sending { font-size: 10px; opacity: 0.65; }
 
-/* ── File Attachments ─────────────────────────────────── */
+/* ── File attachment link ─────────────────────────────── */
 .wa-bubble-file {
   display: flex;
   align-items: center;
@@ -422,9 +519,7 @@
   text-align: center;
 }
 
-.wa-empty-icon {
-  font-size: 70px;
-}
+.wa-empty-icon  { font-size: 70px; }
 
 .wa-empty-title {
   font-size: 20px;
@@ -465,59 +560,120 @@
 .wa-typing-dots span:nth-child(3) { animation-delay: 0.4s; }
 
 @keyframes waBounce {
-  0%, 80%, 100% { transform: translateY(0); opacity: 0.5; }
-  40% { transform: translateY(-7px); opacity: 1; }
+  0%, 80%, 100% { transform: translateY(0);   opacity: 0.5; }
+  40%           { transform: translateY(-7px); opacity: 1;   }
 }
 
-/* ── Input Area ───────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════
+   INPUT AREA — always sticks to bottom, never scrolls
+   ══════════════════════════════════════════════════════ */
 .wa-input-area {
   background: var(--wa-input-bg);
   border-top: 1px solid var(--wa-border);
   padding: 10px 16px 14px;
+  flex-shrink: 0;      /* never compressed */
+  z-index: 10;
+  /* iOS home bar clearance */
+  padding-bottom: max(14px, env(safe-area-inset-bottom));
 }
 
-.wa-file-preview {
+/* ── Multiple image preview strip (above the input row) ─ */
+.wa-file-preview-strip {
   display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 14px;
-  background: var(--wa-hover);
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0 0 10px;
+  max-height: 120px;
+  overflow-y: auto;
+}
+
+.wa-file-preview-item {
+  position: relative;
   border-radius: 10px;
-  margin-bottom: 10px;
+  overflow: hidden;
+  flex-shrink: 0;
 }
 
 .wa-file-preview-img {
-  height: 56px;
-  width: 56px;
+  width: 80px;
+  height: 80px;
   object-fit: cover;
-  border-radius: 8px;
+  display: block;
+  border-radius: 10px;
 }
 
-.wa-file-preview-name {
-  font-size: 13px;
-  color: var(--wa-text-main);
-  flex: 1;
-  white-space: nowrap;
+.wa-file-preview-doc {
+  width: 100px;
+  height: 60px;
+  background: var(--wa-hover);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  padding: 4px 6px;
+  font-size: 11px;
+  gap: 4px;
+  overflow: hidden;
+}
+
+.wa-file-preview-doc span {
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .wa-remove-file {
-  background: none;
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.60);
+  color: #fff;
   border: none;
   cursor: pointer;
-  color: #e74c3c;
-  font-size: 20px;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   line-height: 1;
-  padding: 4px 8px;
-  border-radius: 50%;
   transition: background 0.1s;
 }
 
-.wa-remove-file:hover {
-  background: rgba(231,76,60,0.1);
+.wa-remove-file:hover { background: rgba(231,76,60,0.85); }
+
+/* ── Emoji tray ───────────────────────────────────────── */
+.wa-emoji-tray {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 10px;
+  background: var(--wa-hover);
+  border-radius: 12px;
+  margin-bottom: 10px;
+  max-height: 130px;
+  overflow-y: auto;
 }
 
+.wa-emoji-btn {
+  background: none;
+  border: none;
+  font-size: 26px;
+  cursor: pointer;
+  border-radius: 8px;
+  padding: 4px 6px;
+  transition: background 0.1s, transform 0.1s;
+  line-height: 1;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.wa-emoji-btn:hover {
+  background: rgba(0,0,0,0.06);
+  transform: scale(1.2);
+}
+
+/* ── Input row ────────────────────────────────────────── */
 .wa-input-row {
   display: flex;
   align-items: center;
@@ -537,6 +693,9 @@
   color: var(--wa-text-sub);
   transition: background 0.15s, color 0.15s;
   flex-shrink: 0;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  user-select: none;
 }
 
 .wa-input-icon:hover {
@@ -563,9 +722,7 @@
   background: #fff;
 }
 
-.wa-text-input::placeholder {
-  color: var(--wa-text-sub);
-}
+.wa-text-input::placeholder { color: var(--wa-text-sub); }
 
 .wa-send-btn {
   width: 46px;
@@ -581,47 +738,81 @@
   flex-shrink: 0;
   transition: background 0.15s, transform 0.1s;
   box-shadow: 0 3px 10px rgba(18,140,126,0.35);
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
-.wa-send-btn:hover {
-  background: var(--wa-teal);
-  transform: scale(1.05);
+.wa-send-btn:hover   { background: var(--wa-teal); transform: scale(1.05); }
+.wa-send-btn:active  { transform: scale(0.95); }
+.wa-send-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
-.wa-send-btn:active {
-  transform: scale(0.95);
+/* ══════════════════════════════════════════════════════
+   SKELETON LOADERS — Messenger-style shimmer
+   ══════════════════════════════════════════════════════ */
+
+@keyframes wa-shimmer {
+  0%   { background-position: -600px 0; }
+  100% { background-position:  600px 0; }
 }
 
-/* ── Emoji Tray ───────────────────────────────────────── */
-.wa-emoji-tray {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  padding: 10px;
-  background: var(--wa-hover);
-  border-radius: 12px;
-  margin-bottom: 10px;
-  max-height: 130px;
-  overflow-y: auto;
-}
-
-.wa-emoji-btn {
-  background: none;
-  border: none;
-  font-size: 26px;
-  cursor: pointer;
+.wa-skeleton {
   border-radius: 8px;
-  padding: 4px 6px;
-  transition: background 0.1s, transform 0.1s;
-  line-height: 1;
+  background: linear-gradient(
+    90deg,
+    rgba(0,0,0,0.06) 25%,
+    rgba(0,0,0,0.12) 50%,
+    rgba(0,0,0,0.06) 75%
+  );
+  background-size: 1200px 100%;
+  animation: wa-shimmer 1.4s ease-in-out infinite;
 }
 
-.wa-emoji-btn:hover {
-  background: rgba(0,0,0,0.06);
-  transform: scale(1.2);
+.wa-skeleton-contact {
+  pointer-events: none;
+  cursor: default;
 }
 
-/* ── Scrollbar ────────────────────────────────────────── */
+.wa-skeleton-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50% !important;
+  flex-shrink: 0;
+}
+
+.wa-skeleton-name    { width: 130px; height: 13px; }
+.wa-skeleton-time    { width: 36px;  height: 11px; }
+.wa-skeleton-preview { width: 190px; height: 11px; margin-top: 6px; }
+
+/* Message skeletons */
+.wa-messages-skeleton {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.wa-skeleton-bubble {
+  height: 44px;
+  border-radius: 18px;
+  max-width: 62%;
+}
+
+.wa-skeleton-bubble.other {
+  align-self: flex-start;
+  border-bottom-left-radius: 4px;
+}
+
+.wa-skeleton-bubble.own {
+  align-self: flex-end;
+  border-bottom-right-radius: 4px;
+}
+
+/* ── Scrollbars ───────────────────────────────────────── */
 .wa-contacts::-webkit-scrollbar,
 .wa-messages::-webkit-scrollbar {
   width: 5px;
@@ -647,10 +838,8 @@
    RESPONSIVE — Mobile (≤ 768px)
    ══════════════════════════════════════════════════════ */
 @media (max-width: 768px) {
-  .wa-root {
-    position: relative;
-  }
-
+  /* wa-root already uses position:fixed + inset:0 globally.
+     On mobile we just ensure the sidebar slide works. */
   .wa-sidebar {
     position: fixed;
     top: 0;
@@ -684,6 +873,11 @@
     max-width: 200px;
     max-height: 200px;
   }
+
+  /* Extra bottom padding so last message isn't hidden behind the input */
+  .wa-messages {
+    padding-bottom: max(8px, env(safe-area-inset-bottom));
+  }
 }
 
 /* ── Tablet ──────────────────────────────────────────── */
@@ -699,398 +893,4 @@
   .wa-sidebar {
     width: 420px;
   }
-}
-/*
- * ── PASTE THESE ADDITIONS INTO YOUR Messagerie.css ──────────────────────────
- * These additions are ADDITIVE — they do not replace your existing styles.
- * Add them at the bottom of your existing Messagerie.css file.
- * ─────────────────────────────────────────────────────────────────────────────
- */
-
-/* ── 1. ROOT LAYOUT: full viewport, no page scroll ──────────────────────────
- * The wa-root fills the full screen. wa-chat is a flex column.
- * ONLY wa-messages overflows and scrolls. Nothing else.
- */
-html, body, #root {
-  height: 100%;
-  overflow: hidden; /* prevent outer page from scrolling */
-}
-
-.wa-root {
-  display: flex;
-  height: 100dvh;          /* dynamic viewport height — handles mobile keyboard */
-  height: 100vh;           /* fallback for older browsers */
-  overflow: hidden;
-  position: fixed;         /* locks layout in place on mobile when keyboard opens */
-  inset: 0;
-}
-
-.wa-chat {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  min-width: 0;
-  height: 100%;
-  overflow: hidden;
-}
-
-/* ── Chat header: never scrolls ────────────────────────────────────────────── */
-.wa-chat-header {
-  flex-shrink: 0;           /* never compress */
-  z-index: 10;
-}
-
-/* ── Messages: ONLY this scrolls ───────────────────────────────────────────── */
-.wa-messages {
-  flex: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
-  -webkit-overflow-scrolling: touch; /* smooth momentum scrolling on iOS */
-  overscroll-behavior: contain;      /* prevent scroll chaining to parent */
-  scroll-behavior: auto;             /* let JS control smooth vs instant */
-  padding-bottom: env(safe-area-inset-bottom, 0px); /* iOS home bar */
-}
-
-/* ── Input area: always sticks to bottom ───────────────────────────────────── */
-.wa-input-area {
-  flex-shrink: 0;
-  padding-bottom: env(safe-area-inset-bottom, 0px); /* iOS home bar */
-  z-index: 10;
-}
-
-/* ── Sidebar fixed height ───────────────────────────────────────────────────── */
-.wa-sidebar {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  overflow: hidden;
-}
-
-.wa-contacts {
-  flex: 1;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  overscroll-behavior: contain;
-}
-
-
-/* ── 2. SKELETON LOADERS ─────────────────────────────────────────────────────
- * Messenger-style animated shimmer skeletons.
- */
-@keyframes wa-shimmer {
-  0%   { background-position: -400px 0; }
-  100% { background-position: 400px 0; }
-}
-
-.wa-skeleton {
-  border-radius: 8px;
-  background: linear-gradient(
-    90deg,
-    rgba(120, 120, 128, 0.12) 25%,
-    rgba(120, 120, 128, 0.24) 50%,
-    rgba(120, 120, 128, 0.12) 75%
-  );
-  background-size: 800px 100%;
-  animation: wa-shimmer 1.4s ease-in-out infinite;
-}
-
-.wa-skeleton-contact {
-  pointer-events: none;
-  cursor: default;
-}
-
-.wa-skeleton-avatar {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-.wa-skeleton-name {
-  width: 120px;
-  height: 13px;
-  border-radius: 6px;
-}
-
-.wa-skeleton-time {
-  width: 36px;
-  height: 11px;
-  border-radius: 4px;
-}
-
-.wa-skeleton-preview {
-  width: 180px;
-  height: 11px;
-  border-radius: 4px;
-  margin-top: 6px;
-}
-
-/* Message skeletons */
-.wa-messages-skeleton {
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.wa-skeleton-bubble {
-  height: 42px;
-  border-radius: 18px;
-  max-width: 65%;
-}
-
-.wa-skeleton-bubble.other {
-  align-self: flex-start;
-  border-bottom-left-radius: 4px;
-}
-
-.wa-skeleton-bubble.own {
-  align-self: flex-end;
-  border-bottom-right-radius: 4px;
-}
-
-
-/* ── 3. OPTIMISTIC MESSAGE STATES ────────────────────────────────────────────
- * Sending: slightly dimmed. Failed: red tint.
- */
-.wa-bubble--sending {
-  opacity: 0.75;
-  transition: opacity 0.2s ease;
-}
-
-.wa-bubble--failed {
-  border: 1px solid #ff4444;
-}
-
-/* Tick icons */
-.wa-ticks {
-  font-size: 12px;
-  margin-left: 3px;
-  color: rgba(255, 255, 255, 0.6);
-  display: inline-block;
-  line-height: 1;
-}
-
-.wa-ticks.seen {
-  color: #53bdeb; /* WhatsApp blue ticks */
-}
-
-.wa-ticks.sending {
-  font-size: 10px;
-  opacity: 0.7;
-}
-
-
-/* ── 4. UNREAD BADGE ─────────────────────────────────────────────────────────
- * Clean badge replacing the inline style.
- */
-.wa-unread-badge {
-  background: #25D366;
-  color: #fff;
-  border-radius: 50%;
-  min-width: 20px;
-  height: 20px;
-  font-size: 11px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 5px;
-  flex-shrink: 0;
-}
-
-
-/* ── 5. MULTIPLE IMAGE PREVIEWS ──────────────────────────────────────────────
- * Strip of image thumbnails above the input before sending.
- */
-.wa-file-preview-strip {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  padding: 8px 12px 0;
-  max-height: 120px;
-  overflow-y: auto;
-}
-
-.wa-file-preview-item {
-  position: relative;
-  border-radius: 10px;
-  overflow: hidden;
-  flex-shrink: 0;
-}
-
-.wa-file-preview-img {
-  width: 80px;
-  height: 80px;
-  object-fit: cover;
-  display: block;
-  border-radius: 10px;
-}
-
-.wa-file-preview-doc {
-  width: 100px;
-  height: 60px;
-  background: rgba(255,255,255,0.08);
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  padding: 4px 6px;
-  font-size: 11px;
-  gap: 4px;
-  overflow: hidden;
-}
-
-.wa-file-preview-doc span {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.wa-remove-file {
-  position: absolute;
-  top: 3px;
-  right: 3px;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: rgba(0, 0, 0, 0.65);
-  color: #fff;
-  border: none;
-  cursor: pointer;
-  font-size: 11px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  line-height: 1;
-}
-
-
-/* ── 6. MULTI-IMAGE BUBBLE GRID ──────────────────────────────────────────────
- * Images inside a bubble use a CSS grid that adapts to count.
- */
-.wa-bubble-images {
-  display: grid;
-  gap: 2px;
-  border-radius: 10px;
-  overflow: hidden;
-  margin-bottom: 4px;
-  max-width: 280px;
-}
-
-.wa-bubble-images--1 { grid-template-columns: 1fr; }
-.wa-bubble-images--2 { grid-template-columns: 1fr 1fr; }
-.wa-bubble-images--3 { grid-template-columns: 1fr 1fr; }
-.wa-bubble-images--3 .wa-bubble-img:first-child { grid-column: 1 / -1; }
-.wa-bubble-images--4 { grid-template-columns: 1fr 1fr; }
-
-.wa-bubble-img {
-  width: 100%;
-  height: 160px;
-  object-fit: cover;
-  display: block;
-  cursor: pointer;
-  transition: opacity 0.15s ease;
-}
-
-.wa-bubble-img:hover { opacity: 0.92; }
-
-.wa-bubble-img--preview {
-  opacity: 0.85;
-  pointer-events: none; /* no click on optimistic previews */
-}
-
-
-/* ── 7. TOUCH / MOBILE IMPROVEMENTS ─────────────────────────────────────────
- * Better tap targets, reduced tap delay, smooth interactions.
- */
-.wa-contact,
-.wa-send-btn,
-.wa-input-icon,
-.wa-emoji-btn,
-.wa-back-btn {
-  -webkit-tap-highlight-color: transparent; /* remove grey flash on tap */
-  touch-action: manipulation;               /* remove 300ms delay */
-  user-select: none;
-  -webkit-user-select: none;
-}
-
-.wa-contact {
-  -webkit-tap-highlight-color: transparent;
-  cursor: pointer;
-  transition: background 0.12s ease;
-  will-change: transform; /* GPU layer for smooth hover */
-}
-
-/* ── 8. SCROLL PERFORMANCE ───────────────────────────────────────────────────
- * GPU-accelerated rendering for the message list.
- */
-.wa-messages {
-  will-change: scroll-position;
-  contain: strict;           /* layout containment — browser optimizes paint */
-  transform: translateZ(0);  /* promote to GPU layer */
-}
-
-/* Each message row avoids layout recalc on siblings */
-.wa-msg-row {
-  contain: layout;
-}
-
-
-/* ── 9. SMOOTH MESSAGE APPEAR ANIMATION ──────────────────────────────────────
- * New messages slide in softly.
- */
-@keyframes wa-msg-in-own {
-  from { opacity: 0; transform: translateY(8px) scale(0.97); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-@keyframes wa-msg-in-other {
-  from { opacity: 0; transform: translateY(8px) scale(0.97); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-.wa-msg-row.own .wa-bubble {
-  animation: wa-msg-in-own 0.18s ease-out both;
-}
-
-.wa-msg-row.other .wa-bubble {
-  animation: wa-msg-in-other 0.18s ease-out both;
-}
-
-/* Reduce motion for accessibility */
-@media (prefers-reduced-motion: reduce) {
-  .wa-msg-row.own .wa-bubble,
-  .wa-msg-row.other .wa-bubble {
-    animation: none;
-  }
-}
-
-
-/* ── 10. MOBILE KEYBOARD HANDLING ────────────────────────────────────────────
- * On small screens the keyboard pushes the viewport up.
- * position: fixed + dvh ensures header and input stay visible.
- */
-@media (max-width: 768px) {
-  .wa-root {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 100%;       /* fixed+inset handles keyboard push */
-  }
-
-  .wa-messages {
-    /* padding so last message isn't hidden behind the input */
-    padding-bottom: 8px;
-  }
-}
-
-/* ── 11. SIDEBAR SCROLL ───────────────────────────────────────────────────── */
-.wa-sidebar-header {
-  flex-shrink: 0;
-}
-
-.wa-search-wrap {
-  flex-shrink: 0;
 }
