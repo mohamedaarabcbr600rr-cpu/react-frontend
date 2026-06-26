@@ -46,7 +46,7 @@ const isOnline = (lastSeen) => {
   return (new Date() - new Date(lastSeen)) / 1000 < 120;
 };
 
-const Avatar = ({ name, size = 48, online = false, profilePic = null }) => {
+const Avatar = React.memo(({ name, size = 48, online = false, profilePic = null }) => {
   const [imgError, setImgError] = useState(false);
   const colors = [
     ["#128C7E", "#075E54"],
@@ -87,52 +87,77 @@ const Avatar = ({ name, size = 48, online = false, profilePic = null }) => {
       )}
       {online && <span className="wa-online-dot" />}
     </div>
-  );
-};
+ );
+});
 
 // ─── MessageBubble ────────────────────────────────────────────────────────────
-const MessageBubble = ({ msg, authUserId, baseUrl, t }) => {
+const MessageBubble = React.memo(({ msg, authUserId, baseUrl, t, onRetry, onOpenImage }) => {
   const isOwn = msg.user_id === authUserId;
 
   return (
     <div className={`wa-msg-row ${isOwn ? "own" : "other"}`}>
-      <div className={`wa-bubble ${isOwn ? "own" : "other"}`}>
-        {/* Image attachment */}
-        {msg.file_path && msg.file_type?.startsWith("image") && (
+      <div
+        className={`wa-bubble ${isOwn ? "own" : "other"} ${msg.status === "failed" ? "wa-bubble--failed" : ""}`}
+        onClick={msg.status === "failed" && onRetry ? () => onRetry(msg) : undefined}
+        style={msg.status === "failed" ? { cursor: "pointer" } : undefined}
+      >
+      {/* Image attachment — real or optimistic local preview */}
+        {(msg.file_path && msg.file_type?.startsWith("image") || msg._localPreview) && (
           <img
             className="wa-bubble-img"
-            src={`${baseUrl}/storage/${msg.file_path}`}
+            src={msg._localPreview || `${baseUrl}/storage/${msg.file_path}`}
             alt={t("messagerie.attachment")}
-            onClick={() => window.open(`${baseUrl}/storage/${msg.file_path}`, "_blank")}
+            style={msg._localPreview ? { opacity: 0.75 } : undefined}
+            onClick={() => {
+              if (!msg._localPreview && onOpenImage)
+                onOpenImage(`${baseUrl}/storage/${msg.file_path}`);
+            }}
           />
         )}
 
         {/* Text content */}
         {msg.content && <p className="wa-bubble-text">{msg.content}</p>}
 
-        {/* Meta (time + read receipts) */}
+      {/* Meta (time + read receipts) */}
         <div className="wa-bubble-meta">
           <span className="wa-time">{formatTime(msg.created_at)}</span>
           {isOwn && (
-            <span className={`wa-ticks ${msg.seen ? "seen" : ""}`}>
-              {msg.seen ? "✓✓" : "✓"}
-            </span>
+            <>
+              {msg.status === "sending" && (
+                <span className="wa-ticks wa-ticks--sending" title="Sending">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <circle cx="12" cy="12" r="10"/>
+                    <path d="M12 6v6l4 2"/>
+                  </svg>
+                </span>
+              )}
+              {msg.status === "failed" && (
+                <span className="wa-ticks wa-ticks--failed" title="Failed — tap to retry">
+                  ⚠
+                </span>
+              )}
+              {(msg.status === "sent" || msg.status === undefined) && (
+                <span className={`wa-ticks ${msg.seen ? "seen" : ""}`}>
+                  {msg.seen ? "✓✓" : "✓"}
+                </span>
+              )}
+            </>
           )}
         </div>
       </div>
     </div>
-  );
-};
+ );
+});
 
 // ─── DateSeparator ────────────────────────────────────────────────────────────
-const DateSeparator = ({ date }) => (
+const DateSeparator = React.memo(({ date }) => (
   <div className="wa-date-sep">
     <span>{date}</span>
   </div>
-);
+));
 
 // ─── TypingIndicator ──────────────────────────────────────────────────────────
-const TypingIndicator = () => (
+const TypingIndicator = React.memo(() => (
   <div className="wa-msg-row other">
     <div className="wa-bubble other wa-typing-bubble">
       <div className="wa-typing-dots">
@@ -140,10 +165,10 @@ const TypingIndicator = () => (
       </div>
     </div>
   </div>
-);
+));
 
 // ─── EmptyState ───────────────────────────────────────────────────────────────
-const EmptyState = ({ hasUser, userName, t }) => (
+const EmptyState = React.memo(({ hasUser, userName, t }) => (
   <div className="wa-empty">
     {hasUser ? (
       <>
@@ -159,7 +184,7 @@ const EmptyState = ({ hasUser, userName, t }) => (
       </>
     )}
   </div>
-);
+));
 
 // ─── Main Component ───────────────────────────────────────────────────────────
 const Messagerie = ({ authUserId, baseUrl = import.meta.env.VITE_API_URL }) => {
@@ -168,25 +193,28 @@ const Messagerie = ({ authUserId, baseUrl = import.meta.env.VITE_API_URL }) => {
   const [messages, setMessages] = useState([]);
   const [content, setContent] = useState("");
   const [selectedUser, setSelectedUser] = useState(null);
-  const [file, setFile] = useState(null);
-  const [filePreview, setFilePreview] = useState(null);
+  const [files, setFiles] = useState([]);   // [{ file, preview }]
   const [searchTerm, setSearchTerm] = useState("");
   const [otherUserTyping, setOtherUserTyping] = useState(false);
   const [showEmoji, setShowEmoji] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [loading, setLoading] = useState(false);
+ const [loading, setLoading] = useState(false);
   const [loadingMessages, setLoadingMessages] = useState(false);
+  const [lightboxSrc, setLightboxSrc] = useState(null);
+  const [showFab, setShowFab] = useState(false);
   const [unreadPerUser, setUnreadPerUser] = useState({});
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
   const fileInputRef = useRef(null);
   const typingTimeoutRef = useRef(null);
-  const pollingRef = useRef(null);
+ const pollingRef = useRef(null);
   const typingPollRef = useRef(null);
+  const messageCacheRef = useRef({});      // { [conversationId]: { messages, fetchedAt } }
+  const convMetaCacheRef = useRef({});     // { [userId]: { unread, lastMsg, lastTime } }
   const { t } = useTranslation();
 
-  // Quick emoji list
-  const emojis = ["😊","😂","❤️","👍","🙏","😍","🤔","😢","🎉","🔥","✅","💯","😎","🤗","😅","👏","💪","🥰","😏","🤣","😭","🤩","💀","😡","🤦","🙄","👀","💬","🎊","✨"];
+  // Module-level constant — never recreated
+const EMOJIS = ["😊","😂","❤️","👍","🙏","😍","🤔","😢","🎉","🔥","✅","💯","😎","🤗","😅","👏","💪","🥰","😏","🤣","😭","🤩","💀","😡","🤦","🙄","👀","💬","🎊","✨"];
 
   // ── Notifications ──────────────────────────────────────────────────────────
   useEffect(() => {
@@ -205,6 +233,7 @@ const handleScroll = () => {
   const distanceFromBottom =
     container.scrollHeight - container.scrollTop - container.clientHeight;
   isAtBottomRef.current = distanceFromBottom < 80;
+  setShowFab(distanceFromBottom > 160);
 };
 
 const scrollToBottom = useCallback((behavior = "smooth") => {
@@ -243,17 +272,47 @@ useEffect(() => {
 
   useEffect(() => {
     if (!conversationId || !selectedUser) return;
-    // Quand on ouvre une conversation, reset le compteur
     setUnreadPerUser(prev => ({ ...prev, [selectedUser.id]: 0 }));
   }, [conversationId, selectedUser]);
+
+  // Sync active conversation last message into convMetaCache for sidebar
+  useEffect(() => {
+    if (!selectedUser || messages.length === 0) return;
+    const last = messages[messages.length - 1];
+    // Only sync confirmed messages (not optimistic sending state)
+    if (last.status === "sending") return;
+    const existing = convMetaCacheRef.current[selectedUser.id] || {};
+    convMetaCacheRef.current[selectedUser.id] = {
+      ...existing,
+      lastMsg: last.user_id === authUserId
+        ? `${t("messagerie.you")}: ${last.content || "📎"}`
+        : last.content || t("messagerie.attachment"),
+      lastTime: last.created_at,
+    };
+  }, [messages, selectedUser, authUserId, t]);
 
   // ── Poll messages ──────────────────────────────────────────────────────────
   useEffect(() => {
     if (!conversationId) return;
 
     const fetchMessages = () => {
+      const cache = messageCacheRef.current[conversationId];
+      const now = Date.now();
+
+      // Skip fetch if cache is fresh (< 5s) AND we already have messages shown
+      if (cache?.fetchedAt && now - cache.fetchedAt < 5000 && cache.messages?.length) {
+        setLoadingMessages(false);
+        return;
+      }
+
       api.get(`/messages/${conversationId}`)
         .then(res => {
+          // Write to cache
+          messageCacheRef.current[conversationId] = {
+            messages: res.data,
+            fetchedAt: Date.now(),
+          };
+
           setMessages(prev => {
             if (prev.length > 0 && res.data.length > prev.length) {
               const newest = res.data[res.data.length - 1];
@@ -270,9 +329,7 @@ useEffect(() => {
             }
             return res.data;
           });
-          // ← New messages arrived — loading screen can go
           setLoadingMessages(false);
-          // Mark as seen
           api.post(`/messages/${conversationId}/seen`, { user_id: authUserId }).catch(() => {});
         })
         .catch(() => { setLoadingMessages(false); });
@@ -303,16 +360,40 @@ useEffect(() => {
       return;
     }
     setLoading(true);
-    setLoadingMessages(true);
+    setSelectedUser(user);
+    setSidebarOpen(false);
+
+    // Restore cached messages instantly — no blank screen
+    const pendingConvKey = `pending_${user.id}`;
+    const cached = messageCacheRef.current[pendingConvKey];
+    if (cached?.messages?.length) {
+      setMessages(cached.messages);
+      setLoadingMessages(false);
+    } else {
+      setLoadingMessages(true);
+    }
+
     try {
       const res = await api.post("/messages/conversations", {
         user_id: user.id,
         auth_user_id: authUserId,
       });
-      // ← Do NOT clear messages here — keep previous visible while loading
-      setConversationId(res.data.id);
-      setSelectedUser(user);
-      setSidebarOpen(false);
+      const convId = res.data.id;
+
+      // Move pending cache to real convId key
+      if (messageCacheRef.current[pendingConvKey]) {
+        messageCacheRef.current[convId] = messageCacheRef.current[pendingConvKey];
+        delete messageCacheRef.current[pendingConvKey];
+      }
+
+      // Restore from convId cache if available
+      const convCached = messageCacheRef.current[convId];
+      if (convCached?.messages?.length) {
+        setMessages(convCached.messages);
+        setLoadingMessages(false);
+      }
+
+      setConversationId(convId);
       setTimeout(() => inputRef.current?.focus(), 100);
     } catch (err) {
       console.error(t("messagerie.errors.startConversation"), err);
@@ -323,40 +404,91 @@ useEffect(() => {
   }, [authUserId, selectedUser]);
 
   // ── Send message ───────────────────────────────────────────────────────────
-  const handleSend = async () => {
-    if (!content.trim() && !file) return;
+ // ── Send a single FormData payload (shared by text + each image) ───────────
+  const sendOne = async (optimisticId, formData) => {
+    try {
+      const res = await api.post(`/messages/${conversationId}`, formData);
+      if (messageCacheRef.current[conversationId]) {
+        messageCacheRef.current[conversationId].fetchedAt = 0;
+      }
+      setMessages(prev =>
+        prev.map(m => m.id === optimisticId ? { ...res.data, status: "sent" } : m)
+      );
+    } catch (err) {
+      setMessages(prev =>
+        prev.map(m => m.id === optimisticId ? { ...m, status: "failed" } : m)
+      );
+      console.error(t("messagerie.errors.sendMessage"), err);
+    }
+  };
 
-    const formData = new FormData();
-    formData.append("user_id", authUserId);
-    if (content.trim()) formData.append("content", content.trim());
-    if (file) formData.append("file", file);
+  const handleSend = async (retryMsg = null) => {
+    const textContent = retryMsg ? retryMsg.content : content.trim();
+    const filesToSend = retryMsg ? [] : files;
 
-    // Optimistic update
-    const optimistic = {
-      id: `tmp_${Date.now()}`,
-      user_id: authUserId,
-      content: content.trim(),
-      file_path: null,
-      file_type: null,
-      seen: false,
-      created_at: new Date().toISOString(),
-    };
-   isAtBottomRef.current = true;          // ← moved BEFORE setMessages
-    setMessages(prev => [...prev, optimistic]);
+    if (!textContent && !filesToSend.length) return;
+
+    isAtBottomRef.current = true;
+
+    if (retryMsg) {
+      // Retry failed message
+      const optimisticId = retryMsg.id;
+      setMessages(prev =>
+        prev.map(m => m.id === retryMsg.id ? { ...m, status: "sending" } : m)
+      );
+      const formData = new FormData();
+      formData.append("user_id", authUserId);
+      if (retryMsg.content) formData.append("content", retryMsg.content);
+      await sendOne(optimisticId, formData);
+      return;
+    }
+
+    // Clear input immediately
     setContent("");
-    setFile(null);
-    setFilePreview(null);
+    setFiles([]);
     setShowEmoji(false);
-
     clearTimeout(typingTimeoutRef.current);
     api.post(`/messages/${conversationId}/typing`, { user_id: authUserId, is_typing: false }).catch(() => {});
 
-    try {
-      const res = await api.post(`/messages/${conversationId}`, formData);
-      setMessages(prev => prev.map(m => m.id === optimistic.id ? res.data : m));
-    } catch (err) {
-      setMessages(prev => prev.filter(m => m.id !== optimistic.id));
-      console.error(t("messagerie.errors.sendMessage"), err);
+    // Send text message
+    if (textContent) {
+      const optimisticId = `tmp_${Date.now()}`;
+      const optimistic = {
+        id: optimisticId,
+        user_id: authUserId,
+        content: textContent,
+        file_path: null,
+        file_type: null,
+        seen: false,
+        status: "sending",
+        created_at: new Date().toISOString(),
+      };
+      setMessages(prev => [...prev, optimistic]);
+      const formData = new FormData();
+      formData.append("user_id", authUserId);
+      formData.append("content", textContent);
+      sendOne(optimisticId, formData);   // fire-and-forget, no await
+    }
+
+    // Send each image as its own message sequentially
+    for (const { file: f, preview } of filesToSend) {
+      const optimisticId = `tmp_img_${Date.now()}_${Math.random()}`;
+      const optimistic = {
+        id: optimisticId,
+        user_id: authUserId,
+        content: "",
+        file_path: null,
+        file_type: "image/jpeg",
+        _localPreview: preview,          // shown until server returns real path
+        seen: false,
+        status: "sending",
+        created_at: new Date().toISOString(),
+      };
+      setMessages(prev => [...prev, optimistic]);
+      const formData = new FormData();
+      formData.append("user_id", authUserId);
+      formData.append("file", f);
+      await sendOne(optimisticId, formData);  // await to keep order
     }
   };
 
@@ -373,44 +505,68 @@ useEffect(() => {
   };
 
   // ── File select ────────────────────────────────────────────────────────────
-  const handleFileSelect = (e) => {
-    const f = e.target.files[0];
-    if (!f) return;
-    setFile(f);
-    if (f.type.startsWith("image")) {
+ const handleFileSelect = (e) => {
+    const selected = Array.from(e.target.files);
+    if (!selected.length) return;
+
+    selected.forEach(f => {
+      if (!f.type.startsWith("image")) return;
       const reader = new FileReader();
-      reader.onload = (ev) => setFilePreview(ev.target.result);
+      reader.onload = (ev) => {
+        setFiles(prev => [...prev, { file: f, preview: ev.target.result }]);
+      };
       reader.readAsDataURL(f);
-    } else {
-      setFilePreview(null);
-    }
+    });
+
+    // Reset input so same files can be reselected
+    e.target.value = "";
   };
 
   // ── Group messages by date ─────────────────────────────────────────────────
-  const groupedMessages = messages.reduce((acc, msg) => {
-    const date = formatDate(msg.created_at, t);
-    if (!acc[date]) acc[date] = [];
-    acc[date].push(msg);
-    return acc;
-  }, {});
+  const groupedMessages = useMemo(() =>
+    messages.reduce((acc, msg) => {
+      const date = formatDate(msg.created_at, t);
+      if (!acc[date]) acc[date] = [];
+      acc[date].push(msg);
+      return acc;
+    }, {}),
+  [messages, t]);
 
-  // ── Filter connections ─────────────────────────────────────────────────────
-  const filtered = connections.filter(u =>
-    u.id !== authUserId &&
-    u.name?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+ // ── Filter connections ─────────────────────────────────────────────────────
+  const filtered = useMemo(() =>
+    connections.filter(u =>
+      u.id !== authUserId &&
+      u.name?.toLowerCase().includes(searchTerm.toLowerCase())
+    ),
+  [connections, authUserId, searchTerm]);
 
   // ── Get last message preview ───────────────────────────────────────────────
-  const getPreview = (userId) => {
+  const getPreview = useCallback((userId) => {
+    // Active conversation — use live messages (most up to date)
     if (selectedUser?.id === userId && messages.length > 0) {
       const last = messages[messages.length - 1];
+      if (last.status === "sending") return `${t("messagerie.you")}: ${last.content || "📎"}`;
       if (last.user_id === authUserId) return `${t("messagerie.you")}: ${last.content || "📎"}`;
       return last.content || t("messagerie.attachment");
     }
-    return null;
-  };
+    // Other conversations — use cached metadata
+    const meta = convMetaCacheRef.current[userId];
+    if (meta?.lastMsg) return meta.lastMsg;
+   return null;
+  }, [selectedUser, messages, authUserId, t]);
+
+  // ── Get last message time for sidebar ─────────────────────────────────────
+  const getLastTime = useCallback((userId) => {
+    if (selectedUser?.id === userId && messages.length > 0) {
+      const last = messages[messages.length - 1];
+      return formatTime(last.created_at);
+    }
+    const meta = convMetaCacheRef.current[userId];
+    if (meta?.lastTime) return formatTime(meta.lastTime);
+   return "";
+  }, [selectedUser, messages]);
   
-  useEffect(() => {
+ useEffect(() => {
     if (!authUserId) return;
     const fetchUnread = async () => {
       try {
@@ -418,10 +574,28 @@ useEffect(() => {
         const unread = {};
         res.data.forEach(conv => {
           unread[conv.other_user_id] = conv.unread_count;
+
+          // Cache conv metadata for sidebar instant restore
+          convMetaCacheRef.current[conv.other_user_id] = {
+            unread: conv.unread_count,
+            lastMsg: conv.last_message,
+            lastTime: conv.last_message_at,
+            cachedAt: Date.now(),
+          };
         });
         setUnreadPerUser(unread);
       } catch {}
     };
+
+    // Restore from cache immediately on mount (unread badges appear instantly)
+    const cachedUnread = {};
+    Object.entries(convMetaCacheRef.current).forEach(([userId, meta]) => {
+      cachedUnread[userId] = meta.unread;
+    });
+    if (Object.keys(cachedUnread).length) {
+      setUnreadPerUser(cachedUnread);
+    }
+
     fetchUnread();
     const interval = setInterval(fetchUnread, 5000);
     return () => clearInterval(interval);
@@ -429,6 +603,22 @@ useEffect(() => {
 
   return (
     <div className="wa-root">
+      {/* ── Lightbox ── */}
+      {lightboxSrc && (
+        <div
+          className="wa-lightbox"
+          onClick={() => setLightboxSrc(null)}
+        >
+          <img src={lightboxSrc} alt="preview" onClick={e => e.stopPropagation()} />
+          <button
+            className="wa-lightbox-close"
+            onClick={() => setLightboxSrc(null)}
+            aria-label="Close"
+          >
+            ✕
+          </button>
+        </div>
+      )}
       {/* ── Sidebar ── */}
       <aside className={`wa-sidebar ${sidebarOpen || !selectedUser ? "wa-sidebar--open" : ""}`}>
         {/* Header */}
@@ -477,26 +667,15 @@ useEffect(() => {
                 <div className="wa-contact-info">
                   <div className="wa-contact-top">
                     <span className="wa-contact-name">{user.name}</span>
-                    {preview && (
-                      <span className="wa-contact-time">
-                        {selectedUser?.id === user.id && messages.length > 0
-                          ? formatTime(messages[messages.length - 1]?.created_at)
-                          : ""}
-                      </span>
-                    )}
+                    <span className="wa-contact-time">{getLastTime(user.id)}</span>
                   </div>
-                  <div style={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
-                    <span className="wa-contact-preview">
+                  <div className="wa-contact-bottom">
+                    <span className={`wa-contact-preview ${unreadPerUser[user.id] > 0 ? "wa-contact-preview--unread" : ""}`}>
                       {preview || (online ? t("messagerie.status.online") : t("messagerie.status.tapToChat"))}
                     </span>
                     {unreadPerUser[user.id] > 0 && (
-                      <span style={{
-                        background: '#25D366', color: 'white', borderRadius: '50%',
-                        minWidth: '20px', height: '20px', fontSize: '11px',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        padding: '0 4px'
-                      }}>
-                        {unreadPerUser[user.id]}
+                      <span className="wa-unread-badge">
+                        {unreadPerUser[user.id] > 99 ? "99+" : unreadPerUser[user.id]}
                       </span>
                     )}
                   </div>
@@ -546,7 +725,7 @@ useEffect(() => {
 
         {/* Messages */}
 <div
-  className="wa-messages"
+  className={`wa-messages${loadingMessages ? " wa-messages--switching" : ""}`}
   ref={messagesContainerRef}
   onScroll={handleScroll}
 >
@@ -563,13 +742,15 @@ useEffect(() => {
             Object.entries(groupedMessages).map(([date, msgs]) => (
               <div key={date}>
                 <DateSeparator date={date} />
-                {msgs.map(msg => (
+              {msgs.map(msg => (
                   <MessageBubble
                     key={msg.id}
                     msg={msg}
                     authUserId={authUserId}
                     baseUrl={baseUrl}
                     t={t}
+                    onRetry={handleSend}
+                    onOpenImage={setLightboxSrc}
                   />
                 ))}
               </div>
@@ -583,28 +764,28 @@ useEffect(() => {
         {/* Input Area */}
         {selectedUser && (
           <div className="wa-input-area">
-            {/* File preview */}
-            {file && (
-              <div className="wa-file-preview">
-                {filePreview ? (
-                  <img src={filePreview} alt={t("messagerie.preview")} className="wa-file-preview-img" />
-                ) : (
-                  <span className="wa-file-preview-name">📎 {file.name}</span>
-                )}
-                <button
-                  className="wa-remove-file"
-                  onClick={() => { setFile(null); setFilePreview(null); }}
-                  aria-label={t("messagerie.removeFile")}
-                >
-                  ✕
-                </button>
+           {/* Multi-image preview grid */}
+            {files.length > 0 && (
+              <div className="wa-files-preview">
+                {files.map((item, idx) => (
+                  <div key={idx} className="wa-file-thumb">
+                    <img src={item.preview} alt="" className="wa-file-thumb-img" />
+                    <button
+                      className="wa-file-thumb-remove"
+                      onClick={() => setFiles(prev => prev.filter((_, i) => i !== idx))}
+                      aria-label={t("messagerie.removeFile")}
+                    >
+                      ✕
+                    </button>
+                  </div>
+                ))}
               </div>
             )}
 
             {/* Emoji tray */}
             {showEmoji && (
               <div className="wa-emoji-tray">
-                {emojis.map(e => (
+               {EMOJIS.map(e => (
                   <button
                     key={e}
                     className="wa-emoji-btn"
@@ -635,6 +816,7 @@ useEffect(() => {
                   ref={fileInputRef}
                   type="file"
                   accept="image/*"
+                  multiple
                   onChange={handleFileSelect}
                   style={{ display: "none" }}
                 />
@@ -660,7 +842,7 @@ useEffect(() => {
               <button
                 className="wa-send-btn"
                 onClick={handleSend}
-                disabled={!content.trim() && !file}
+                disabled={!content.trim() && !files.length}
                 aria-label={t("messagerie.sendMessage")}
               >
                 <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22">
@@ -670,6 +852,16 @@ useEffect(() => {
             </div>
           </div>
         )}
+     {/* Scroll-to-bottom FAB */}
+        <button
+          className={`wa-scroll-fab${showFab ? "" : " wa-scroll-fab--hidden"}`}
+          onClick={() => { isAtBottomRef.current = true; scrollToBottom("smooth"); }}
+          aria-label="Scroll to bottom"
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <path d="M12 5v14M5 12l7 7 7-7"/>
+          </svg>
+        </button>
       </main>
     </div>
   );
