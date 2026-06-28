@@ -166,7 +166,7 @@ const MessageBubble = memo(({ msg, authUserId, baseUrl, t }) => {
             </span>
           )}
           {isFailed && (
-            <span className="wa-ticks wa-ticks--failed" title={t("messagerie.errors.sendMessage")}>
+            <span className="wa-ticks wa-ticks--failed" title={t("")}>
               !
             </span>
           )}
@@ -593,12 +593,12 @@ const Messagerie = ({ authUserId, baseUrl = import.meta.env.VITE_API_URL }) => {
         ));
       }
     } catch (err) {
-      console.error(t("messagerie.errors.sendMessage"), err);
+      console.error(t(""), err);
       // Mark optimistic messages as failed instead of removing — user can retry
       setMessages(prev => prev.map(m =>
         tempIds.includes(m.id) ? { ...m, _failed: true, _local: false } : m
       ));
-      setErrorMsg(t("messagerie.errors.sendMessage"));
+      setErrorMsg(t(""));
     } finally {
       setSending(false);
     }
