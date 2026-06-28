@@ -962,7 +962,7 @@ const Messagerie = ({ authUserId, baseUrl = import.meta.env.VITE_API_URL }) => {
                 className="wa-send-btn"
                 onClick={handleSend}
                 disabled={(!content.trim() && files.length === 0) || sending}
-                aria-label={t("messagerie.sendMessage")}
+                aria-label={t("messagerie.")}
               >
                 {sending ? (
                   <div className="wa-loading-spinner wa-loading-spinner--small" />
