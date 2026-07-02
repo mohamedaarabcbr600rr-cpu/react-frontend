@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import axios from "axios";
 
@@ -112,13 +112,22 @@ const Accueil = ({
   friends = [],
   shareUsers = [],
   setExperiences,
-  scrollToExpId = null
+  scrollToExpId = null,
+
+  // ✅ Pagination / scroll infini
+  loadMoreExperiences,
+  hasMore = false,
+  loadingMore = false,
+  initialLoading = false,
 }) => {
   const [showAddPost, setShowAddPost] = useState(false);
   const [avatarError, setAvatarError] = useState(false);
   const [filter, setFilter] = useState('all');
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const { t } = useTranslation();
+
+  // ✅ Sentinelle pour le scroll infini (uniquement pertinent sur l'onglet "Tout")
+  const observerTarget = useRef(null);
 
   useEffect(() => {
     const handleResize = () => {
@@ -127,6 +136,27 @@ const Accueil = ({
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  // ✅ Scroll infini : dès que la sentinelle entre dans le viewport, on charge la page suivante
+  useEffect(() => {
+    if (filter !== 'all' || !hasMore || !loadMoreExperiences) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !loadingMore) {
+          loadMoreExperiences();
+        }
+      },
+      { rootMargin: '300px' } // déclenche un peu avant d'arriver en bas
+    );
+
+    const currentTarget = observerTarget.current;
+    if (currentTarget) observer.observe(currentTarget);
+
+    return () => {
+      if (currentTarget) observer.unobserve(currentTarget);
+    };
+  }, [filter, hasMore, loadingMore, loadMoreExperiences]);
 
   // Effet pour scroller vers une expérience spécifique
   useEffect(() => {
@@ -330,29 +360,74 @@ const Accueil = ({
 
         {/* Feed */}
         <div className="feed">
-          {filteredExperiences.length > 0 ? (
-            filteredExperiences.map(exp => (
-              <PostCard
-                key={exp.id}
-                experience={exp}
-                user={user}
-                onLike={handleLikeClick}
-                onComment={handleCommentClick}
-                onShare={handleShareClick}
-                onDeleteComment={onDeleteComment}
-                onSend={onSend}
-                commentTexts={commentTexts}
-                setCommentTexts={setCommentTexts}
-                activeCommentId={activeCommentId}
-                setActiveCommentId={setActiveCommentId}
-                hasUserLiked={hasUserLiked}
-                getUserReaction={getUserReaction}
-                getInitials={getInitials}
-                isOwnPost={exp.user_id === user?.id}
-                friends={friends}
-                shareUsers={shareUsers}
-              />
-            ))
+          {initialLoading && filteredExperiences.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '60px 20px', color: '#666' }}>
+              Chargement des publications...
+            </div>
+          ) : filteredExperiences.length > 0 ? (
+            <>
+              {filteredExperiences.map(exp => (
+                <PostCard
+                  key={exp.id}
+                  experience={exp}
+                  user={user}
+                  onLike={handleLikeClick}
+                  onComment={handleCommentClick}
+                  onShare={handleShareClick}
+                  onDeleteComment={onDeleteComment}
+                  onSend={onSend}
+                  commentTexts={commentTexts}
+                  setCommentTexts={setCommentTexts}
+                  activeCommentId={activeCommentId}
+                  setActiveCommentId={setActiveCommentId}
+                  hasUserLiked={hasUserLiked}
+                  getUserReaction={getUserReaction}
+                  getInitials={getInitials}
+                  isOwnPost={exp.user_id === user?.id}
+                  friends={friends}
+                  shareUsers={shareUsers}
+                />
+              ))}
+
+              {/* ✅ Sentinelle invisible pour le scroll infini (onglet "Tout" seulement) */}
+              {filter === 'all' && hasMore && (
+                <div ref={observerTarget} style={{ height: '1px' }} />
+              )}
+
+              {/* ✅ Indicateur de chargement pendant qu'on récupère la page suivante */}
+              {filter === 'all' && loadingMore && (
+                <div style={{ textAlign: 'center', padding: '20px', color: '#666' }}>
+                  Chargement des publications suivantes...
+                </div>
+              )}
+
+              {/* ✅ Bouton "Voir plus" en secours (au cas où le scroll infini ne déclenche pas) */}
+              {filter === 'all' && !loadingMore && hasMore && (
+                <div style={{ textAlign: 'center', padding: '16px' }}>
+                  <button
+                    onClick={loadMoreExperiences}
+                    style={{
+                      background: '#f0f2f5',
+                      border: 'none',
+                      borderRadius: '20px',
+                      padding: '10px 24px',
+                      fontWeight: 600,
+                      color: '#0a66c2',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    Voir plus
+                  </button>
+                </div>
+              )}
+
+              {/* ✅ Message de fin de feed */}
+              {filter === 'all' && !hasMore && (
+                <div style={{ textAlign: 'center', padding: '16px', color: '#9ca3af', fontSize: '14px' }}>
+                  Vous avez tout vu 🎉
+                </div>
+              )}
+            </>
           ) : (
             <div className="feed__empty">
               {filter === 'my' ? (

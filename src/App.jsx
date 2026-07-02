@@ -23,8 +23,10 @@ import Terms         from './components/Terms';
 import Accessibility from './components/Accessibility';
 const AdminLogin = lazy(() => import('./admin-dashboard/AdminLogin'));
 const ProtectedRoute = lazy(() => import('./admin-dashboard/ProtectedRoute'));
- 
-  
+
+// ✅ Pagination du feed
+const EXPERIENCES_PER_PAGE = 6;
+
 // ✅ Composant principal qui contient toute la logique
 const AppContent = () => {
   const [scrollToExpId, setScrollToExpId] = useState(null);
@@ -85,6 +87,13 @@ useEffect(() => {
 const [adminToken, setAdminToken] = useState(() =>
   localStorage.getItem("admin_token")
 );
+
+  // ✅ États pagination / scroll infini du feed
+  const [feedPage, setFeedPage] = useState(1);
+  const [feedHasMore, setFeedHasMore] = useState(true);
+  const [feedInitialLoading, setFeedInitialLoading] = useState(true);
+  const [feedLoadingMore, setFeedLoadingMore] = useState(false);
+
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
     window.addEventListener('resize', handleResize);
@@ -169,13 +178,62 @@ const [adminToken, setAdminToken] = useState(() =>
     }
   }, [user]);
 
+  // ✅ Charge la 1ère page (montage initial, ou reset après un partage)
   const fetchExperiences = async () => {
     try {
-      const res = await axios.get("/api/experiences");
-      setExperiences(res.data);
-      setFilteredExperiences(res.data);
+      setFeedInitialLoading(true);
+      const res = await axios.get(`/api/experiences?page=1&per_page=${EXPERIENCES_PER_PAGE}`);
+      const { data, current_page, last_page } = res.data;
+      setExperiences(data);
+      setFilteredExperiences(data);
+      setFeedPage(current_page);
+      setFeedHasMore(current_page < last_page);
     } catch (err) {
       console.error(err);
+    } finally {
+      setFeedInitialLoading(false);
+    }
+  };
+
+  // ✅ Charge la page suivante et l'ajoute à la suite (scroll infini / bouton "Voir plus")
+  const loadMoreExperiences = async () => {
+    if (feedLoadingMore || !feedHasMore) return;
+    setFeedLoadingMore(true);
+    try {
+      const nextPage = feedPage + 1;
+      const res = await axios.get(`/api/experiences?page=${nextPage}&per_page=${EXPERIENCES_PER_PAGE}`);
+      const { data, current_page, last_page } = res.data;
+
+      setExperiences(prev => [...prev, ...data]);
+      setFilteredExperiences(prev => {
+        if (!searchTerm) return [...prev, ...data];
+        const term = searchTerm.toLowerCase();
+        const matching = data.filter(exp =>
+          exp.title?.toLowerCase().includes(term) ||
+          exp.content?.toLowerCase().includes(term) ||
+          exp.user?.name?.toLowerCase().includes(term)
+        );
+        return [...prev, ...matching];
+      });
+
+      setFeedPage(current_page);
+      setFeedHasMore(current_page < last_page);
+    } catch (err) {
+      console.error('loadMoreExperiences error:', err);
+    } finally {
+      setFeedLoadingMore(false);
+    }
+  };
+
+  // ✅ Rafraîchit une seule publication (après like/commentaire) sans casser la pagination
+  const refreshExperience = async (id) => {
+    try {
+      const res = await axios.get(`/api/experiences/${id}`);
+      const updated = res.data;
+      setExperiences(prev => prev.map(exp => exp.id === id ? updated : exp));
+      setFilteredExperiences(prev => prev.map(exp => exp.id === id ? updated : exp));
+    } catch (err) {
+      console.error('refreshExperience error:', err);
     }
   };
 
@@ -190,7 +248,7 @@ const [adminToken, setAdminToken] = useState(() =>
     if (!user) { setShowLoginModal(true); return; }
     try {
       await axios.post(`/api/experiences/${id}/like`, { reaction_type: reactionType });
-      fetchExperiences();
+      refreshExperience(id);
     } catch (err) {
       console.error('Like error:', err);
       alert(err.response?.data?.error || 'Erreur lors du like');
@@ -214,7 +272,7 @@ const [adminToken, setAdminToken] = useState(() =>
     }
   }
   
-  fetchExperiences(); // ← rafraîchit dans les deux cas
+  refreshExperience(expId); // ← ne rafraîchit que cette publication
 };
     
 
@@ -222,7 +280,7 @@ const [adminToken, setAdminToken] = useState(() =>
   if (!user) { setShowLoginModal(true); return; }
   try {
     await axios.delete(`/api/comments/${commentId}`);
-    fetchExperiences();
+    refreshExperience(expId);
   } catch (err) {
     console.error("Erreur suppression commentaire:", err);
     alert(err.response?.data?.error || "Erreur lors de la suppression");
@@ -233,6 +291,7 @@ const [adminToken, setAdminToken] = useState(() =>
     if (!user) { setShowLoginModal(true); return; }
     try {
       await axios.post(`/api/experiences/${id}/share`);
+      // Un partage crée une nouvelle publication en tête de feed → on recharge la page 1
       fetchExperiences();
     } catch (error) { console.log(error); }
   };
@@ -361,6 +420,11 @@ const [adminToken, setAdminToken] = useState(() =>
               openLogin={() => setShowLoginModal(true)}
               openRegister={() => setShowLoginModal(true)}
               friends={friends}
+
+              loadMoreExperiences={loadMoreExperiences}
+              hasMore={feedHasMore}
+              loadingMore={feedLoadingMore}
+              initialLoading={feedInitialLoading}
             />
           } />
 
@@ -501,10 +565,3 @@ function App() {
 }
 
 export default App;
-
-
-
-
- 
-
-
