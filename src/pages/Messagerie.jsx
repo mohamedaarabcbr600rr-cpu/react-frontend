@@ -122,7 +122,7 @@ Avatar.displayName = "Avatar";
 
 // ─── MessageBubble (memoized — re-renders only when msg object changes) ─────
 const MessageBubble = memo(({ msg, authUserId, baseUrl, t }) => {
-  const isOwn = msg.user_id === authUserId;
+  const isOwn = String(msg.user_id) === String(authUserId);
   const fileUrl = msg.file_path ? `${baseUrl}/storage/${msg.file_path}` : null;
   const isImage = msg.file_type?.startsWith("image");
   const isTemp = String(msg.id).startsWith("tmp_");
