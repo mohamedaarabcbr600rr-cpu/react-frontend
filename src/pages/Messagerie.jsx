@@ -354,7 +354,7 @@ const Messagerie = ({ authUserId, baseUrl = import.meta.env.VITE_API_URL }) => {
       api.post(`/messages/${conversationId}/seen`, { user_id: authUserId }).catch(() => {});
 
       // Update unread badge in real time
-      if (e.user_id !== authUserId) {
+      if (String(e.user_id) !== String(authUserId)) {
         setUnreadPerUser(prev => ({
           ...prev,
           [e.user_id]: selectedUserRef.current?.id === e.user_id
@@ -374,7 +374,7 @@ const Messagerie = ({ authUserId, baseUrl = import.meta.env.VITE_API_URL }) => {
 
     channel.listen('.typing', (e) => {
       if (conversationIdRef.current !== e.conversation_id) return;
-      if (e.user_id !== authUserId) {
+      if (String(e.user_id) !== String(authUserId)) {
         setOtherUserTyping(!!e.is_typing);
       }
     });
@@ -382,7 +382,7 @@ const Messagerie = ({ authUserId, baseUrl = import.meta.env.VITE_API_URL }) => {
     channel.listen('.read', (e) => {
       if (conversationIdRef.current !== e.conversation_id) return;
       setMessages(prev => prev.map(m =>
-        m.user_id === authUserId ? { ...m, seen: true } : m
+        String(m.user_id) === String(authUserId) ? { ...m, seen: true } : m
       ));
     });
 
@@ -669,7 +669,7 @@ const Messagerie = ({ authUserId, baseUrl = import.meta.env.VITE_API_URL }) => {
   const getPreview = useCallback((userId) => {
     if (selectedUser?.id === userId && messages.length > 0) {
       const last = messages[messages.length - 1];
-      if (last.user_id === authUserId) return `${t("messagerie.you")}: ${last.content || "📎"}`;
+      if (String(last.user_id) === String(authUserId)) return `${t("messagerie.you")}: ${last.content || "📎"}`;
       return last.content || t("messagerie.attachment");
     }
     return null;
