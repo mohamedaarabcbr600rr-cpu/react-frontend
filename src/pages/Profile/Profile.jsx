@@ -563,7 +563,7 @@ const handleFollow = async (targetUserId, targetUserData = null) => {
         activeTab={activeTab}
         onFollowToggle={handleFollow}
         following={following}
-        onMessageClick={(userId) => navigate(`/messages/${userId}`)}
+        onMessageClick={(userId) => navigate('/messagerie', { state: { targetUserId: userId } })}
         isFollowedByCurrentUser={isFollowedByCurrentUser}
       />
 

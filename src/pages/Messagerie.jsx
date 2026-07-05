@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo, memo } from "react";
 import { useTranslation } from "react-i18next";
+import { useLocation } from "react-router-dom";
 import axios from "axios";
 import Echo from "laravel-echo";
 import Pusher from "pusher-js";
@@ -222,6 +223,7 @@ const EmptyState = ({ hasUser, userName, t }) => (
 
 // ─── Main Component ───────────────────────────────────────────────────────────
 const Messagerie = ({ authUserId, baseUrl = import.meta.env.VITE_API_URL }) => {
+  const location = useLocation();
   const [connections, setConnections] = useState([]);
   const [conversationId, setConversationId] = useState(null);
   const [messages, setMessages] = useState([]);
@@ -481,7 +483,16 @@ const Messagerie = ({ authUserId, baseUrl = import.meta.env.VITE_API_URL }) => {
     fetchMutualConnections();
     return () => { cancelled = true; };
   }, [authUserId, t]);
+// ── Auto-open conversation when navigated from a profile "Message" button ──
+  useEffect(() => {
+    const targetUserId = location.state?.targetUserId;
+    if (!targetUserId || connections.length === 0) return;
 
+    const targetUser = connections.find(u => String(u.id) === String(targetUserId));
+    if (targetUser) {
+      startConversation(targetUser);
+    }
+  }, [location.state, connections]);
   // ── Reset unread for opened conversation ───────────────────────────────────
   useEffect(() => {
     if (!conversationId || !selectedUser) return;
