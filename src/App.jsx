@@ -15,7 +15,8 @@ const Notifications = lazy(() => import('./pages/Notifications'));
 const AITutor = lazy(() => import('./pages/AITutor/AITutor'));
 const StudyHub = lazy(() => import('./pages/StudyHub/StudyHub'));
 const Admin = lazy(() => import('./admin-dashboard/admin'));
-
+const EmailVerified = lazy(() => import('./pages/EmailVerified'));
+import EmailVerificationBanner from "./components/EmailVerificationBanner";
 // Legal pages
 import About         from './components/About';
 import Privacy       from './components/Privacy';
@@ -390,6 +391,8 @@ const [adminToken, setAdminToken] = useState(() =>
 }}
       />
 
+      <EmailVerificationBanner user={user} onRefreshUser={setUser} />
+
       <main style={{ animation: "slideInRight 0.3s ease-out", background: "white" }}>        <Suspense fallback={<div style={{textAlign:'center', padding:'50px'}}>Chargement...</div>}>
         <Routes>
           {/* ACCUEIL */}
@@ -520,6 +523,7 @@ const [adminToken, setAdminToken] = useState(() =>
               />
             </ProtectedContent>
           } />
+          <Route path="/email-verified" element={<EmailVerified />} />
         {/* LEGAL PAGES */}
           <Route path="/about"         element={<About />}         />
           <Route path="/privacy"       element={<Privacy />}       />
