@@ -813,7 +813,43 @@
   "confirm": "Supprimer cette publication ?",
   "error": "Erreur lors de la suppression",
   "title": "Supprimer"
-}
+},
+
+
+
+  "emailVerification": {
+    "message": "Merci de vérifier ton adresse email pour débloquer toutes les fonctionnalités.",
+    "buttons": {
+      "sending": "Envoi...",
+      "resent": "Email renvoyé ✓",
+      "resend": "Renvoyer l'email",
+      "checking": "Vérification...",
+      "verified": "J'ai vérifié, actualiser"
+    },
+    "errors": {
+      "sendError": "Erreur envoi email",
+      "checkError": "Erreur vérification"
+    }
+  },
+
+  
+  "emailVerified": {
+    "success": {
+      "title": "Email vérifié !",
+      "text": "Ton adresse email a été confirmée avec succès."
+    },
+    "invalid": {
+      "title": "Lien invalide",
+      "text": "Ce lien de vérification n'est pas valide."
+    },
+    "expired": {
+      "title": "Lien expiré",
+      "text": "Ce lien de vérification a expiré, demande-en un nouveau."
+    },
+    "redirecting": "Redirection automatique..."
+  }
+
+
 
 
 

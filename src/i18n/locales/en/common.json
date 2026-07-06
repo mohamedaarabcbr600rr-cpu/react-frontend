@@ -817,7 +817,43 @@
   "confirm": "Delete this post?",
   "error": "Error while deleting",
   "title": "Delete"
-}
+},
+
+
+
+  "emailVerification": {
+    "message": "Please verify your email address to unlock all features.",
+    "buttons": {
+      "sending": "Sending...",
+      "resent": "Email resent ✓",
+      "resend": "Resend email",
+      "checking": "Checking...",
+      "verified": "I've verified, refresh"
+    },
+    "errors": {
+      "sendError": "Error sending email",
+      "checkError": "Verification error"
+    }
+  },
+
+  
+  "emailVerified": {
+    "success": {
+      "title": "Email verified!",
+      "text": "Your email address has been successfully confirmed."
+    },
+    "invalid": {
+      "title": "Invalid link",
+      "text": "This verification link is not valid."
+    },
+    "expired": {
+      "title": "Link expired",
+      "text": "This verification link has expired, request a new one."
+    },
+    "redirecting": "Redirecting automatically..."
+  }
+
+
 
 
 

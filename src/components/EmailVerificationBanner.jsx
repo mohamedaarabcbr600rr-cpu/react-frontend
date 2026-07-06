@@ -1,10 +1,12 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import axios from "../axios";
 
 const EmailVerificationBanner = ({ user, onRefreshUser }) => {
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
   const [checking, setChecking] = useState(false);
+  const { t } = useTranslation();
 
   if (!user || user.email_verified_at) return null;
 
@@ -15,7 +17,7 @@ const EmailVerificationBanner = ({ user, onRefreshUser }) => {
       setSent(true);
       setTimeout(() => setSent(false), 5000);
     } catch (err) {
-      console.error("Erreur envoi email:", err);
+      console.error(t("emailVerification.errors.sendError"), err);
     } finally {
       setSending(false);
     }
@@ -27,7 +29,7 @@ const EmailVerificationBanner = ({ user, onRefreshUser }) => {
       const res = await axios.get('/api/profile');
       onRefreshUser(res.data);
     } catch (err) {
-      console.error("Erreur vérification:", err);
+      console.error(t("emailVerification.errors.checkError"), err);
     } finally {
       setChecking(false);
     }
@@ -46,7 +48,7 @@ const EmailVerificationBanner = ({ user, onRefreshUser }) => {
       fontSize: "14px",
       color: "#7a5c00"
     }}>
-      <span>⚠️ Merci de vérifier ton adresse email pour débloquer toutes les fonctionnalités.</span>
+      <span>⚠️ {t("emailVerification.message")}</span>
       <button
         onClick={handleResend}
         disabled={sending}
@@ -56,7 +58,7 @@ const EmailVerificationBanner = ({ user, onRefreshUser }) => {
           cursor: "pointer", fontWeight: 600
         }}
       >
-        {sending ? "Envoi..." : sent ? "Email renvoyé ✓" : "Renvoyer l'email"}
+        {sending ? t("emailVerification.buttons.sending") : sent ? t("emailVerification.buttons.resent") : t("emailVerification.buttons.resend")}
       </button>
       <button
         onClick={handleCheck}
@@ -67,7 +69,7 @@ const EmailVerificationBanner = ({ user, onRefreshUser }) => {
           cursor: "pointer", fontWeight: 600
         }}
       >
-        {checking ? "Vérification..." : "J'ai vérifié, actualiser"}
+        {checking ? t("emailVerification.buttons.checking") : t("emailVerification.buttons.verified")}
       </button>
     </div>
   );
