@@ -128,7 +128,7 @@
 .card-3d-wrap {
   width: 100%;
   max-width: 420px;
-  height: 460px;
+  height: 520px;
   perspective: 1600px;
   -webkit-perspective: 1600px;
   contain: layout;
