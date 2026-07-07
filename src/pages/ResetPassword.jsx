@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { useNavigate, useSearchParams, Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import axios from "../axios";
 
 const ResetPassword = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const token = searchParams.get("token");
   const email = searchParams.get("email");
 
@@ -19,7 +21,7 @@ const ResetPassword = () => {
     setError("");
 
     if (password !== passwordConfirmation) {
-      setError("Les mots de passe ne correspondent pas.");
+      setError(t("resetPassword.passwordMismatch"));
       return;
     }
 
@@ -34,7 +36,7 @@ const ResetPassword = () => {
       setSuccess(true);
       setTimeout(() => navigate("/"), 3000);
     } catch (err) {
-      setError(err.response?.data?.message || "Une erreur est survenue.");
+      setError(err.response?.data?.message || t("resetPassword.genericError"));
     } finally {
       setLoading(false);
     }
@@ -43,28 +45,28 @@ const ResetPassword = () => {
   if (!token || !email) {
     return (
       <div style={{ maxWidth: "400px", margin: "80px auto", padding: "0 20px", textAlign: "center" }}>
-        <p style={{ color: "#c62828" }}>Lien invalide.</p>
-        <Link to="/" style={{ color: "#0a66c2", fontSize: "14px" }}>Retour à l'accueil</Link>
+        <p style={{ color: "#c62828" }}>{t("resetPassword.invalidLink")}</p>
+        <Link to="/" style={{ color: "#0a66c2", fontSize: "14px" }}>{t("resetPassword.backToHome")}</Link>
       </div>
     );
   }
 
   return (
     <div style={{ maxWidth: "400px", margin: "80px auto", padding: "0 20px", textAlign: "center" }}>
-      <h2 style={{ marginBottom: "8px" }}>Nouveau mot de passe</h2>
+      <h2 style={{ marginBottom: "8px" }}>{t("resetPassword.title")}</h2>
 
       {success ? (
         <p style={{ color: "#2e7d32", marginTop: "16px" }}>
-          ✅ Mot de passe réinitialisé ! Redirection en cours...
+          {t("resetPassword.successMessage")}
         </p>
       ) : (
         <form onSubmit={handleSubmit}>
           <p style={{ color: "#666", fontSize: "14px", marginBottom: "20px" }}>
-            Choisis un nouveau mot de passe pour {email}
+            {t("resetPassword.chooseNewPassword", { email })}
           </p>
           <input
             type="password"
-            placeholder="Nouveau mot de passe"
+            placeholder={t("resetPassword.newPasswordPlaceholder")}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
@@ -76,7 +78,7 @@ const ResetPassword = () => {
           />
           <input
             type="password"
-            placeholder="Confirmer le mot de passe"
+            placeholder={t("resetPassword.confirmPasswordPlaceholder")}
             value={passwordConfirmation}
             onChange={(e) => setPasswordConfirmation(e.target.value)}
             required
@@ -95,7 +97,7 @@ const ResetPassword = () => {
               padding: "12px", borderRadius: "24px", fontWeight: 600, cursor: "pointer", fontSize: "14px"
             }}
           >
-            {loading ? "Réinitialisation..." : "Réinitialiser le mot de passe"}
+            {loading ? t("resetPassword.resetting") : t("resetPassword.resetButton")}
           </button>
         </form>
       )}
