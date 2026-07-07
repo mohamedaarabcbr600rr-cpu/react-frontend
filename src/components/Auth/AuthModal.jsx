@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import axios from "../../axios";
 import "./AuthModal.css";
-
+import { Link } from "react-router-dom";
 const AuthModal = ({ setUser, closeModal }) => {
   const [isLogin, setIsLogin] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -144,9 +144,13 @@ const AuthModal = ({ setUser, closeModal }) => {
                 required
               />
 
-              <button className="auth-btn" disabled={loading}>
+             <button className="auth-btn" disabled={loading}>
                 {loading ? t("common.loading") : t("auth.loginButton")}
               </button>
+
+              <Link to="/forgot-password" style={{ display: "block", textAlign: "center", marginTop: "12px", fontSize: "13px", color: "#0a66c2" }} onClick={closeModal}>
+                Mot de passe oublié ?
+              </Link>
             </form>
           </div>
 

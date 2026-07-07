@@ -16,6 +16,8 @@ const AITutor = lazy(() => import('./pages/AITutor/AITutor'));
 const StudyHub = lazy(() => import('./pages/StudyHub/StudyHub'));
 const Admin = lazy(() => import('./admin-dashboard/admin'));
 const EmailVerified = lazy(() => import('./pages/EmailVerified'));
+const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
+const ResetPassword = lazy(() => import('./pages/ResetPassword'));
 import EmailVerificationBanner from "./components/EmailVerificationBanner";
 // Legal pages
 import About         from './components/About';
@@ -524,6 +526,8 @@ const [adminToken, setAdminToken] = useState(() =>
             </ProtectedContent>
           } />
           <Route path="/email-verified" element={<EmailVerified />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
         {/* LEGAL PAGES */}
           <Route path="/about"         element={<About />}         />
           <Route path="/privacy"       element={<Privacy />}       />
