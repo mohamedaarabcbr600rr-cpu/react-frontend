@@ -42,9 +42,9 @@ const AICoach = () => {
   const fetchUserStats = async () => {
     try {
       const response = await axiosInstance.get("/student-dashboard");
-      
+
       console.log("📊 User stats received:", response.data);
-      
+
       if (response.data && response.data.profile) {
         setUserStats(response.data.profile);
       } else {
@@ -99,7 +99,7 @@ const AICoach = () => {
 
     try {
       const token = getAuthToken();
-      
+
       if (!token) {
         setError(t('coach.errors.loginRequired'));
         setLoading(false);
@@ -114,9 +114,9 @@ const AICoach = () => {
       });
 
       console.log("🤖 AI Coach response:", res.data);
-      
+
       let adviceText = "";
-      
+
       // Adapter selon la structure du backend
       if (res.data.coach) {
         adviceText = res.data.coach;
@@ -127,13 +127,13 @@ const AICoach = () => {
       } else {
         adviceText = t('coach.defaultAdvice');
       }
-      
+
       setCoach(adviceText);
       saveAdviceToHistory(adviceText, adviceType);
-      
+
     } catch (err) {
       console.error(t('coach.errors.fetchCoach'), err);
-      
+
       if (err.response) {
         switch (err.response.status) {
           case 401:
@@ -153,10 +153,10 @@ const AICoach = () => {
       } else {
         setError(t('coach.errors.unexpected'));
       }
-      
+
       // Message d'erreur plus convivial
       setCoach(t('coach.fallbackAdvice'));
-      
+
     } finally {
       setLoading(false);
     }
@@ -217,7 +217,10 @@ const AICoach = () => {
       <div className="ai-coach-header">
         <div className="header-content">
           <h2 className="coach-title">
-            <span className="title-icon">🧠</span>
+            <svg className="title-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--brand-600)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/>
+              <path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z"/>
+            </svg>
             {t('coach.title')}
           </h2>
           <p className="coach-subtitle">
@@ -237,26 +240,48 @@ const AICoach = () => {
         {userStats && (
           <div className="stats-card">
             <div className="stats-header">
-              <span className="stats-icon">📊</span>
+              <span className="stats-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--brand-600)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="18" y1="20" x2="18" y2="10"/>
+                  <line x1="12" y1="20" x2="12" y2="4"/>
+                  <line x1="6" y1="20" x2="6" y2="14"/>
+                </svg>
+              </span>
               <h3>{t('coach.profile.title')}</h3>
             </div>
             <div className="stats-grid-mini">
               <div className="stat-mini">
-                <span className="stat-mini-icon">🎯</span>
+                <span className="stat-mini-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--brand-600)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <circle cx="12" cy="12" r="6"/>
+                    <circle cx="12" cy="12" r="2"/>
+                  </svg>
+                </span>
                 <div>
                   <div className="stat-mini-value">{Math.round(userStats.score_moyen || 0)}%</div>
                   <div className="stat-mini-label">{t('coach.profile.averageScore')}</div>
                 </div>
               </div>
               <div className="stat-mini">
-                <span className="stat-mini-icon">📚</span>
+                <span className="stat-mini-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--brand-600)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>
+                  </svg>
+                </span>
                 <div>
                   <div className="stat-mini-value">{userStats.total_qcm || 0}</div>
                   <div className="stat-mini-label">{t('coach.profile.completedQCM')}</div>
                 </div>
               </div>
               <div className="stat-mini">
-                <span className="stat-mini-icon">🧠</span>
+                <span className="stat-mini-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--brand-600)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                    <path d="m2 17 10 5 10-5"/>
+                    <path d="m2 12 10 5 10-5"/>
+                  </svg>
+                </span>
                 <div>
                   <div className="stat-mini-value">
                     {userStats.niveau === "debutant" && t('coach.profile.levels.beginner')}
@@ -268,7 +293,7 @@ const AICoach = () => {
                 </div>
               </div>
             </div>
-            
+
             {/* Afficher les points faibles s'il y en a */}
             {weakPoints.length > 0 && (
               <div className="weak-points-preview">
@@ -331,8 +356,8 @@ const AICoach = () => {
 
         {/* Generate Button */}
         <div className="generate-section">
-          <button 
-            onClick={getCoach} 
+          <button
+            onClick={getCoach}
             className={`generate-btn ${loading ? "loading" : ""}`}
             disabled={loading}
           >
@@ -343,7 +368,13 @@ const AICoach = () => {
               </>
             ) : (
               <>
-                <span className="btn-icon">✨</span>
+                <svg className="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z"/>
+                  <path d="M5 3v4"/>
+                  <path d="M19 17v4"/>
+                  <path d="M3 5h4"/>
+                  <path d="M17 19h4"/>
+                </svg>
                 {t('coach.generateAdvice')}
               </>
             )}
@@ -353,7 +384,13 @@ const AICoach = () => {
         {/* Error Message */}
         {error && (
           <div className="error-message">
-            <span className="error-icon">⚠️</span>
+            <span className="error-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+                <path d="M12 9v4"/>
+                <path d="M12 17h.01"/>
+              </svg>
+            </span>
             <span>{error}</span>
             <button onClick={() => setError("")} className="error-close">
               ✕
@@ -379,11 +416,15 @@ const AICoach = () => {
           <div className="advice-card">
             <div className="advice-header">
               <div className="advice-type-badge">
-                <span className="advice-icon">💡</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M9 18h6"/>
+                  <path d="M10 22h4"/>
+                  <path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.2 1.2 1.9l.3 1.4h5l.3-1.4c.2-.7.6-1.4 1.2-1.9A7 7 0 0 0 12 2Z"/>
+                </svg>
                 <span>{t('coach.advice')} {getAdviceTypeLabel(adviceType)}</span>
               </div>
-              <button 
-                onClick={() => setCoach("")} 
+              <button
+                onClick={() => setCoach("")}
                 className="close-advice"
                 title={t('coach.close')}
               >
@@ -396,7 +437,7 @@ const AICoach = () => {
               <div className="advice-quote-icon close">"</div>
             </div>
             <div className="advice-footer">
-              <button 
+              <button
                 onClick={() => {
                   navigator.clipboard.writeText(coach);
                   const btn = event.target;
@@ -408,12 +449,22 @@ const AICoach = () => {
                 }}
                 className="advice-action"
               >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+                  <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+                </svg>
                 {t('coach.copy')}
               </button>
-              <button 
+              <button
                 onClick={getCoach}
                 className="advice-action"
               >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
+                  <path d="M21 3v5h-5"/>
+                  <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/>
+                  <path d="M3 21v-5h5"/>
+                </svg>
                 {t('coach.newAdvice')}
               </button>
             </div>
@@ -423,10 +474,18 @@ const AICoach = () => {
         {/* Motivation Card */}
         {!coach && !loading && (
           <div className="motivation-card">
-            <div className="motivation-icon">🌟</div>
+            <div className="motivation-icon">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z"/>
+              </svg>
+            </div>
             <p className="motivation-text">{getRandomMotivation()}</p>
             <button onClick={getCoach} className="motivation-btn">
               {t('coach.getPersonalizedAdvice')}
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M5 12h14"/>
+                <path d="m12 5 7 7-7 7"/>
+              </svg>
             </button>
           </div>
         )}
@@ -434,18 +493,24 @@ const AICoach = () => {
         {/* History Section */}
         {adviceHistory.length > 0 && (
           <div className="history-section">
-            <div 
+            <div
               className="history-header"
               onClick={() => setShowHistory(!showHistory)}
               style={{ cursor: "pointer" }}
             >
               <div className="history-header-left">
-                <span className="history-icon">📜</span>
+                <span className="history-icon">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--brand-600)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                    <path d="M3 3v5h5"/>
+                    <path d="M12 7v5l4 2"/>
+                  </svg>
+                </span>
                 <h3>{t('coach.history.title')}</h3>
                 <span className="history-count">({adviceHistory.length})</span>
               </div>
               <div className="history-actions">
-                <button 
+                <button
                   onClick={(e) => {
                     e.stopPropagation();
                     clearHistory();
@@ -453,14 +518,18 @@ const AICoach = () => {
                   className="clear-history-btn"
                   title={t('coach.history.clear')}
                 >
-                  🗑️
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M3 6h18"/>
+                    <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+                    <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                  </svg>
                 </button>
                 <button className="toggle-btn" onClick={(e) => e.stopPropagation()}>
                   {showHistory ? "▲" : "▼"}
                 </button>
               </div>
             </div>
-            
+
             {showHistory && (
               <div className="history-list">
                 {adviceHistory.map((item) => (
@@ -474,7 +543,7 @@ const AICoach = () => {
                           {formatDate(item.date)}
                         </span>
                       </div>
-                      <button 
+                      <button
                         onClick={() => setCoach(item.text)}
                         className="history-load-btn"
                       >
@@ -494,7 +563,11 @@ const AICoach = () => {
         {/* Tips Section */}
         <div className="tips-section">
           <h3>
-            <span className="tips-icon">💡</span>
+            <svg className="tips-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--brand-600)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M9 18h6"/>
+              <path d="M10 22h4"/>
+              <path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.2 1.2 1.9l.3 1.4h5l.3-1.4c.2-.7.6-1.4 1.2-1.9A7 7 0 0 0 12 2Z"/>
+            </svg>
             {t('coach.tips.title')}
           </h3>
           <div className="tips-grid">
@@ -526,10 +599,3 @@ const AICoach = () => {
 };
 
 export default AICoach;
-
-
-
-
-
-
-

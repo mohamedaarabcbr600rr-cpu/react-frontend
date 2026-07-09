@@ -12,7 +12,7 @@ const AIChat = () => {
   const [showSuggestions, setShowSuggestions] = useState(true);
   const [userName, setUserName] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  
+
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
   const { t } = useTranslation();
@@ -108,17 +108,17 @@ const AIChat = () => {
   const sendMessage = async () => {
     if (!input.trim()) return;
 
-    const userMessage = { 
-      sender: "user", 
+    const userMessage = {
+      sender: "user",
       text: input,
       timestamp: new Date().toISOString(),
       id: Date.now()
     };
-    
+
     const updatedMessages = [...messages, userMessage];
     setMessages(updatedMessages);
     saveChatHistory(updatedMessages);
-    
+
     setInput("");
     setLoading(true);
     setIsTyping(true);
@@ -127,7 +127,7 @@ const AIChat = () => {
 
     try {
       const token = getAuthToken();
-      
+
       // ✅ Utiliser axiosInstance au lieu de axios direct
       const res = await axiosInstance.post(
         "/ask-ai",
@@ -183,16 +183,16 @@ const AIChat = () => {
 
       setMessages(finalMessages);
       saveChatHistory(finalMessages);
-      
+
       if (!chatId && res.data.chat_id) {
         setChatId(res.data.chat_id);
       }
-      
+
     } catch (err) {
       console.error(t('aiChat.errors.sendMessage'), err);
-      
+
       let errorMessage = t('aiChat.errors.generic');
-      
+
       if (err.code === "ECONNABORTED") {
         errorMessage = t('aiChat.errors.timeout');
       } else if (err.response) {
@@ -207,9 +207,9 @@ const AIChat = () => {
           errorMessage = err.response.data?.error || err.response.data?.message || errorMessage;
         }
       }
-      
+
       setError(errorMessage);
-      
+
       // Add error message to chat
       const errorAiMessage = {
         sender: "ai",
@@ -218,11 +218,11 @@ const AIChat = () => {
         id: Date.now() + 1,
         isError: true
       };
-      
+
       const finalMessages = [...updatedMessages, errorAiMessage];
       setMessages(finalMessages);
       saveChatHistory(finalMessages);
-      
+
     } finally {
       setLoading(false);
       setIsTyping(false);
@@ -256,36 +256,54 @@ const AIChat = () => {
       <div className="chat-header">
         <div className="header-left">
           <div className="ai-avatar">
-            <span className="ai-avatar-icon">🤖</span>
+            <div className="ai-avatar-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 8V4H8"/>
+                <rect width="16" height="12" x="4" y="8" rx="2"/>
+                <path d="M2 14h2"/>
+                <path d="M20 14h2"/>
+                <path d="M15 13v2"/>
+                <path d="M9 13v2"/>
+              </svg>
+            </div>
             <span className="online-indicator"></span>
           </div>
           <div className="header-info">
             <h2>{t('aiChat.title')}</h2>
             <p className="status-text">
+              <span style={{ display: "inline-block", width: 6, height: 6, borderRadius: "50%", background: "var(--success)" }}></span>
               {isAuthenticated && userName ? t('aiChat.greeting', { name: userName }) + ' • ' : ""}
               {t('aiChat.status')}
             </p>
           </div>
         </div>
         <div className="header-actions">
-          <button 
-            onClick={clearChatHistory} 
+          <button
+            onClick={clearChatHistory}
             className="clear-btn"
             title={t('aiChat.clearHistory')}
           >
-            🗑️
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M3 6h18"/>
+              <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+              <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+            </svg>
           </button>
-          <button 
+          <button
             onClick={() => {
               setMessages([]);
               setShowSuggestions(true);
               const token = getAuthToken();
               const storageKey = token ? `aiChatHistory_${token.substring(0, 20)}` : "aiChatHistory_guest";
               localStorage.removeItem(storageKey);
-            }} 
+            }}
             className="new-chat-btn"
             title={t('aiChat.newChat')}
           >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 5v14"/>
+              <path d="M5 12h14"/>
+            </svg>
             {t('aiChat.newChatButton')}
           </button>
         </div>
@@ -294,14 +312,23 @@ const AIChat = () => {
       <div className="chat-messages">
         {messages.length === 0 && showSuggestions && (
           <div className="welcome-section">
-            <div className="welcome-icon">👋</div>
+            <div className="welcome-icon">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--brand-600)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 8V4H8"/>
+                <rect width="16" height="12" x="4" y="8" rx="2"/>
+                <path d="M2 14h2"/>
+                <path d="M20 14h2"/>
+                <path d="M15 13v2"/>
+                <path d="M9 13v2"/>
+              </svg>
+            </div>
             <h3>
-              {isAuthenticated && userName 
+              {isAuthenticated && userName
                 ? t('aiChat.welcome.authenticated', { name: userName })
                 : t('aiChat.welcome.guest')}
             </h3>
             <p>{t('aiChat.welcome.description')}</p>
-            
+
             <div className="suggestions-grid">
               {suggestedQuestions.map((question, index) => (
                 <button
@@ -312,7 +339,13 @@ const AIChat = () => {
                     inputRef.current?.focus();
                   }}
                 >
-                  <span className="suggestion-icon">💡</span>
+                  <span className="suggestion-icon">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--brand-600)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M9 18h6"/>
+                      <path d="M10 22h4"/>
+                      <path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.2 1.2 1.9l.3 1.4h5l.3-1.4c.2-.7.6-1.4 1.2-1.9A7 7 0 0 0 12 2Z"/>
+                    </svg>
+                  </span>
                   {question}
                 </button>
               ))}
@@ -327,7 +360,12 @@ const AIChat = () => {
           >
             <div className={`message-bubble ${msg.sender === "user" ? "user-bubble" : "ai-bubble"} ${msg.isError ? "error-bubble" : ""}`}>
               {msg.sender === "ai" && !msg.isError && (
-                <div className="ai-icon">🤖</div>
+                <div className="ai-icon">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M12 8V4H8"/>
+                    <rect width="16" height="12" x="4" y="8" rx="2"/>
+                  </svg>
+                </div>
               )}
               <div className="message-content">
                 <div className="message-text">{msg.text}</div>
@@ -336,7 +374,12 @@ const AIChat = () => {
                 )}
               </div>
               {msg.sender === "user" && (
-                <div className="user-icon">👤</div>
+                <div className="user-icon">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+                    <circle cx="12" cy="7" r="4"/>
+                  </svg>
+                </div>
               )}
             </div>
           </div>
@@ -345,6 +388,12 @@ const AIChat = () => {
         {isTyping && (
           <div className="typing-indicator">
             <div className="typing-bubble">
+              <div className="ai-icon">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 8V4H8"/>
+                  <rect width="16" height="12" x="4" y="8" rx="2"/>
+                </svg>
+              </div>
               <div className="typing-dot"></div>
               <div className="typing-dot"></div>
               <div className="typing-dot"></div>
@@ -355,7 +404,13 @@ const AIChat = () => {
 
         {error && !isTyping && (
           <div className="error-banner">
-            <span className="error-banner-icon">⚠️</span>
+            <span className="error-banner-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+                <path d="M12 9v4"/>
+                <path d="M12 17h.01"/>
+              </svg>
+            </span>
             <span>{error}</span>
             <button onClick={() => setError("")} className="error-close" aria-label={t('aiChat.closeError')}>✕</button>
           </div>
@@ -376,8 +431,8 @@ const AIChat = () => {
             rows={1}
             disabled={loading}
           />
-          <button 
-            onClick={sendMessage} 
+          <button
+            onClick={sendMessage}
             className={`send-btn ${!input.trim() || loading ? "disabled" : ""}`}
             disabled={!input.trim() || loading}
             aria-label={t('aiChat.send')}
@@ -385,7 +440,10 @@ const AIChat = () => {
             {loading ? (
               <div className="send-spinner"></div>
             ) : (
-              <span>📤</span>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="m22 2-7 20-4-9-9-4Z"/>
+                <path d="M22 2 11 13"/>
+              </svg>
             )}
           </button>
         </div>
@@ -399,10 +457,3 @@ const AIChat = () => {
 };
 
 export default AIChat;
-
-
-
-
-
-
-

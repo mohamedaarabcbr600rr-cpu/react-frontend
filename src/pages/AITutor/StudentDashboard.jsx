@@ -52,22 +52,22 @@ const StudentDashboard = () => {
       setLoading(true);
       // ✅ Utiliser l'instance axios avec token
       const response = await axiosInstance.get("/student-dashboard");
-      
+
       console.log("📊 Dashboard data received:", response.data);
-      
+
       // Adapter selon la structure du backend
       let profileData = response.data.profile;
-      
+
       if (profileData) {
         setData(profileData);
       } else {
         setError(t('dashboard.errors.profileNotFound'));
       }
-      
+
       setError(null);
     } catch (err) {
       console.error(t('dashboard.errors.fetchDashboard'), err);
-      
+
       if (err.response && err.response.status === 401) {
         setError(t('dashboard.errors.sessionExpired'));
       } else {
@@ -96,7 +96,7 @@ const StudentDashboard = () => {
 
   const getRecommendations = (weakPoints, niveau, scoreMoyen) => {
     const recommendations = [];
-    
+
     // Recommandations basées sur les points faibles
     if (weakPoints && weakPoints.length > 0) {
       weakPoints.forEach(weakPoint => {
@@ -113,7 +113,7 @@ const StudentDashboard = () => {
         }
       });
     }
-    
+
     // Recommandations basées sur le niveau
     if (niveau === "debutant") {
       recommendations.push(t('dashboard.recommendations.beginner1'));
@@ -125,17 +125,17 @@ const StudentDashboard = () => {
       recommendations.push(t('dashboard.recommendations.advanced1'));
       recommendations.push(t('dashboard.recommendations.advanced2'));
     }
-    
+
     // Recommandations basées sur le score
     if (scoreMoyen < 50) {
       recommendations.push(t('dashboard.recommendations.lowScore'));
     } else if (scoreMoyen > 85) {
       recommendations.push(t('dashboard.recommendations.highScore'));
     }
-    
+
     // Supprimer les doublons
     const uniqueRecs = [...new Map(recommendations.map(rec => [rec, rec])).values()];
-    
+
     return uniqueRecs.slice(0, 5);
   };
 
@@ -166,7 +166,13 @@ const StudentDashboard = () => {
     return (
       <div className="dashboard-container">
         <div className="error-screen">
-          <span className="error-icon">⚠️</span>
+          <span className="error-icon">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+              <path d="M12 9v4"/>
+              <path d="M12 17h.01"/>
+            </svg>
+          </span>
           <h3>{t('dashboard.errorTitle')}</h3>
           <p>{error}</p>
           <button onClick={fetchDashboardData} className="retry-btn">
@@ -214,7 +220,11 @@ const StudentDashboard = () => {
       <div className="dashboard-header">
         <div>
           <h1 className="dashboard-title">
-            <span className="title-icon">📊</span>
+            <svg className="title-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--brand-600)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="18" y1="20" x2="18" y2="10"/>
+              <line x1="12" y1="20" x2="12" y2="4"/>
+              <line x1="6" y1="20" x2="6" y2="14"/>
+            </svg>
             {t('dashboard.title')}
           </h1>
           <p className="dashboard-subtitle">
@@ -223,7 +233,12 @@ const StudentDashboard = () => {
           </p>
         </div>
         <button onClick={fetchDashboardData} className="refresh-btn" title={t('dashboard.refresh')}>
-          🔄
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
+            <path d="M21 3v5h-5"/>
+            <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/>
+            <path d="M3 21v-5h5"/>
+          </svg>
         </button>
       </div>
 
@@ -246,14 +261,20 @@ const StudentDashboard = () => {
 
         <div className={`stat-card score-card ${scoreColor}`}>
           <div className="stat-card-inner">
-            <span className="stat-card-icon">🎯</span>
+            <span className="stat-card-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--brand-600)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <circle cx="12" cy="12" r="6"/>
+                <circle cx="12" cy="12" r="2"/>
+              </svg>
+            </span>
             <div className="stat-card-content">
               <span className="stat-card-label">{t('dashboard.stats.averageScore')}</span>
               <div className="score-container">
                 <span className="stat-card-value">{scoreMoyen}%</span>
                 <div className="score-bar">
-                  <div 
-                    className="score-bar-fill" 
+                  <div
+                    className="score-bar-fill"
                     style={{ width: `${scoreMoyen}%` }}
                   ></div>
                 </div>
@@ -264,7 +285,11 @@ const StudentDashboard = () => {
 
         <div className="stat-card total-card">
           <div className="stat-card-inner">
-            <span className="stat-card-icon">📚</span>
+            <span className="stat-card-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--brand-600)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>
+              </svg>
+            </span>
             <div className="stat-card-content">
               <span className="stat-card-label">{t('dashboard.stats.completedQCM')}</span>
               <span className="stat-card-value">{data.total_qcm || 0}</span>
@@ -284,7 +309,7 @@ const StudentDashboard = () => {
                 cy="90"
                 r="75"
                 fill="none"
-                stroke="#e0e0e0"
+                stroke="var(--bg-muted)"
                 strokeWidth="12"
               />
               <circle
@@ -292,7 +317,7 @@ const StudentDashboard = () => {
                 cy="90"
                 r="75"
                 fill="none"
-                stroke={scoreColor === "excellent" ? "#4caf50" : scoreColor === "good" ? "#8bc34a" : scoreColor === "average" ? "#ff9800" : "#f44336"}
+                stroke={scoreColor === "excellent" ? "var(--success)" : scoreColor === "good" ? "var(--brand-500)" : scoreColor === "average" ? "var(--warning)" : "var(--danger)"}
                 strokeWidth="12"
                 strokeDasharray={`${(scoreMoyen / 100) * 471} 471`}
                 strokeLinecap="round"
@@ -309,19 +334,19 @@ const StudentDashboard = () => {
           </div>
           <div className="performance-stats">
             <div className="performance-stat">
-              <span className="dot" style={{ background: "#4caf50" }}></span>
+              <span className="dot" style={{ background: "var(--success)" }}></span>
               <span>{t('dashboard.performance.excellent')}</span>
             </div>
             <div className="performance-stat">
-              <span className="dot" style={{ background: "#8bc34a" }}></span>
+              <span className="dot" style={{ background: "var(--brand-500)" }}></span>
               <span>{t('dashboard.performance.good')}</span>
             </div>
             <div className="performance-stat">
-              <span className="dot" style={{ background: "#ff9800" }}></span>
+              <span className="dot" style={{ background: "var(--warning)" }}></span>
               <span>{t('dashboard.performance.average')}</span>
             </div>
             <div className="performance-stat">
-              <span className="dot" style={{ background: "#f44336" }}></span>
+              <span className="dot" style={{ background: "var(--danger)" }}></span>
               <span>{t('dashboard.performance.poor')}</span>
             </div>
           </div>
@@ -332,13 +357,18 @@ const StudentDashboard = () => {
       <div className="section">
         <div className="section-header">
           <div className="section-header-left">
-            <span className="section-icon">📈</span>
+            <span className="section-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--brand-600)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+                <polyline points="17 6 23 6 23 12"/>
+              </svg>
+            </span>
             <h3>{t('dashboard.progress.title')}</h3>
           </div>
           <span className="progress-value">{progress}%</span>
         </div>
         <div className="global-progress-bar">
-          <div 
+          <div
             className="global-progress-fill"
             style={{ width: `${progress}%` }}
           ></div>
@@ -354,12 +384,18 @@ const StudentDashboard = () => {
       <div className="section">
         <div className="section-header" onClick={() => setShowWeakPoints(!showWeakPoints)} style={{ cursor: "pointer" }}>
           <div className="section-header-left">
-            <span className="section-icon">❌</span>
+            <span className="section-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="8" x2="12" y2="12"/>
+                <line x1="12" y1="16" x2="12.01" y2="16"/>
+              </svg>
+            </span>
             <h3>{t('dashboard.weakPoints.title')}</h3>
           </div>
           <button className="toggle-btn">{showWeakPoints ? "▼" : "▶"}</button>
         </div>
-        
+
         {showWeakPoints && (
           <div className="weak-points-grid">
             {weakPointsArray.length > 0 ? (
@@ -370,9 +406,9 @@ const StudentDashboard = () => {
                     {weakPoint.includes("Grammaire") && "📖"}
                     {weakPoint.includes("Vocabulaire") && "📚"}
                     {weakPoint.includes("Orthographe") && "✍️"}
-                    {!weakPoint.includes("Conjugaison") && 
-                     !weakPoint.includes("Grammaire") && 
-                     !weakPoint.includes("Vocabulaire") && 
+                    {!weakPoint.includes("Conjugaison") &&
+                     !weakPoint.includes("Grammaire") &&
+                     !weakPoint.includes("Vocabulaire") &&
                      !weakPoint.includes("Orthographe") && "⚠️"}
                   </div>
                   <div className="weak-point-content">
@@ -395,12 +431,18 @@ const StudentDashboard = () => {
       <div className="section">
         <div className="section-header" onClick={() => setShowRecommendations(!showRecommendations)} style={{ cursor: "pointer" }}>
           <div className="section-header-left">
-            <span className="section-icon">💡</span>
+            <span className="section-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--brand-600)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M9 18h6"/>
+                <path d="M10 22h4"/>
+                <path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.2 1.2 1.9l.3 1.4h5l.3-1.4c.2-.7.6-1.4 1.2-1.9A7 7 0 0 0 12 2Z"/>
+              </svg>
+            </span>
             <h3>{t('dashboard.recommendations.title')}</h3>
           </div>
           <button className="toggle-btn">{showRecommendations ? "▼" : "▶"}</button>
         </div>
-        
+
         {showRecommendations && (
           <div className="recommendations-list">
             {recommendations.map((recommendation, index) => (
@@ -416,7 +458,11 @@ const StudentDashboard = () => {
       {/* Motivation Quote */}
       <div className="motivation-card">
         <div className="motivation-content">
-          <span className="motivation-icon">🌟</span>
+          <span className="motivation-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z"/>
+            </svg>
+          </span>
           <p className="motivation-text">
             {scoreMoyen >= 80 && t('dashboard.motivation.excellent')}
             {scoreMoyen >= 60 && scoreMoyen < 80 && t('dashboard.motivation.good')}
@@ -431,10 +477,3 @@ const StudentDashboard = () => {
 };
 
 export default StudentDashboard;
-
-
-
-
-
-
-

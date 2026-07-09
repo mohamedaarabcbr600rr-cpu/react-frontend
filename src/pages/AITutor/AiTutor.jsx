@@ -9,7 +9,8 @@ import {
   BarChart3,
   Brain,
   Moon,
-  Sun
+  Sun,
+  Sparkles
 } from "lucide-react";
 
 import AIChat from "./AIChat.jsx";
@@ -57,7 +58,11 @@ const AITutor = () => {
       {/* ================= TOPBAR MOBILE ================= */}
       <div className="topbar">
         <button className="menu-btn" onClick={() => setDrawerOpen(true)} aria-label={t("tutor.openMenu")}>
-          ☰
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <line x1="3" y1="12" x2="21" y2="12"/>
+            <line x1="3" y1="18" x2="21" y2="18"/>
+          </svg>
         </button>
         <h3>{t("tutor.title")}</h3>
         <button className="theme-btn" onClick={() => setDarkMode(!darkMode)} aria-label={t("tutor.toggleTheme")}>
@@ -84,7 +89,17 @@ const AITutor = () => {
           </div>
         ))}
         <div className="toggle" onClick={() => setDarkMode(!darkMode)} role="button" tabIndex={0}>
-          {darkMode ? t("tutor.lightMode") : t("tutor.darkMode")}
+          {darkMode ? (
+            <>
+              <Sun size={14} />
+              {t("tutor.lightMode")}
+            </>
+          ) : (
+            <>
+              <Moon size={14} />
+              {t("tutor.darkMode")}
+            </>
+          )}
         </div>
       </div>
 
@@ -135,7 +150,17 @@ const AITutor = () => {
               </motion.div>
             ))}
             <div className="toggle" onClick={() => setDarkMode(!darkMode)} role="button" tabIndex={0}>
-              {darkMode ? t("tutor.lightMode") : t("tutor.darkMode")}
+              {darkMode ? (
+                <>
+                  <Sun size={14} />
+                  {t("tutor.lightMode")}
+                </>
+              ) : (
+                <>
+                  <Moon size={14} />
+                  {t("tutor.darkMode")}
+                </>
+              )}
             </div>
           </motion.div>
         )}
@@ -167,7 +192,7 @@ const AITutor = () => {
         aria-label={t("tutor.goToChat")}
         title={t("tutor.goToChat")}
       >
-        🤖
+        <Sparkles size={24} />
       </motion.button>
 
       {/* ================= BOTTOM NAV MOBILE ================= */}

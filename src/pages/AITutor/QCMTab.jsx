@@ -111,12 +111,12 @@ const QCMTab = () => {
       );
 
       console.log("📥 Données du serveur:", res.data);
-      
+
       if (res.data.success && res.data.qcm && res.data.qcm.questions) {
         res.data.qcm.questions.forEach((q, i) => {
           console.log(`${t('qcm.debug.question')} ${i+1}: ${t('qcm.debug.correctAnswer')} = "${q.correct}" (${t('qcm.debug.type')}: ${typeof q.correct})`);
         });
-        
+
         setQCM(res.data.qcm.questions);
         setQcmTitle(res.data.qcm.title || t('qcm.defaultTitle'));
         setAnswers({});
@@ -127,10 +127,10 @@ const QCMTab = () => {
         setError(t('qcm.errors.invalidFormat'));
         console.error("Structure inattendue:", res.data);
       }
-      
+
     } catch (err) {
       console.error(t('qcm.errors.generateError'), err);
-      
+
       if (err.code === "ECONNABORTED") {
         setError(t('qcm.errors.timeout'));
       } else if (err.response) {
@@ -162,10 +162,10 @@ const QCMTab = () => {
     qcm.forEach((q, index) => {
       const userAnswer = answers[index];
       const correctAnswer = q.correct;
-      
+
       const normalizedUser = normalizeAnswer(userAnswer);
       const normalizedCorrect = normalizeAnswer(correctAnswer);
-      
+
       console.log(`${t('qcm.debug.question')} ${index + 1}:`, {
         userAnswer: userAnswer,
         correctAnswer: correctAnswer,
@@ -173,7 +173,7 @@ const QCMTab = () => {
         normalizedCorrect: normalizedCorrect,
         isCorrect: normalizedUser === normalizedCorrect
       });
-      
+
       if (normalizedUser === normalizedCorrect) {
         correct++;
       } else {
@@ -192,16 +192,16 @@ const QCMTab = () => {
         total_questions: qcm.length,
         wrong_answers: wrongAnswers
       });
-      
+
       console.log("✅ Score sauvegardé:", res.data);
-      
+
       if (res.data.niveau) {
         console.log(`${t('qcm.debug.newLevel')}: ${res.data.niveau}`);
       }
-      
+
     } catch (err) {
       console.error(t('qcm.errors.saveScoreError'), err);
-      
+
       if (err.response && err.response.status === 401) {
         alert(t('qcm.errors.sessionExpiredSave'));
       } else {
@@ -248,7 +248,11 @@ const QCMTab = () => {
     <div className="qcm-container">
       <div className="qcm-header">
         <h2 className="qcm-title">
-          <span className="title-icon">❓</span>
+          <svg className="title-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+            <path d="M12 17h.01"/>
+          </svg>
           {t('qcm.title')}
         </h2>
         <p className="qcm-subtitle">
@@ -261,10 +265,17 @@ const QCMTab = () => {
         {qcm.length === 0 && !loading && (
           <div className="upload-section">
             <div className="upload-card">
-              <div className="upload-icon-large">📄</div>
+              <div className="upload-icon-large">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--brand-600)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                  <polyline points="14 2 14 8 20 8"/>
+                  <line x1="16" y1="13" x2="8" y2="13"/>
+                  <line x1="16" y1="17" x2="8" y2="17"/>
+                </svg>
+              </div>
               <h3>{t('qcm.upload.title')}</h3>
               <p>{t('qcm.upload.description')}</p>
-              
+
               <div className="file-input-wrapper">
                 <input
                   type="file"
@@ -274,20 +285,37 @@ const QCMTab = () => {
                   style={{ display: "none" }}
                 />
                 <label htmlFor="file-input" className="file-input-label">
-                  <span className="file-input-icon">📁</span>
+                  <span className="file-input-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                      <polyline points="17 8 12 3 7 8"/>
+                      <line x1="12" y1="3" x2="12" y2="15"/>
+                    </svg>
+                  </span>
                   {fileName || t('qcm.upload.chooseFile')}
                 </label>
                 {fileName && (
-                  <span className="file-name">{fileName}</span>
+                  <span className="file-name">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{display: "inline", verticalAlign: "middle", marginRight: 4}}>
+                      <path d="M20 6 9 17l-5-5"/>
+                    </svg>
+                    {fileName}
+                  </span>
                 )}
               </div>
 
               {error && (
                 <div className="error-message">
-                  <span className="error-icon">⚠️</span>
+                  <span className="error-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+                      <path d="M12 9v4"/>
+                      <path d="M12 17h.01"/>
+                    </svg>
+                  </span>
                   <span>{error}</span>
-                  <button 
-                    onClick={generateQCM} 
+                  <button
+                    onClick={generateQCM}
                     className="retry-btn"
                     style={{
                       marginLeft: "10px",
@@ -309,7 +337,9 @@ const QCMTab = () => {
                 disabled={!file}
                 className={`generate-btn ${!file ? "disabled" : ""}`}
               >
-                <span className="btn-icon">✨</span>
+                <svg className="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z"/>
+                </svg>
                 {t('qcm.generate')}
               </button>
 
@@ -338,7 +368,13 @@ const QCMTab = () => {
           <div className="qcm-section">
             <div className="qcm-info-bar">
               <div className="qcm-info">
-                <span className="info-badge">📋 {qcmTitle}</span>
+                <span className="info-badge">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{display: "inline", verticalAlign: "middle", marginRight: 4}}>
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                    <polyline points="14 2 14 8 20 8"/>
+                  </svg>
+                  {qcmTitle}
+                </span>
                 <span className="info-badge">{t('qcm.info.questions', { count: qcm.length })}</span>
                 <span className="info-badge">
                   {t('qcm.info.answered', { answered: Object.keys(answers).length, total: qcm.length })}
@@ -352,7 +388,7 @@ const QCMTab = () => {
             {/* Progress Bar */}
             <div className="progress-section">
               <div className="progress-bar-container">
-                <div 
+                <div
                   className={`progress-bar-fill ${getProgressColor()}`}
                   style={{ width: `${(Object.keys(answers).length / qcm.length) * 100}%` }}
                 ></div>
@@ -366,10 +402,10 @@ const QCMTab = () => {
             <div className="questions-container">
               {qcm.map((q, index) => {
                 const options = q.options || [];
-                
+
                 return (
-                  <div 
-                    key={index} 
+                  <div
+                    key={index}
                     className={`question-card ${answers[index] ? "answered" : ""} ${submitted && normalizeAnswer(answers[index]) !== normalizeAnswer(q.correct) ? "wrong" : ""}`}
                   >
                     <div className="question-header">
@@ -392,9 +428,9 @@ const QCMTab = () => {
                         return (
                           <label
                             key={i}
-                            className={`option-label 
-                              ${isSelected ? "selected" : ""} 
-                              ${isCorrect ? "correct" : ""} 
+                            className={`option-label
+                              ${isSelected ? "selected" : ""}
+                              ${isCorrect ? "correct" : ""}
                               ${isWrong ? "incorrect" : ""}
                               ${submitted ? "disabled" : ""}
                             `}
@@ -427,11 +463,18 @@ const QCMTab = () => {
 
                     {submitted && normalizeAnswer(answers[index]) !== normalizeAnswer(q.correct) && (
                       <div className="explanation-box">
-                        <span className="explanation-icon">💡</span>
+                        <span className="explanation-icon">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M12 2v6"/>
+                            <path d="M9 17v4"/>
+                            <path d="M15 17v4"/>
+                            <circle cx="12" cy="13" r="5"/>
+                          </svg>
+                        </span>
                         <span>
-                          {t('qcm.explanation', { 
-                            letter: normalizeAnswer(q.correct), 
-                            answer: options[normalizeAnswer(q.correct).charCodeAt(0) - 65] 
+                          {t('qcm.explanation', {
+                            letter: normalizeAnswer(q.correct),
+                            answer: options[normalizeAnswer(q.correct).charCodeAt(0) - 65]
                           })}
                         </span>
                       </div>
@@ -445,6 +488,9 @@ const QCMTab = () => {
             {!submitted && Object.keys(answers).length === qcm.length && (
               <div className="submit-section">
                 <button onClick={calculateScore} className="submit-btn">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="20 6 9 17 4 12"/>
+                  </svg>
                   {t('qcm.submit')}
                 </button>
               </div>
@@ -452,7 +498,13 @@ const QCMTab = () => {
 
             {!submitted && Object.keys(answers).length < qcm.length && (
               <div className="incomplete-warning">
-                <span className="warning-icon">⚠️</span>
+                <span className="warning-icon">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+                    <path d="M12 9v4"/>
+                    <path d="M12 17h.01"/>
+                  </svg>
+                </span>
                 <span>{t('qcm.incomplete', { remaining: qcm.length - Object.keys(answers).length })}</span>
               </div>
             )}
@@ -462,7 +514,13 @@ const QCMTab = () => {
               <div className="results-section">
                 <div className={`results-card ${getScoreColor(score)}`}>
                   <div className="results-header">
-                    <span className="results-icon">🎯</span>
+                    <span className="results-icon">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--brand-600)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <circle cx="12" cy="12" r="10"/>
+                        <circle cx="12" cy="12" r="6"/>
+                        <circle cx="12" cy="12" r="2"/>
+                      </svg>
+                    </span>
                     <h3>{t('qcm.results.title')}</h3>
                   </div>
                   <div className="score-circle">
@@ -493,10 +551,3 @@ const QCMTab = () => {
 };
 
 export default QCMTab;
-
-
-
-
-
-
-
