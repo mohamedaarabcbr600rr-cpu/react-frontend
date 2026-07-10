@@ -1,174 +1,244 @@
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap');
+
+/* ============================================
+   RESEAU — premium dark glassmorphism redesign
+   ============================================ */
+
 .reseau-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 30px 20px;
+  padding: 48px 24px 80px;
   min-height: 100vh;
-  background: #f5f7fa;
+  background:
+    radial-gradient(circle at 15% 0%, rgba(118, 75, 162, 0.25), transparent 45%),
+    radial-gradient(circle at 85% 20%, rgba(102, 126, 234, 0.2), transparent 40%),
+    radial-gradient(circle at 50% 100%, rgba(76, 29, 149, 0.15), transparent 50%),
+    #0b0b16;
+  font-family: 'DM Sans', sans-serif;
 }
 
 .reseau-header {
   text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: 48px;
 }
 
 .reseau-title {
-  font-size: 32px;
-  font-weight: 700;
-  color: #1a1a2e;
-  margin-bottom: 10px;
+  font-family: 'Syne', sans-serif;
+  font-size: 40px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, #ffffff 0%, #b8b3ff 60%, #8f7bff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin-bottom: 12px;
 }
 
 .reseau-subtitle {
-  font-size: 16px;
-  color: #666;
-  margin-bottom: 30px;
+  font-size: 15.5px;
+  color: rgba(255, 255, 255, 0.55);
+  margin-bottom: 32px;
+  font-weight: 400;
 }
 
 .reseau-search {
-  max-width: 500px;
+  max-width: 520px;
   margin: 0 auto 20px;
   position: relative;
 }
 
 .reseau-search-icon {
   position: absolute;
-  left: 15px;
+  left: 18px;
   top: 50%;
   transform: translateY(-50%);
-  color: #999;
+  color: rgba(255, 255, 255, 0.4);
+  pointer-events: none;
 }
 
 .reseau-search-input {
   width: 100%;
-  padding: 14px 45px 14px 45px;
-  font-size: 16px;
-  border: 2px solid #e0e0e0;
+  padding: 15px 46px 15px 48px;
+  font-size: 15px;
+  font-family: 'DM Sans', sans-serif;
+  color: #f2f2f7;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 50px;
   outline: none;
-  transition: all 0.3s ease;
-  background: white;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.reseau-search-input::placeholder {
+  color: rgba(255, 255, 255, 0.35);
 }
 
 .reseau-search-input:focus {
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  border-color: rgba(139, 122, 255, 0.6);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 0 4px rgba(139, 122, 255, 0.15), 0 8px 30px rgba(0, 0, 0, 0.3);
 }
 
 .reseau-search-clear {
   position: absolute;
-  right: 15px;
+  right: 14px;
   top: 50%;
   transform: translateY(-50%);
-  background: none;
+  background: rgba(255, 255, 255, 0.08);
   border: none;
   cursor: pointer;
-  color: #999;
-  font-size: 18px;
-  padding: 5px;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 13px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
 }
 
 .reseau-search-clear:hover {
-  color: #666;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.16);
 }
 
 .reseau-stats {
   text-align: center;
-  color: #666;
-  font-size: 14px;
-  margin-top: 15px;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 13px;
+  margin-top: 18px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  font-weight: 600;
 }
 
 .reseau-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 20px;
+  gap: 18px;
 }
 
 .reseau-card {
-  background: white;
-  border-radius: 16px;
-  padding: 20px;
+  position: relative;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 20px;
+  padding: 22px;
   display: flex;
   align-items: center;
-  gap: 15px;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  border: 1px solid #eef2f6;
+  gap: 16px;
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  overflow: hidden;
+}
+
+.reseau-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(139, 122, 255, 0.08), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  pointer-events: none;
 }
 
 .reseau-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  transform: translateY(-4px);
+  border-color: rgba(139, 122, 255, 0.35);
+  box-shadow: 0 16px 40px rgba(76, 29, 149, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.reseau-card:hover::before {
+  opacity: 1;
 }
 
 .reseau-card-avatar {
   position: relative;
   cursor: pointer;
   flex-shrink: 0;
+  z-index: 1;
 }
 
 .reseau-avatar-img {
-  width: 70px;
-  height: 70px;
+  width: 68px;
+  height: 68px;
   border-radius: 50%;
   object-fit: cover;
-  border: 3px solid #fff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+  transition: border-color 0.25s ease;
+}
+
+.reseau-card-avatar:hover .reseau-avatar-img {
+  border-color: rgba(139, 122, 255, 0.6);
 }
 
 .reseau-avatar-placeholder {
-  width: 70px;
-  height: 70px;
+  width: 68px;
+  height: 68px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 28px;
-  font-weight: bold;
+  font-family: 'Syne', sans-serif;
+  font-size: 26px;
+  font-weight: 700;
   color: white;
   text-transform: uppercase;
-  border: 3px solid #fff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
 }
 
 .reseau-online-dot {
   position: absolute;
-  bottom: 5px;
-  right: 5px;
+  bottom: 3px;
+  right: 3px;
   width: 14px;
   height: 14px;
-  background-color: #25D366;
+  background-color: #2dd4a7;
   border-radius: 50%;
-  border: 2px solid white;
+  border: 2.5px solid #14141f;
+  box-shadow: 0 0 8px rgba(45, 212, 167, 0.7);
 }
 
 .reseau-card-info {
   flex: 1;
   min-width: 0;
+  z-index: 1;
 }
 
 .reseau-card-name {
+  font-family: 'Syne', sans-serif;
   font-size: 16px;
-  font-weight: 600;
-  color: #1a1a2e;
+  font-weight: 700;
+  color: #f5f5fa;
   margin: 0 0 4px 0;
   cursor: pointer;
-  transition: color 0.2s;
+  transition: color 0.2s ease;
+  letter-spacing: -0.01em;
 }
 
 .reseau-card-name:hover {
-  color: #667eea;
+  color: #a99bff;
 }
 
 .reseau-card-username {
-  font-size: 13px;
-  color: #888;
-  margin: 0 0 4px 0;
+  font-size: 12.5px;
+  color: rgba(139, 122, 255, 0.75);
+  margin: 0 0 5px 0;
+  font-weight: 500;
 }
 
 .reseau-card-bio {
   font-size: 13px;
-  color: #666;
+  color: rgba(255, 255, 255, 0.45);
   margin: 0;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -178,33 +248,40 @@
 .reseau-follow-btn {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 20px;
+  gap: 7px;
+  padding: 9px 20px;
   border-radius: 50px;
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 13.5px;
+  font-weight: 600;
+  font-family: 'DM Sans', sans-serif;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   border: none;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, #7c6cf0, #a259d9);
   color: white;
   flex-shrink: 0;
+  z-index: 1;
+  box-shadow: 0 4px 14px rgba(124, 108, 240, 0.35);
 }
 
 .reseau-follow-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(124, 108, 240, 0.5);
+  filter: brightness(1.08);
 }
 
 .reseau-follow-btn.following {
-  background: transparent;
-  border: 1px solid #ddd;
-  color: #333;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.75);
+  box-shadow: none;
 }
 
 .reseau-follow-btn.following:hover {
-  background: #f5f5f5;
-  border-color: #ccc;
+  background: rgba(255, 90, 90, 0.12);
+  border-color: rgba(255, 90, 90, 0.4);
+  color: #ff8a8a;
+  box-shadow: none;
 }
 
 .reseau-follow-btn:disabled {
@@ -214,45 +291,52 @@
 }
 
 .reseau-btn-spinner {
-  width: 16px;
-  height: 16px;
-  border: 2px solid white;
-  border-top-color: transparent;
+  width: 15px;
+  height: 15px;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  border-top-color: white;
   border-radius: 50%;
-  animation: spin 0.6s linear infinite;
+  animation: reseau-spin 0.6s linear infinite;
   display: inline-block;
 }
 
 .reseau-follow-btn.following .reseau-btn-spinner {
-  border-color: #333;
-  border-top-color: transparent;
+  border-color: rgba(255, 255, 255, 0.2);
+  border-top-color: rgba(255, 255, 255, 0.8);
 }
 
-@keyframes spin {
+@keyframes reseau-spin {
   to { transform: rotate(360deg); }
 }
 
 .reseau-empty {
   text-align: center;
-  padding: 60px 20px;
-  background: white;
-  border-radius: 16px;
+  padding: 70px 20px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
   grid-column: 1 / -1;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 }
 
 .reseau-empty-icon {
-  font-size: 64px;
-  margin-bottom: 20px;
+  font-size: 56px;
+  margin-bottom: 18px;
+  opacity: 0.7;
 }
 
 .reseau-empty h3 {
-  font-size: 20px;
-  color: #333;
-  margin-bottom: 10px;
+  font-family: 'Syne', sans-serif;
+  font-size: 19px;
+  font-weight: 700;
+  color: #f0f0f5;
+  margin-bottom: 8px;
 }
 
 .reseau-empty p {
-  color: #666;
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 14px;
 }
 
 .reseau-loading {
@@ -262,19 +346,22 @@
   justify-content: center;
   min-height: 100vh;
   gap: 20px;
+  background: #0b0b16;
 }
 
 .reseau-spinner {
-  width: 50px;
-  height: 50px;
-  border: 3px solid #e0e0e0;
-  border-top-color: #667eea;
+  width: 46px;
+  height: 46px;
+  border: 3px solid rgba(255, 255, 255, 0.1);
+  border-top-color: #8b7aff;
   border-radius: 50%;
-  animation: spin 0.8s linear infinite;
+  animation: reseau-spin 0.8s linear infinite;
 }
 
 .reseau-loading p {
-  color: #666;
+  color: rgba(255, 255, 255, 0.5);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
 }
 
 .reseau-login-required {
@@ -282,75 +369,90 @@
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: #f5f7fa;
+  background:
+    radial-gradient(circle at 30% 20%, rgba(118, 75, 162, 0.25), transparent 45%),
+    radial-gradient(circle at 70% 80%, rgba(102, 126, 234, 0.2), transparent 45%),
+    #0b0b16;
 }
 
 .reseau-login-card {
   text-align: center;
-  padding: 50px;
-  background: white;
-  border-radius: 20px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  padding: 56px 48px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
   max-width: 400px;
 }
 
 .reseau-login-icon {
-  font-size: 64px;
+  font-size: 58px;
   display: block;
-  margin-bottom: 20px;
+  margin-bottom: 22px;
+  filter: drop-shadow(0 4px 12px rgba(139, 122, 255, 0.4));
 }
 
 .reseau-login-card h2 {
-  font-size: 24px;
-  color: #1a1a2e;
+  font-family: 'Syne', sans-serif;
+  font-size: 23px;
+  font-weight: 700;
+  color: #f5f5fa;
   margin-bottom: 10px;
 }
 
 .reseau-login-card p {
-  color: #666;
+  color: rgba(255, 255, 255, 0.5);
   margin-bottom: 30px;
+  font-size: 14.5px;
 }
 
 .reseau-login-btn {
-  padding: 12px 30px;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  padding: 13px 34px;
+  background: linear-gradient(135deg, #7c6cf0, #a259d9);
   color: white;
   border: none;
   border-radius: 50px;
-  font-size: 16px;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: 'DM Sans', sans-serif;
   cursor: pointer;
-  transition: transform 0.2s;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 6px 20px rgba(124, 108, 240, 0.4);
 }
 
 .reseau-login-btn:hover {
   transform: translateY(-2px);
+  box-shadow: 0 10px 28px rgba(124, 108, 240, 0.55);
+  filter: brightness(1.08);
 }
 
 @media (max-width: 768px) {
   .reseau-container {
-    padding: 20px 15px;
+    padding: 32px 15px 60px;
   }
-  
+
   .reseau-title {
-    font-size: 24px;
+    font-size: 27px;
   }
-  
+
   .reseau-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .reseau-card {
-    padding: 15px;
+    padding: 16px;
   }
-  
+
   .reseau-avatar-img,
   .reseau-avatar-placeholder {
     width: 55px;
     height: 55px;
   }
-  
+
   .reseau-follow-btn {
-    padding: 6px 15px;
+    padding: 7px 16px;
     font-size: 12px;
   }
 }
