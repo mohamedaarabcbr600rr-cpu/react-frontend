@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './Navbar.css';
 import { useTranslation } from "react-i18next";
-import logoapp from '../assets/logoapp.jpeg';
+import logoapp from '../assets/logoapp.png';
 
 const Navbar = ({ user, searchTerm, onSearch, onLogout, getInitials, unreadMessages = 0, unreadNotifications = 0, openLogin }) => {
   const navigate = useNavigate();
