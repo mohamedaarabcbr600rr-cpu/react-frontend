@@ -2,8 +2,7 @@ import React, { useState, useEffect, useRef, useCallback, useMemo, memo } from "
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
-import Echo from "laravel-echo";
-import Pusher from "pusher-js";
+import { getEcho } from "../lib/echo";
 import "./Messagerie.css";
 
 /* ============================================================
@@ -25,30 +24,7 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// ─── Echo (Reverb) singleton — created once, shared everywhere ─────────────
-let echoInstance = null;
-const getEcho = (token) => {
-  if (echoInstance) return echoInstance;
-  if (typeof window === "undefined") return null;
-  // If Reverb is not configured, fall back to polling-only mode gracefully.
-  if (!import.meta.env.VITE_REVERB_APP_KEY) return null;
 
-  window.Pusher = Pusher;
-  echoInstance = new Echo({
-    broadcaster: "reverb",
-    key: import.meta.env.VITE_REVERB_APP_KEY,
-    wsHost: import.meta.env.VITE_REVERB_HOST,
-    wsPort: import.meta.env.VITE_REVERB_PORT ?? 80,
-    wssPort: import.meta.env.VITE_REVERB_PORT ?? 443,
-    forceTLS: (import.meta.env.VITE_REVERB_SCHEME ?? "https") === "https",
-    enabledTransports: ["ws", "wss"],
-    authEndpoint: `${import.meta.env.VITE_API_URL}/broadcasting/auth`,
-    auth: {
-      headers: { Authorization: `Bearer ${token}` },
-    },
-  });
-  return echoInstance;
-};
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 const getInitials = (name = "") =>

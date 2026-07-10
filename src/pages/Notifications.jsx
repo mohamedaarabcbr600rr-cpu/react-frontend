@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import api from '../axios';
 import { useNavigate } from 'react-router-dom';
+import { getEcho, getCurrentToken } from '../lib/echo';
 import './Notifications.css';
 
 const Notifications = ({ user, onNavigateToExperience }) => {
@@ -55,7 +56,31 @@ const Notifications = ({ user, onNavigateToExperience }) => {
       setLoading(false);
     }
   };
+ // ── Realtime notifications via Reverb ──────────────────────────────────
+  useEffect(() => {
+    if (!user?.id) return;
+    const token = getCurrentToken();
+    const echo = getEcho(token);
+    if (!echo) return; // Reverb not configured — falls back to polling
 
+    const channel = echo.private(`App.Models.User.${user.id}`);
+
+    channel.notification((notification) => {
+      // Normalize shape to match what fetchNotifications() produces
+      const newNotif = {
+        id: notification.id,
+        data: notification.data,
+        created_at: notification.created_at,
+        read_at: notification.read_at,
+      };
+      setNotifications(prev => [newNotif, ...prev]);
+      setUnreadCount(prev => prev + 1);
+    });
+
+    return () => {
+      try { echo.leave(`App.Models.User.${user.id}`); } catch {}
+    };
+  }, [user?.id]);
   const markAsRead = async (id) => {
     try {
       await api.put(`/api/notifications/${id}/read`);
