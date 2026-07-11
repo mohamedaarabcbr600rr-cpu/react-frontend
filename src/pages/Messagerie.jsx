@@ -214,7 +214,7 @@ const Messagerie = ({ authUserId, baseUrl = import.meta.env.VITE_API_URL }) => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [loading, setLoading] = useState(false);
   const [sending, setSending] = useState(false);
-  const [unreadPerUser, setUnreadPerUser] = useState({});
+  const [lastMessageAtPerUser, setLastMessageAtPerUser] = useState({});
   const [onlineUsers, setOnlineUsers] = useState(new Set());
   const [showScrollFab, setShowScrollFab] = useState(false);
   const [messagesLoading, setMessagesLoading] = useState(false);
@@ -327,6 +327,14 @@ const Messagerie = ({ authUserId, baseUrl = import.meta.env.VITE_API_URL }) => {
         }
         return [...prev, e];
       });
+
+      // Bump this contact to the top of the list immediately
+      const otherPartyId = String(e.user_id) === String(authUserId)
+        ? selectedUserRef.current?.id
+        : e.user_id;
+      if (otherPartyId) {
+        setLastMessageAtPerUser(prev => ({ ...prev, [otherPartyId]: e.created_at }));
+      }
 
       // Auto mark as seen
       api.post(`/messages/${conversationId}/seen`, { user_id: authUserId }).catch(() => {});
@@ -570,7 +578,7 @@ const Messagerie = ({ authUserId, baseUrl = import.meta.env.VITE_API_URL }) => {
               : m
           ));
         }
-      } else {
+     } else {
         const formData = new FormData();
         formData.append("user_id", authUserId);
         formData.append("content", textToSend);
@@ -578,6 +586,9 @@ const Messagerie = ({ authUserId, baseUrl = import.meta.env.VITE_API_URL }) => {
         setMessages(prev => prev.map(m =>
           m.id === tempIds[0] ? res.data : m
         ));
+        if (selectedUser?.id) {
+          setLastMessageAtPerUser(prev => ({ ...prev, [selectedUser.id]: res.data.created_at }));
+        }
       }
     } catch (err) {
       console.error(t(""), err);
@@ -643,14 +654,19 @@ const Messagerie = ({ authUserId, baseUrl = import.meta.env.VITE_API_URL }) => {
     }, {});
   }, [messages, t]);
 
-  // ── Filter connections (memoized) ─────────────────────────────────────────
-  const filtered = useMemo(
-    () => connections.filter(u =>
+  // ── Filter + sort connections by most recent message (memoized) ────────────
+  const filtered = useMemo(() => {
+    const matches = connections.filter(u =>
       u.id !== authUserId &&
       u.name?.toLowerCase().includes(searchTerm.toLowerCase())
-    ),
-    [connections, searchTerm, authUserId]
-  );
+    );
+
+    return matches.slice().sort((a, b) => {
+      const dateA = lastMessageAtPerUser[a.id] ? new Date(lastMessageAtPerUser[a.id]).getTime() : 0;
+      const dateB = lastMessageAtPerUser[b.id] ? new Date(lastMessageAtPerUser[b.id]).getTime() : 0;
+      return dateB - dateA; // most recent first; contacts with no messages sink to the bottom
+    });
+  }, [connections, searchTerm, authUserId, lastMessageAtPerUser]);
 
   // ── Get last message preview (memoized) ────────────────────────────────────
   const getPreview = useCallback((userId) => {
@@ -662,20 +678,27 @@ const Messagerie = ({ authUserId, baseUrl = import.meta.env.VITE_API_URL }) => {
     return null;
   }, [selectedUser, messages, authUserId, t]);
 
-  // ── Unread polling (lightweight) ───────────────────────────────────────────
+  // ── Unread + last-message polling (lightweight) ────────────────────────────
   useEffect(() => {
     if (!authUserId) return;
     const fetchUnread = async () => {
       try {
         const res = await api.get('/messages/conversations');
         const unread = {};
+        const lastMessageAt = {};
         res.data.forEach(conv => {
           unread[conv.other_user_id] = conv.unread_count;
+          if (conv.last_message_at) {
+            lastMessageAt[conv.other_user_id] = conv.last_message_at;
+          }
         });
         setUnreadPerUser(prev => {
-          // Avoid re-render if nothing changed
           const changed = Object.keys(unread).some(k => unread[k] !== prev[k]);
           return changed ? unread : prev;
+        });
+        setLastMessageAtPerUser(prev => {
+          const changed = Object.keys(lastMessageAt).some(k => lastMessageAt[k] !== prev[k]);
+          return changed ? lastMessageAt : prev;
         });
       } catch {}
     };
