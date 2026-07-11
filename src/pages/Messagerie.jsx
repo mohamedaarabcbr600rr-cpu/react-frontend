@@ -214,6 +214,7 @@ const Messagerie = ({ authUserId, baseUrl = import.meta.env.VITE_API_URL }) => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [loading, setLoading] = useState(false);
   const [sending, setSending] = useState(false);
+  const [unreadPerUser, setUnreadPerUser] = useState({});
   const [lastMessageAtPerUser, setLastMessageAtPerUser] = useState({});
   const [onlineUsers, setOnlineUsers] = useState(new Set());
   const [showScrollFab, setShowScrollFab] = useState(false);
