@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import axios from '../axios';
@@ -150,8 +150,9 @@ const PostCard = ({
   const [copied, setCopied] = useState(false);
   const [commentReactions, setCommentReactions] = useState({});
   const [showCommentReactionMenu, setShowCommentReactionMenu] = useState(null);
-  const [replyingTo, setReplyingTo] = useState(null);
+ const [replyingTo, setReplyingTo] = useState(null);
   const [replyTexts, setReplyTexts] = useState({});
+  const reactionTimeoutRef = useRef(null);
 
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -277,6 +278,19 @@ const PostCard = ({
 
   /* ── Handlers ── */
   const handleReactionClick  = (type)  => { onLike(exp.id, type); setShowReactionMenu(false); };
+  const openReactionMenu = () => {
+    if (reactionTimeoutRef.current) {
+      clearTimeout(reactionTimeoutRef.current);
+      reactionTimeoutRef.current = null;
+    }
+    setShowReactionMenu(true);
+  };
+
+  const closeReactionMenuDelayed = () => {
+    reactionTimeoutRef.current = setTimeout(() => {
+      setShowReactionMenu(false);
+    }, 300);
+  };
   const handleLikeClick      = ()      => { if (!user) return; if (userReaction) { onLike(exp.id, null); } else { setShowReactionMenu(!showReactionMenu); } };
   const handleCommentClick   = ()      => { if (!user) return; setActiveCommentId(exp.id); };
   const handleCommentChange  = (e)     => setCommentTexts(prev => ({ ...prev, [exp.id]: e.target.value }));
@@ -494,12 +508,14 @@ const PostCard = ({
 
       {/* ── Actions ── */}
       <div className="post-card__actions">
-        <div className="reaction-container">
+       <div
+          className="reaction-container"
+          onMouseEnter={openReactionMenu}
+          onMouseLeave={closeReactionMenuDelayed}
+        >
           <button
             onClick={handleLikeClick}
             className={`reaction-trigger ${liked || userReaction ? 'active' : ''}`}
-            onMouseEnter={() => setShowReactionMenu(true)}
-            onMouseLeave={() => setTimeout(() => setShowReactionMenu(false), 500)}
           >
             {currentReaction
               ? <span>{currentReaction.emoji}</span>
@@ -507,7 +523,7 @@ const PostCard = ({
             }
             <span>{currentReaction?.label || t("post.reactions.like")}</span>
           </button>
-          <div className={`reaction-menu ${showReactionMenu ? 'show' : ''}`} onMouseEnter={() => setShowReactionMenu(true)} onMouseLeave={() => setShowReactionMenu(false)}>
+          <div className={`reaction-menu ${showReactionMenu ? 'show' : ''}`}>
             {reactions.map((reaction) => (
               <button key={reaction.type} className={`reaction-option ${userReaction === reaction.type ? 'selected' : ''}`} onClick={() => handleReactionClick(reaction.type)}>
                 {reaction.emoji}<span className="reaction-option-tooltip">{reaction.label}</span>
