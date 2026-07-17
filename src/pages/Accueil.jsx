@@ -8,7 +8,7 @@ import AddExperience from '../components/AddExperience';
 import PostCard from '../components/PostCard';
 import LeftProfileColumn from '../components/LeftProfileColumn';
 import RightColumn from '../components/RightColumn';
-
+import ChallengeAndHelp from '../components/ChallengeAndHelp';
 // CSS global de la page
 import './Accueil.css';
 import '../styles/global.css';
@@ -403,6 +403,17 @@ const Accueil = ({
             </button>
           </div>
         </div>
+
+
+
+
+
+        {/* Mobile-only: Challenge + Help cards (desktop shows these in RightColumn) */}
+        {isMobile && (
+          <div className="mobile-challenge-stack">
+            <ChallengeAndHelp user={user} openLogin={openLogin} onOpenComposer={handlePostInputClick} />
+          </div>
+        )}
 
         {/* Feed Header */}
         <div className="feed__header">

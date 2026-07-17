@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "../axios";
 import { useNavigate, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import ChallengeAndHelp from './ChallengeAndHelp';
 import './RightColumn.css';
 
 // ─── SVG Icon Components ───────────────────────────────────────────────────────
@@ -82,7 +83,7 @@ const RightColumn = ({ user = null, openLogin, onProfileClick, onOpenComposer })
   const [imageErrors, setImageErrors] = useState({});
   const [loading, setLoading] = useState({});
   const [currentUserFollowing, setCurrentUserFollowing] = useState([]);
-  const [challengeData, setChallengeData] = useState({ count: 0, avatars: [] });
+  
   const navigate = useNavigate();
   const { t } = useTranslation();
 
@@ -100,17 +101,7 @@ const RightColumn = ({ user = null, openLogin, onProfileClick, onOpenComposer })
   }, [user?.id]);
 
 
-useEffect(() => {
-    const fetchChallengeParticipants = async () => {
-      try {
-        const res = await axios.get('/api/challenge/participants');
-        setChallengeData(res.data);
-      } catch (err) {
-        console.error("Erreur participants défi:", err);
-      }
-    };
-    fetchChallengeParticipants();
-  }, []);
+
 
 
   useEffect(() => {
@@ -205,81 +196,9 @@ useEffect(() => {
 
  return (
     <div className="right-column-stack">
-      {/* Défi du jour */}
-      <div className="challenge-card">
-        <div className="challenge-card__header">
-          <span className="challenge-card__title">
-            <IconFlame size={18} color="#ea580c" />
-            {t("rightColumn.challengeTitle", "Défi du jour")}
-          </span>
-          <span
-            className="challenge-card__view-all"
-            onClick={() => user ? navigate('/reseau') : openLogin()}
-          >
-            {t("rightColumn.viewAll")}
-          </span>
-        </div>
+      <ChallengeAndHelp user={user} openLogin={openLogin} onOpenComposer={onOpenComposer} />
 
-        <div className="challenge-card__body">
-          <div className="challenge-card__icon">
-            <IconBrain size={28} color="#a855f7" />
-          </div>
-          <div>
-            <div className="challenge-card__body-title">
-              {t("rightColumn.challengeBodyTitle", "Explique une leçon en 5 lignes seulement")}
-            </div>
-            <div className="challenge-card__body-text">
-              {t("rightColumn.challengeBodyText", "Partage ton explication et gagne plus d'interactions !")}
-            </div>
-          </div>
-        </div>
 
-        {challengeData.count > 0 && (
-          <div className="challenge-card__participants">
-            <div className="challenge-card__avatars">
-              {challengeData.avatars.map((p) => (
-                <img
-                  key={p.id}
-                  src={p.profile_pic ? getImageUrl(p.profile_pic) : getAvatarUrl(p.name)}
-                  alt={p.name}
-                  className="challenge-card__avatar"
-                />
-              ))}
-            </div>
-            <span className="challenge-card__participants-text">
-              {t("rightColumn.participantsCount", "{{count}} ont participé", { count: challengeData.count })}
-            </span>
-          </div>
-        )}
-
-        <button
-          className="challenge-card__cta"
-          onClick={() => user ? onOpenComposer?.() : openLogin()}
-        >
-          {t("rightColumn.participate", "Participer maintenant")}
-        </button>
-      </div>
-
-      {/* Besoin d'aide ? */}
-      <div
-        className="help-card"
-        onClick={() => user ? navigate('/ai', { state: { initialTab: 'chat' } }) : openLogin()}
-      >
-        <div className="help-card__icon">
-          <IconRobotSmall size={22} color="#ffffff" />
-        </div>
-        <div className="help-card__text">
-          <div className="help-card__title">
-            {t("rightColumn.needHelp", "Besoin d'aide ?")}
-          </div>
-          <div className="help-card__subtitle">
-            {t("rightColumn.needHelpText", "Pose n'importe quelle question à notre IA, elle est là pour toi.")}
-          </div>
-          <span className="help-card__link">
-            {t("rightColumn.askAI", "Demander à l'IA")} <IconArrowRight size={12} color="#4f46e5" />
-          </span>
-        </div>
-      </div>
 
     <div className="right-column">
       {!user && (
