@@ -4,6 +4,189 @@
    Inspired by LinkedIn
    ================================================ */
 
+
+/* ================================================
+   RIGHT COLUMN STACK (wraps challenge + help + suggestions)
+   ================================================ */
+.right-column-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+/* ================================================
+   CHALLENGE CARD (Défi du jour)
+   ================================================ */
+.challenge-card {
+  background-color: var(--color-bg-white);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  box-shadow: var(--shadow-sm);
+}
+
+.challenge-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-lg);
+}
+
+.challenge-card__title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+}
+
+.challenge-card__view-all {
+  font-size: var(--font-size-sm);
+  color: var(--color-primary);
+  cursor: pointer;
+  font-weight: var(--font-weight-medium);
+}
+
+.challenge-card__view-all:hover {
+  text-decoration: underline;
+}
+
+.challenge-card__body {
+  display: flex;
+  gap: var(--space-md);
+  background: linear-gradient(135deg, #f3ecfe 0%, #fdf2f8 100%);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+  margin-bottom: var(--space-lg);
+}
+
+.challenge-card__icon {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-md);
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.challenge-card__body-title {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  margin-bottom: 4px;
+  line-height: 1.35;
+}
+
+.challenge-card__body-text {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  line-height: 1.4;
+}
+
+.challenge-card__participants {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-lg);
+  margin-top: calc(-1 * var(--space-sm));
+}
+
+.challenge-card__avatars {
+  display: flex;
+}
+
+.challenge-card__avatar {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--color-bg-white);
+  margin-left: -8px;
+}
+
+.challenge-card__avatar:first-child {
+  margin-left: 0;
+}
+
+.challenge-card__participants-text {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+.challenge-card__cta {
+  width: 100%;
+  background: linear-gradient(135deg, #7c3aed, #4f46e5);
+  color: white;
+  border: none;
+  padding: var(--space-md);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.challenge-card__cta:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+/* ================================================
+   HELP CARD (Besoin d'aide ?)
+   ================================================ */
+.help-card {
+  display: flex;
+  gap: var(--space-md);
+  background: linear-gradient(135deg, #eef2ff 0%, #f5f3ff 100%);
+  border: 1px solid #e4e1fb;
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.help-card:hover {
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-1px);
+}
+
+.help-card__icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.help-card__title {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  margin-bottom: 2px;
+}
+
+.help-card__subtitle {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  line-height: 1.4;
+  margin-bottom: var(--space-sm);
+}
+
+.help-card__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: #4f46e5;
+}
+
+
+
 /* Main Column Container */
 .right-column {
   background-color: var(--color-bg-white);

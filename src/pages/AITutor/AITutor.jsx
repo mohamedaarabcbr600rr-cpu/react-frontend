@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
+import { useLocation } from "react-router-dom";
 import {
   MessageCircle,
   FileText,
@@ -25,10 +26,18 @@ import "./aiTutor.css";
 import "./components.css";
 
 const AITutor = () => {
-  const [activeTab, setActiveTab] = useState("chat");
+  const location = useLocation();
+  const [activeTab, setActiveTab] = useState(location.state?.initialTab || "chat");
   const [darkMode, setDarkMode] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const { t } = useTranslation();
+
+  // Switch tab if we navigate here again with a different initialTab
+  useEffect(() => {
+    if (location.state?.initialTab) {
+      setActiveTab(location.state.initialTab);
+    }
+  }, [location.state]);
 
   const menu = [
     { id: "chat", icon: <MessageCircle size={20} />, label: t("tutor.menu.chat") },

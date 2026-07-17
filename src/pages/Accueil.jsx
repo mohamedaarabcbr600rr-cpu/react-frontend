@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 
 // Components
@@ -87,6 +88,48 @@ const IconShare = ({ size = 40, color = "currentColor" }) => (
   </svg>
 );
 
+const IconRobot = ({ size = 24, color = "currentColor" }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
+    stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"
+    aria-hidden="true">
+    <rect x="4" y="8" width="16" height="12" rx="3" />
+    <circle cx="9" cy="14" r="1.2" fill={color} stroke="none" />
+    <circle cx="15" cy="14" r="1.2" fill={color} stroke="none" />
+    <path d="M12 8V4" />
+    <circle cx="12" cy="3" r="1" fill={color} stroke="none" />
+    <path d="M2 13h2M20 13h2" />
+  </svg>
+);
+
+const IconChat = ({ size = 22, color = "currentColor" }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
+    stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"
+    aria-hidden="true">
+    <path d="M21 15a2 2 0 0 1-2 2H8l-5 4V6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+  </svg>
+);
+
+const IconQuiz = ({ size = 22, color = "currentColor" }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
+    stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"
+    aria-hidden="true">
+    <rect x="4" y="3" width="16" height="18" rx="2" />
+    <path d="M9 8h6M9 12h6" />
+    <path d="M9 16l1.5 1.5L14 14" />
+  </svg>
+);
+
+const IconTrophy = ({ size = 22, color = "currentColor" }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
+    stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"
+    aria-hidden="true">
+    <path d="M8 21h8M12 17v4" />
+    <path d="M7 4h10v6a5 5 0 0 1-10 0V4z" />
+    <path d="M7 6H4a2 2 0 0 0 2 4M17 6h3a2 2 0 0 1-2 4" />
+  </svg>
+);
+
+
 // ──────────────────────────────────────────────────────────────────────────────
 
 const Accueil = ({
@@ -121,10 +164,12 @@ const Accueil = ({
   initialLoading = false,
 }) => {
   const [showAddPost, setShowAddPost] = useState(false);
+  const composerRef = useRef(null);
   const [avatarError, setAvatarError] = useState(false);
   const [filter, setFilter] = useState('all');
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   // ✅ Sentinelle pour le scroll infini (uniquement pertinent sur l'onglet "Tout")
   const observerTarget = useRef(null);
@@ -197,7 +242,10 @@ const Accueil = ({
 
   const handlePostInputClick = () => {
     if (user) {
-      setShowAddPost(!showAddPost);
+      setShowAddPost(true);
+      setTimeout(() => {
+        composerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 100);
     } else {
       openLogin();
     }
@@ -254,13 +302,50 @@ const Accueil = ({
 
       {/* Center Column - Feed */}
       <div className="home-layout__center">
-        {/* Challenge Banner */}
-        <div className="home-layout__banner">
-          {t("home.banner")}
+        {/* AI Hero - Greeting + Quick Actions */}
+        <div className="ai-hero">
+          <div className="ai-hero__intro">
+            <div className="ai-hero__mascot" aria-hidden="true">
+              <span className="ai-hero__mascot-ring" />
+              <IconRobot size={26} color="#ffffff" />
+            </div>
+            <div className="ai-hero__text">
+              <h2 className="ai-hero__greeting">
+                Bonjour{user?.name ? `, ${user.name.split(' ')[0]}` : ''} 👋
+              </h2>
+              <p className="ai-hero__subtitle">Qu'est-ce qu'on étudie aujourd'hui&nbsp;?</p>
+            </div>
+          </div>
+
+          <div className="ai-hero__actions">
+            <button className="ai-tile ai-tile--blue" onClick={() => (user ? navigate('/ai', { state: { initialTab: 'summary' } }) : openLogin())}>
+              <span className="ai-tile__icon"><IconFileText size={22} color="#2563eb" /></span>
+              <span className="ai-tile__title">Résumer un PDF</span>
+              <span className="ai-tile__subtitle">Obtiens un résumé clair en secondes</span>
+            </button>
+
+            <button className="ai-tile ai-tile--green" onClick={() => (user ? navigate('/ai', { state: { initialTab: 'qcm' } }) : openLogin())}>
+              <span className="ai-tile__icon"><IconQuiz size={22} color="#16a34a" /></span>
+              <span className="ai-tile__title">Générer un quiz</span>
+              <span className="ai-tile__subtitle">Crée des QCM à partir de tes cours</span>
+            </button>
+
+            <button className="ai-tile ai-tile--violet" onClick={() => (user ? navigate('/ai', { state: { initialTab: 'chat' } }) : openLogin())}>
+              <span className="ai-tile__icon"><IconChat size={22} color="#7c3aed" /></span>
+              <span className="ai-tile__title">Poser à l'IA</span>
+              <span className="ai-tile__subtitle">Ton assistant pour toutes tes questions</span>
+            </button>
+
+            <button className="ai-tile ai-tile--amber" onClick={() => (user ? navigate('/ai', { state: { initialTab: 'coach' } }) : openLogin())}>
+              <span className="ai-tile__icon"><IconTrophy size={22} color="#d97706" /></span>
+              <span className="ai-tile__title">AI Coach</span>
+              <span className="ai-tile__subtitle">Entre dans ton coach personnel</span>
+            </button>
+          </div>
         </div>
 
         {/* Create Post Card */}
-        <div className="create-post">
+        <div className="create-post" ref={composerRef}>
           <div className="create-post__header">
             <div
               className="create-post__avatar"
@@ -477,6 +562,7 @@ const Accueil = ({
         <RightColumn
           user={user}
           openLogin={openLogin}
+          onOpenComposer={handlePostInputClick}
         />
       )}
     </div>
