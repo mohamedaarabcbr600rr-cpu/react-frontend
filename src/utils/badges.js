@@ -1,9 +1,9 @@
 export const BADGE_TIERS = [
-  { id: 'community_builder', emoji: '🌟', name: 'Community Builder', threshold: 3 },
-  { id: 'campus_influencer', emoji: '🥈', name: 'Campus Influencer', threshold: 10 },
-  { id: 'student_ambassador', emoji: '🥇', name: 'Student Ambassador', threshold: 25 },
-  { id: 'founding_member', emoji: '💎', name: 'Founding Member', threshold: 50 },
-  { id: 'studmo_legend', emoji: '👑', name: 'Studmo Legend', threshold: 100 },
+  { id: 'community_builder', icon: 'star', color: ['#fbbf24', '#f59e0b'], name: 'Community Builder', threshold: 3 },
+  { id: 'campus_influencer', icon: 'medal', color: ['#94a3b8', '#64748b'], name: 'Campus Influencer', threshold: 10 },
+  { id: 'student_ambassador', icon: 'trophy', color: ['#fbbf24', '#d97706'], name: 'Student Ambassador', threshold: 25 },
+  { id: 'founding_member', icon: 'gem', color: ['#38bdf8', '#0ea5e9'], name: 'Founding Member', threshold: 50 },
+  { id: 'studmo_legend', icon: 'crown', color: ['#a855f7', '#7c3aed'], name: 'Studmo Legend', threshold: 100 },
 ];
 
 export function getBadgeProgress(referralCount) {
