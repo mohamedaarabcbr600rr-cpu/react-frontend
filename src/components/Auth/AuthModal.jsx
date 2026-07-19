@@ -54,7 +54,7 @@ const AuthModal = ({ setUser, closeModal }) => {
     }
   };
 
-  // REGISTER
+// REGISTER
   const handleRegister = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -62,12 +62,17 @@ const AuthModal = ({ setUser, closeModal }) => {
     try {
       await axios.get("/sanctum/csrf-cookie");
 
+      const referralCode = localStorage.getItem('referral_code');
+
       await axios.post("/api/register", {
         name,
         email: registerEmail,
         password: registerPassword,
         password_confirmation: registerPassword,
+        referral_code: referralCode || undefined,
       });
+
+      localStorage.removeItem('referral_code');
 
       const res = await axios.post("/api/login", {
         email: registerEmail,

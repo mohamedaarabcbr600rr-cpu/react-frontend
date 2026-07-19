@@ -55,6 +55,15 @@ const { i18n } = useTranslation();
     return savedUser ? JSON.parse(savedUser) : null;
   });
 
+// ── Capture referral code from URL (?ref=CODE) and persist it until registration ──
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const ref = params.get('ref');
+    if (ref) {
+      localStorage.setItem('referral_code', ref.toUpperCase());
+    }
+  }, [location.search]);
+
 // ✅ UNREAD COUNTS (for Navbar badges)
 const [unreadMessages, setUnreadMessages] = useState(0);
 const [unreadNotifications, setUnreadNotifications] = useState(0);
