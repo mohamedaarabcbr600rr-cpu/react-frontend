@@ -1,11 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import SubjectSelector from './components/SubjectSelector';
-import DocumentUploader from './components/DocumentUploader';
-import StudyPlanView from './components/StudyPlanView';
-import FocusFullscreen from './components/FocusFullscreen';
-import SessionAnalysis from './components/SessionAnalysis';
-import './study-hub.css';
+
 
 const StudyHub = () => {
   const [step, setStep] = useState('subject'); // subject, upload, plan, focus, analysis
