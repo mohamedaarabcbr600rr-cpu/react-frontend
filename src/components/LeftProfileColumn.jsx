@@ -39,7 +39,7 @@ const LeftProfileColumn = ({
   }
 
  return (
-    <>
+    <div className="left-column-stack">
     <div className="left-profile">
       {/* HEADER PROFILE */}
       <div
@@ -95,10 +95,10 @@ const LeftProfileColumn = ({
 )}
       </div>
 
-     </div>
+   </div>
 
     <InviteEarnCard user={user} />
-    </>
+    </div>
   );
 };
 

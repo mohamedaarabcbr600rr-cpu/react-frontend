@@ -3,6 +3,14 @@
    Modern Profile Card - Inspired by LinkedIn/Threads
    ================================================ */
 
+
+
+
+   .left-column-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
 /* Main Column Container */
 .left-profile {
   background-color: var(--color-bg-white);
