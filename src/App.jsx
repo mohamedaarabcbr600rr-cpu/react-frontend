@@ -539,13 +539,7 @@ const [adminToken, setAdminToken] = useState(() =>
           {/* NOTIFICATIONS */}
           <Route path="/notifications" element={
             <ProtectedContent title="Connectez-vous pour voir vos notifications">
-              <Notifications
-                user={user}
-                onNavigateToExperience={(expId) => {
-                  navigate('/');
-                  setTimeout(() => setScrollToExpId(expId), 100);
-                }}
-              />
+              <Notifications user={user} />
             </ProtectedContent>
           } />
           <Route path="/email-verified" element={<EmailVerified />} />

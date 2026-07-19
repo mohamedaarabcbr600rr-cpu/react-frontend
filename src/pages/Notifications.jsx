@@ -113,7 +113,7 @@ const Notifications = ({ user, onNavigateToExperience }) => {
     switch (data.type) {
       case 'like':
       case 'comment':
-        if (postId && onNavigateToExperience) onNavigateToExperience(postId);
+        if (postId) navigate(`/post/${postId}`);
         break;
       case 'follow':
         if (profileId) navigate(`/profile/${profileId}`);
