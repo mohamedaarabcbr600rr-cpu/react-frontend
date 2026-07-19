@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import './LeftProfileColumn.css';
 import logo from '../assets/logo.jpg';
+import InviteEarnCard from './InviteEarnCard';
 
 const LeftProfileColumn = ({
   user = null,
@@ -37,7 +38,8 @@ const LeftProfileColumn = ({
     );
   }
 
-  return (
+ return (
+    <>
     <div className="left-profile">
       {/* HEADER PROFILE */}
       <div
@@ -93,19 +95,10 @@ const LeftProfileColumn = ({
 )}
       </div>
 
-      {/* LOGO */}
-      <div className="left-profile__coming-logo">
-       <img
-  src={logo}
-  alt="Talib Logo"
-  className="left-profile__coming-logo-image"
-  loading="eager"
-  fetchpriority="high"
-  width="120"
-  height="120"
-/>
-      </div>
-    </div>
+     </div>
+
+    <InviteEarnCard user={user} />
+    </>
   );
 };
 
