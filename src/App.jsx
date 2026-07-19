@@ -13,7 +13,7 @@ const Messagerie = lazy(() => import('./pages/Messagerie'));
 const Reseau = lazy(() => import('./pages/Reseau'));
 const Notifications = lazy(() => import('./pages/Notifications'));
 const AITutor = lazy(() => import('./pages/AITutor/AITutor'));
-const StudyHub = lazy(() => import('./pages/StudyHub/StudyHub'));
+const Achievements = lazy(() => import('./pages/Achievements'));
 const Admin = lazy(() => import('./admin-dashboard/admin'));
 const EmailVerified = lazy(() => import('./pages/EmailVerified'));
 const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
@@ -536,13 +536,12 @@ const [adminToken, setAdminToken] = useState(() =>
   }
 />
 
-
-{/* STUDY HUB - AI Workflow Controller */}
-<Route path="/focus-hub" element={
-  <ProtectedContent title="Connectez-vous pour accéder au Study Hub">
-    <StudyHub />
-  </ProtectedContent>
-} />
+{/* ACHIEVEMENTS (mobile-focused) */}
+          <Route path="/achievements" element={
+            <ProtectedContent title="Connectez-vous pour voir vos succès">
+              <Achievements user={user} />
+            </ProtectedContent>
+          } />
 
 
           {/* NOTIFICATIONS */}

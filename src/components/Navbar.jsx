@@ -22,11 +22,11 @@ const Navbar = ({ user, searchTerm, onSearch, onLogout, getInitials, unreadMessa
     return `${base}/storage/${profilePic}`;
   };
 
-  const getPathFromId = (id) => {
+const getPathFromId = (id) => {
     const pathMap = {
       accueil: '/',
       reseau: '/reseau',
-      'focus-hub': '/focus-hub',
+      achievements: '/achievements',
       messagerie: '/messagerie',
       notifications: '/notifications',
       ai: '/ai',
@@ -35,11 +35,11 @@ const Navbar = ({ user, searchTerm, onSearch, onLogout, getInitials, unreadMessa
     return pathMap[id] || '/';
   };
 
-  const isActive = (id) => {
+ const isActive = (id) => {
     const pathMap = {
       accueil: '/',
       reseau: '/reseau',
-      'focus-hub': '/focus-hub',
+      achievements: '/achievements',
       messagerie: '/messagerie',
       notifications: '/notifications',
       ai: '/ai',
@@ -48,10 +48,10 @@ const Navbar = ({ user, searchTerm, onSearch, onLogout, getInitials, unreadMessa
     return location.pathname === pathMap[id];
   };
 
-  const navItems = useMemo(() => [
+ const navItems = useMemo(() => [
     { id: 'accueil',       icon: 'ti-home',      label: t('nav.home') },
     { id: 'reseau',        icon: 'ti-users',     label: t('nav.network') },
-    { id: 'focus-hub',     icon: 'ti-dashboard', label: t('nav.focus') },
+    { id: 'achievements',  icon: 'ti-trophy',    label: t('nav.achievements', 'Achievements') },
     { id: 'messagerie',    icon: 'ti-message',   label: t('nav.messages') },
     { id: 'notifications', icon: 'ti-bell',      label: t('nav.notifications') },
     { id: 'ai',            icon: 'ti-robot',     label: t('nav.ai') },
@@ -60,7 +60,7 @@ const Navbar = ({ user, searchTerm, onSearch, onLogout, getInitials, unreadMessa
   const mobileNavItems = [
     { id: 'accueil',       icon: 'ti-home',      label: t('nav.home') },
     { id: 'reseau',        icon: 'ti-users',     label: t('nav.network') },
-    { id: 'focus-hub',     icon: 'ti-dashboard', label: t('nav.focus') },
+    { id: 'achievements',  icon: 'ti-trophy',    label: t('nav.achievements', 'Achievements') },
     { id: 'messagerie',    icon: 'ti-message',   label: t('nav.messages') },
     { id: 'ai',            icon: 'ti-robot',     label: t('nav.ai') },
     { id: 'notifications', icon: 'ti-bell',      label: t('nav.notifications') },
@@ -134,7 +134,7 @@ const Navbar = ({ user, searchTerm, onSearch, onLogout, getInitials, unreadMessa
             {navItems.map(item => (
               <div
                 key={item.id}
-                className={`navbar__item ${isActive(item.id) ? 'active' : ''} ${item.id === 'focus-hub' ? 'focus-hub-highlight' : ''}`}
+                className={`navbar__item ${isActive(item.id) ? 'active' : ''}`}
                 onClick={() => handleNavigation(item.id)}
               >
                 <div style={{ position: 'relative' }}>
