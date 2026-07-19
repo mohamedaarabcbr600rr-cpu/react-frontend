@@ -26,6 +26,7 @@ import Terms         from './components/Terms';
 import Accessibility from './components/Accessibility';
 const AdminLogin = lazy(() => import('./admin-dashboard/AdminLogin'));
 const ProtectedRoute = lazy(() => import('./admin-dashboard/ProtectedRoute'));
+const PostPage = lazy(() => import('./pages/PostPage'));
 
 // ✅ Pagination du feed
 const EXPERIENCES_PER_PAGE = 6;
@@ -437,6 +438,28 @@ const [adminToken, setAdminToken] = useState(() =>
           {/* On passe user pour que Profile sache qui est connecté */}
           <Route path="/profile/:username" element={
             <Profile user={user} />
+          } />
+
+          {/* SINGLE POST (shareable link) */}
+          <Route path="/post/:id" element={
+            <PostPage
+              user={user}
+              onLike={handleLike}
+              onComment={handleComment}
+              onShare={handleShare}
+              onDeleteComment={handleDeleteComment}
+              onSend={handleSend}
+              commentTexts={commentTexts}
+              setCommentTexts={setCommentTexts}
+              activeCommentId={activeCommentId}
+              setActiveCommentId={setActiveCommentId}
+              hasUserLiked={hasUserLiked}
+              getUserReaction={getUserReaction}
+              getInitials={getInitials}
+              friends={friends}
+              shareUsers={friends}
+              openLogin={() => setShowLoginModal(true)}
+            />
           } />
 
           {/* ✅ MON PROFIL */}
