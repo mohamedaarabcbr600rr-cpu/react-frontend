@@ -51,12 +51,11 @@ const getPathFromId = (id) => {
  const navItems = useMemo(() => [
     { id: 'accueil',       icon: 'ti-home',      label: t('nav.home') },
     { id: 'reseau',        icon: 'ti-users',     label: t('nav.network') },
-    { id: 'achievements',  icon: 'ti-trophy',    label: t('nav.achievements', 'Achievements') },
     { id: 'messagerie',    icon: 'ti-message',   label: t('nav.messages') },
     { id: 'notifications', icon: 'ti-bell',      label: t('nav.notifications') },
     { id: 'ai',            icon: 'ti-robot',     label: t('nav.ai') },
   ], [i18n.language]);
-
+  
   const mobileNavItems = [
     { id: 'accueil',       icon: 'ti-home',      label: t('nav.home') },
     { id: 'reseau',        icon: 'ti-users',     label: t('nav.network') },
