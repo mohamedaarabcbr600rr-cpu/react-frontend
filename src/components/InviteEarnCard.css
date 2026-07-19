@@ -28,19 +28,20 @@
   gap: var(--space-md);
   padding: var(--space-sm);
   border-radius: var(--radius-md);
-  opacity: 0.55;
   transition: var(--transition-smooth);
 }
 
 .invite-badge--unlocked {
-  opacity: 1;
-  background: linear-gradient(135deg, #fefce8, #fef9c3);
+  background: linear-gradient(135deg, #fefce8, #fff7ed);
 }
 
-.invite-badge__emoji {
-  font-size: 24px;
+.invite-badge__icon {
   width: 40px;
-  text-align: center;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
 }
 
@@ -58,6 +59,16 @@
   color: var(--color-text-primary);
 }
 
+.invite-badge__check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #22c55e;
+}
+
 .invite-badge__requirement {
   font-size: var(--font-size-xs);
   color: var(--color-text-secondary);
@@ -65,7 +76,7 @@
 }
 
 .invite-badge__bar {
-  height: 4px;
+  height: 5px;
   background: var(--color-bg-hover);
   border-radius: var(--radius-full);
   overflow: hidden;
@@ -73,15 +84,15 @@
 
 .invite-badge__bar-fill {
   height: 100%;
-  background: linear-gradient(90deg, #6366f1, #8b5cf6);
   border-radius: var(--radius-full);
   transition: width 0.4s ease;
 }
 
 .invite-card__next {
   font-size: var(--font-size-sm);
-  color: var(--color-text-secondary);
-  background: var(--color-bg-elevated);
+  font-weight: var(--font-weight-medium);
+  color: #7c3aed;
+  background: linear-gradient(135deg, #f3ecfe, #eef2ff);
   border-radius: var(--radius-md);
   padding: var(--space-sm) var(--space-md);
   margin-bottom: var(--space-lg);
@@ -131,7 +142,7 @@
 
 .invite-card__cta {
   width: 100%;
-  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  background: linear-gradient(135deg, #7c3aed, #4f46e5);
   color: white;
   border: none;
   padding: var(--space-md);
@@ -144,7 +155,7 @@
 
 .invite-card__cta:hover {
   transform: translateY(-1px);
-  box-shadow: var(--shadow-md);
+  box-shadow: 0 8px 20px rgba(124, 58, 237, 0.35);
 }
 
 .invite-card--compact {
