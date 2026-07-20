@@ -148,6 +148,7 @@ const PostCard = ({
   const [loadingReactions, setLoadingReactions] = useState(false);
   const [activeReactionFilter, setActiveReactionFilter] = useState('all');
   const [copied, setCopied] = useState(false);
+  const [expandedText, setExpandedText] = useState(false);
   const [commentReactions, setCommentReactions] = useState({});
   const [showCommentReactionMenu, setShowCommentReactionMenu] = useState(null);
  const [replyingTo, setReplyingTo] = useState(null);
@@ -421,7 +422,10 @@ const PostCard = ({
 
       {/* ── Post partagé ── */}
       {exp.shared_from && exp.original && (
-        <div className="post-card__shared">
+        <div
+          className="post-card__shared post-card__shared--clickable"
+          onClick={(e) => { e.stopPropagation(); navigate(`/post/${exp.original.id}`); }}
+        >
           <div className="post-card__shared-header" onClick={(e) => handleProfileClick(exp.original.user?.id, e)} style={{ cursor: 'pointer' }}>
             <div className="post-card__shared-avatar">{renderAvatar(exp.original.user)}</div>
             <div className="post-card__shared-info">
@@ -439,8 +443,22 @@ const PostCard = ({
 
       {/* ── Contenu ── */}
       <div className="post-card__content">
-        {exp.title   && <h4 className="post-card__title">{exp.title}</h4>}
-        {exp.content && <p  className="post-card__text">{exp.content}</p>}
+        {exp.title && <h4 className="post-card__title">{exp.title}</h4>}
+        {exp.content && (
+          <>
+            <p className={`post-card__text ${!expandedText ? 'post-card__text--clamped' : ''}`}>
+              {exp.content}
+            </p>
+            {exp.content.length > 150 && (
+              <button
+                className="post-card__see-more"
+                onClick={() => setExpandedText(v => !v)}
+              >
+                {expandedText ? t('post.seeLess', 'Voir moins') : t('post.seeMore', 'Voir plus')}
+              </button>
+            )}
+          </>
+        )}
       </div>
 
       {/* ── Galerie médias ── */}
