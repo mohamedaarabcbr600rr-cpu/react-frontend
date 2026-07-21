@@ -21,3 +21,9 @@ export function getBadgeProgress(referralCount) {
 export function getNextBadge(referralCount) {
   return BADGE_TIERS.find(tier => referralCount < tier.threshold) || null;
 }
+
+
+export function getBadgeForCount(referralCount) {
+  const unlocked = BADGE_TIERS.filter(tier => referralCount >= tier.threshold);
+  return unlocked.length > 0 ? unlocked[unlocked.length - 1] : null;
+}
