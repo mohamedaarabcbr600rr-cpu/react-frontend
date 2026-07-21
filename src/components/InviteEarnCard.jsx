@@ -152,11 +152,14 @@ const InviteEarnCard = ({ user, compact = false }) => {
                   {t('invite.invitations', '{{count}} invitations', { count: badge.threshold })}
                 </div>
                 {!badge.unlocked && (
-                  <div className="invite-badge__bar">
-                    <div
-                      className="invite-badge__bar-fill"
-                      style={{ width: `${badge.progress}%`, background: `linear-gradient(90deg, ${c1}, ${c2})` }}
-                    />
+                  <div className="invite-badge__progress-row">
+                    <div className="invite-badge__bar">
+                      <div
+                        className="invite-badge__bar-fill"
+                        style={{ width: `${badge.progress}%`, background: `linear-gradient(90deg, ${c1}, ${c2})` }}
+                      />
+                    </div>
+                    <span className="invite-badge__count">{stats.referral_count} / {badge.threshold}</span>
                   </div>
                 )}
               </div>
@@ -167,10 +170,14 @@ const InviteEarnCard = ({ user, compact = false }) => {
 
       {nextBadge && (
         <div className="invite-card__next">
-          {t('invite.nextBadge', 'Plus que {{count}} invitations pour {{name}}', {
-            count: nextBadge.threshold - stats.referral_count,
-            name: nextBadge.name,
-          })}
+          {stats.referral_count === 0
+            ? t('invite.nextBadgeFirst', '{{count}} more invites to unlock your first badge! 🌟', {
+                count: nextBadge.threshold - stats.referral_count,
+              })
+            : t('invite.nextBadge', '{{count}} more invites to unlock {{name}}! 🌟', {
+                count: nextBadge.threshold - stats.referral_count,
+                name: nextBadge.name,
+              })}
         </div>
       )}
 

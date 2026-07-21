@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import InviteEarnCard from '../components/InviteEarnCard';
+import TopReferrers from '../components/TopReferrers';
 import './Achievements.css';
 
 const IconTrophy = ({ size = 28, color = "currentColor" }) => (
@@ -30,6 +31,7 @@ const Achievements = ({ user }) => {
       </div>
 
       <InviteEarnCard user={user} />
+      <TopReferrers user={user} />
     </div>
   );
 };

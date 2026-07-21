@@ -75,11 +75,26 @@
   margin-bottom: 4px;
 }
 
+.invite-badge__progress-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
 .invite-badge__bar {
+  flex: 1;
   height: 5px;
   background: var(--color-bg-hover);
   border-radius: var(--radius-full);
   overflow: hidden;
+}
+
+.invite-badge__count {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-medium);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .invite-badge__bar-fill {
