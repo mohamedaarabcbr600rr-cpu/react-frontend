@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import './LeftProfileColumn.css';
 import logo from '../assets/logo.jpg';
 import InviteEarnCard from './InviteEarnCard';
+import TopReferrers from './TopReferrers';
 
 const LeftProfileColumn = ({
   user = null,
@@ -95,9 +96,10 @@ const LeftProfileColumn = ({
 )}
       </div>
 
-   </div>
+</div>
 
     <InviteEarnCard user={user} />
+    <TopReferrers user={user} />
     </div>
   );
 };
