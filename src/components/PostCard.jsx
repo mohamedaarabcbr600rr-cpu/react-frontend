@@ -2,6 +2,8 @@ import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import axios from '../axios';
+import UserBadge from './UserBadge';
+import AvatarBorder from './AvatarBorder';
 import './PostCard.css';
 
 // ─── SVG Icon Components ───────────────────────────────────────────────────────
@@ -239,28 +241,29 @@ const PostCard = ({
   const presentReactionTypes  = [...new Set(reactionsList.map(r => r.reaction_type))];
 
   /* ── Avatars ── */
-  const renderAvatar = (userData) => {
+ const renderAvatar = (userData) => {
     if (!userData) return null;
     const hasError = imageErrors[userData?.id];
-    if (userData?.profile_pic && !hasError) {
-      return (
-        <img
-          src={userData.profile_pic?.startsWith('http') ? userData.profile_pic : `${import.meta.env.VITE_API_URL}${userData.profile_pic}`}
-          alt={userData.name}
-          className="post-card__avatar-image"
-          onClick={(e) => handleProfileClick(userData.id, e)}
-          style={{ cursor: 'pointer' }}
-          onError={() => setImageErrors(prev => ({ ...prev, [userData.id]: true }))}
-        />
-      );
-    }
-    return (
+    const inner = userData?.profile_pic && !hasError ? (
+      <img
+        src={userData.profile_pic?.startsWith('http') ? userData.profile_pic : `${import.meta.env.VITE_API_URL}${userData.profile_pic}`}
+        alt={userData.name}
+        className="post-card__avatar-image"
+        onClick={(e) => handleProfileClick(userData.id, e)}
+        style={{ cursor: 'pointer' }}
+        onError={() => setImageErrors(prev => ({ ...prev, [userData.id]: true }))}
+      />
+    ) : (
       <div className="post-card__avatar-initials" onClick={(e) => handleProfileClick(userData.id, e)} style={{ cursor: 'pointer' }}>
         {getInitials(userData?.name)}
       </div>
     );
+    return (
+      <AvatarBorder referralCount={userData?.referral_count} size={40}>
+        {inner}
+      </AvatarBorder>
+    );
   };
-
   const renderReactionAvatar = (userData) => {
     if (!userData) return <span className="reactions-modal__avatar-initials">?</span>;
     const hasError = imageErrors[userData?.id];
@@ -396,6 +399,7 @@ const PostCard = ({
         <div className="post-card__info">
           <div className="post-card__author-name">
             {exp.user?.name || t("post.user.anonymous")}
+            <UserBadge referralCount={exp.user?.referral_count} />
             {isOwnPost && <span className="post-card__author-badge">{t("post.user.you")}</span>}
           </div>
           <div className="post-card__meta">
@@ -429,7 +433,10 @@ const PostCard = ({
           <div className="post-card__shared-header" onClick={(e) => handleProfileClick(exp.original.user?.id, e)} style={{ cursor: 'pointer' }}>
             <div className="post-card__shared-avatar">{renderAvatar(exp.original.user)}</div>
             <div className="post-card__shared-info">
-              <div className="post-card__shared-author">{exp.original.user?.name || t("post.user.anonymous")}</div>
+              <div className="post-card__shared-author">
+                {exp.original.user?.name || t("post.user.anonymous")}
+                <UserBadge referralCount={exp.original.user?.referral_count} />
+              </div>
               <div className="post-card__shared-time">{t("post.shared.original")} • {formatDate(exp.original.created_at)}</div>
             </div>
           </div>
@@ -617,8 +624,10 @@ const PostCard = ({
                       {renderAvatar(comment.user)}
                     </div>
                     <div className="comment-content">
-                      <div className="comment-author" onClick={(e) => handleProfileClick(comment.user?.id, e)} style={{ cursor: 'pointer' }}>
-                        {comment.user?.name}{comment.user?.id === user?.id && <span className="comment-author-badge">{t("post.user.you")}</span>}
+<div className="comment-author" onClick={(e) => handleProfileClick(comment.user?.id, e)} style={{ cursor: 'pointer' }}>
+                        {comment.user?.name}
+                        <UserBadge referralCount={comment.user?.referral_count} size={14} />
+                        {comment.user?.id === user?.id && <span className="comment-author-badge">{t("post.user.you")}</span>}
                       </div>
                       <div className="comment-text">{comment.content}</div>
                       <div className="comment-date">
@@ -661,8 +670,10 @@ const PostCard = ({
                             <div key={reply.id || rIndex} className="reply-item">
                               <div className="reply-avatar" onClick={(e) => handleProfileClick(reply.user?.id, e)} style={{ cursor: 'pointer' }}>{renderAvatar(reply.user)}</div>
                               <div className="reply-bubble">
-                                <div className="reply-author" onClick={(e) => handleProfileClick(reply.user?.id, e)} style={{ cursor: 'pointer' }}>
-                                  {reply.user?.name}{reply.user?.id === user?.id && <span className="comment-author-badge">{t("post.user.you")}</span>}
+<div className="reply-author" onClick={(e) => handleProfileClick(reply.user?.id, e)} style={{ cursor: 'pointer' }}>
+                                  {reply.user?.name}
+                                  <UserBadge referralCount={reply.user?.referral_count} size={13} />
+                                  {reply.user?.id === user?.id && <span className="comment-author-badge">{t("post.user.you")}</span>}
                                 </div>
                                 <div className="reply-text">{reply.content}</div>
                               </div>
