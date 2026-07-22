@@ -21,6 +21,7 @@ const AuthCallback = ({ setUser }) => {
     }
 
     localStorage.setItem("token", token);
+    localStorage.removeItem("referral_code");
 
     axios.get("/api/profile", {
       headers: { Authorization: `Bearer ${token}` },
