@@ -9,6 +9,7 @@ import PostCard from '../components/PostCard';
 import LeftProfileColumn from '../components/LeftProfileColumn';
 import RightColumn from '../components/RightColumn';
 import ChallengeAndHelp from '../components/ChallengeAndHelp';
+import AvatarBorder from '../components/AvatarBorder';
 // CSS global de la page
 import './Accueil.css';
 import '../styles/global.css';
@@ -288,6 +289,28 @@ const Accueil = ({
 
   const filteredExperiences = getFilteredExperiences();
 
+  // ✅ Avatar utilisateur (composer) avec bordure dorée selon referral_count, comme dans PostCard
+  const renderComposerAvatar = () => {
+    const inner = user && user.profile_pic && !avatarError ? (
+      <img
+        src={user.profile_pic?.startsWith('http') ? user.profile_pic : `${import.meta.env.VITE_API_URL}${user.profile_pic}`}
+        alt={user.name}
+        className="create-post__avatar-image"
+        onError={() => setAvatarError(true)}
+      />
+    ) : (
+      user
+        ? getInitials(user.name)
+        : <IconUser size={22} color="#6b7280" />
+    );
+
+    return (
+      <AvatarBorder referralCount={user?.referral_count} size={40}>
+        {inner}
+      </AvatarBorder>
+    );
+  };
+
   return (
     <div className="home-layout">
       {/* Left Column - Desktop Only */}
@@ -352,18 +375,7 @@ const Accueil = ({
               onClick={user ? onProfileClick : openLogin}
               aria-label={user ? user.name : t("home.loginToPost")}
             >
-              {user && user.profile_pic && !avatarError ? (
-                <img
-                  src={user.profile_pic?.startsWith('http') ? user.profile_pic : `${import.meta.env.VITE_API_URL}${user.profile_pic}`}
-                  alt={user.name}
-                  className="create-post__avatar-image"
-                  onError={() => setAvatarError(true)}
-                />
-              ) : (
-                user
-                  ? getInitials(user.name)
-                  : <IconUser size={22} color="#6b7280" />
-              )}
+              {renderComposerAvatar()}
             </div>
             <div
               className="create-post__input"
