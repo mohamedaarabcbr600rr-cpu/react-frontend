@@ -55,13 +55,13 @@ const AuthModal = ({ setUser, closeModal }) => {
   };
 
 const handleGoogleLogin = () => {
-    const referralCode = localStorage.getItem('referral_code');
-    const url = new URL(`${import.meta.env.VITE_API_URL}/auth/google/redirect`);
-    if (referralCode) {
-      url.searchParams.set('ref', referralCode);
-    }
-    window.location.href = url.toString();
-  };
+  const referralCode = localStorage.getItem('referral_code');
+  const url = new URL(`${import.meta.env.VITE_API_URL}/auth/google/redirect`);
+  if (referralCode) {
+    url.searchParams.set('referral_code', referralCode);
+  }
+  window.location.href = url.toString();
+};
 
 // REGISTER
   const handleRegister = async (e) => {
