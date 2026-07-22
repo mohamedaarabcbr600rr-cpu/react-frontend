@@ -18,7 +18,9 @@ const Admin = lazy(() => import('./admin-dashboard/admin'));
 const EmailVerified = lazy(() => import('./pages/EmailVerified'));
 const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
 const ResetPassword = lazy(() => import('./pages/ResetPassword'));
+const AuthCallback = lazy(() => import('./pages/AuthCallback'));
 import EmailVerificationBanner from "./components/EmailVerificationBanner";
+
 // Legal pages
 import About         from './components/About';
 import Privacy       from './components/Privacy';
@@ -553,6 +555,7 @@ const [adminToken, setAdminToken] = useState(() =>
           <Route path="/email-verified" element={<EmailVerified />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/auth/callback" element={<AuthCallback setUser={setUser} />} />
         {/* LEGAL PAGES */}
           <Route path="/about"         element={<About />}         />
           <Route path="/privacy"       element={<Privacy />}       />
