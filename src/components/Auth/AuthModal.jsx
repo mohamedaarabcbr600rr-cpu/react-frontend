@@ -229,9 +229,7 @@ const handleGoogleLogin = () => {
                 {loading ? t("common.loading") : t("auth.registerButton")}
               </button>
 
-              <button className="auth-btn" disabled={loading}>
-  {loading ? t("common.loading") : t("auth.registerButton")}
-</button>
+              
 
 <div style={{ display: "flex", alignItems: "center", gap: "10px", margin: "18px 0" }}>
   <div style={{ flex: 1, height: "1px", background: "rgba(255,255,255,0.1)" }} />
