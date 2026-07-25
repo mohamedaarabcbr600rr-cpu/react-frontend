@@ -33,6 +33,25 @@ const PostPage = lazy(() => import('./pages/PostPage'));
 // ✅ Pagination du feed
 const EXPERIENCES_PER_PAGE = 6;
 
+// ✅ Définie EN DEHORS d'AppContent pour éviter un remount à chaque re-render
+const ProtectedContent = ({ children, title = "Connexion requise", user, styles, openLogin }) => {
+  if (!user) {
+    return (
+      <div style={styles.protectedContent}>
+        <span style={{ fontSize: "48px", display: "block", marginBottom: "16px" }}>🔒</span>
+        <h3 style={styles.protectedTitle}>{title}</h3>
+        <p style={{ color: "#666", fontSize: "14px", marginBottom: "20px" }}>
+          Veuillez vous connecter pour accéder à cette page
+        </p>
+        <button style={styles.protectedButton} onClick={openLogin}>
+          Se connecter
+        </button>
+      </div>
+    );
+  }
+  return children;
+};
+
 // ✅ Composant principal qui contient toute la logique
 const AppContent = () => {
   const [scrollToExpId, setScrollToExpId] = useState(null);
@@ -364,29 +383,6 @@ const [adminToken, setAdminToken] = useState(() =>
   const myExperiences = experiences.filter(exp => user ? exp.user?.id === user.id : false);
   const otherExperiences = filteredExperiences.filter(exp => user ? exp.user?.id !== user.id : true);
 
-  const ProtectedContent = ({ children, title = "Connexion requise" }) => {
-    if (!user) {
-      return (
-        <div style={styles.protectedContent}>
-          <span style={{ fontSize: "48px", display: "block", marginBottom: "16px" }}>🔒</span>
-          <h3 style={styles.protectedTitle}>{title}</h3>
-          <p style={{ color: "#666", fontSize: "14px", marginBottom: "20px" }}>
-            Veuillez vous connecter pour accéder à cette page
-          </p>
-          <button
-            style={styles.protectedButton}
-            onClick={() => setShowLoginModal(true)}
-            onMouseEnter={(e) => e.target.style.backgroundColor = "#004182"}
-            onMouseLeave={(e) => e.target.style.backgroundColor = "#0a66c2"}
-          >
-            Se connecter
-          </button>
-        </div>
-      );
-    }
-    return children;
-  };
-
   return (
     <div style={styles.app}>
       <style>{styles.keyframes}</style>
@@ -474,8 +470,8 @@ const [adminToken, setAdminToken] = useState(() =>
           } />
 
           {/* ✅ MON PROFIL */}
-          <Route path="/profile" element={
-            <ProtectedContent title="Connectez-vous pour voir votre profil">
+         <Route path="/profile" element={
+            <ProtectedContent title="Connectez-vous pour voir votre profil" user={user} styles={styles} openLogin={() => setShowLoginModal(true)}>
               <Profile
                 user={user}
                 lang={i18n.language}
@@ -503,21 +499,21 @@ const [adminToken, setAdminToken] = useState(() =>
 
           {/* AI TUTOR */}
           <Route path="/ai" element={
-            <ProtectedContent title="Connectez-vous pour utiliser AI">
+            <ProtectedContent title="Connectez-vous pour utiliser AI" user={user} styles={styles} openLogin={() => setShowLoginModal(true)}>
               <AITutor />
             </ProtectedContent>
           } />
 
           {/* MESSAGERIE */}
           <Route path="/messagerie" element={
-            <ProtectedContent title="Connectez-vous pour accéder à vos messages">
-              <Messagerie authUserId={user?.id} />
-            </ProtectedContent>
-          } />
+  <ProtectedContent title="Connectez-vous pour accéder à vos messages" user={user} styles={styles} openLogin={() => setShowLoginModal(true)}>
+    <Messagerie authUserId={user?.id} />
+  </ProtectedContent>
+} />
 
           {/* RESEAU */}
           <Route path="/reseau" element={
-            <ProtectedContent title="Connectez-vous pour voir votre réseau">
+            <ProtectedContent title="Connectez-vous pour voir votre réseau" user={user} styles={styles} openLogin={() => setShowLoginModal(true)}>
               <Reseau user={user} />
             </ProtectedContent>
           } />
@@ -540,7 +536,7 @@ const [adminToken, setAdminToken] = useState(() =>
 
 {/* ACHIEVEMENTS (mobile-focused) */}
           <Route path="/achievements" element={
-            <ProtectedContent title="Connectez-vous pour voir vos succès">
+            <ProtectedContent title="Connectez-vous pour voir vos succès" user={user} styles={styles} openLogin={() => setShowLoginModal(true)}>
               <Achievements user={user} />
             </ProtectedContent>
           } />
@@ -548,7 +544,7 @@ const [adminToken, setAdminToken] = useState(() =>
 
           {/* NOTIFICATIONS */}
           <Route path="/notifications" element={
-            <ProtectedContent title="Connectez-vous pour voir vos notifications">
+            <ProtectedContent title="Connectez-vous pour voir vos notifications" user={user} styles={styles} openLogin={() => setShowLoginModal(true)}>
               <Notifications user={user} />
             </ProtectedContent>
           } />
