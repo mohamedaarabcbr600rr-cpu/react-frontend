@@ -486,6 +486,13 @@ const Messagerie = ({ authUserId, baseUrl = import.meta.env.VITE_API_URL }) => {
     setUnreadPerUser(prev => ({ ...prev, [selectedUser.id]: 0 }));
   }, [conversationId, selectedUser]);
 
+  // ── Immersive mode: hide navbar on mobile when a conversation is open ──────
+  useEffect(() => {
+    const isFullscreenChat = !!selectedUser && !sidebarOpen;
+    document.body.classList.toggle('wa-chat-fullscreen', isFullscreenChat);
+    return () => document.body.classList.remove('wa-chat-fullscreen');
+  }, [selectedUser, sidebarOpen]);
+
   // ── Start conversation ─────────────────────────────────────────────────────
   const startConversation = useCallback(async (user) => {
     if (selectedUser?.id === user.id) {

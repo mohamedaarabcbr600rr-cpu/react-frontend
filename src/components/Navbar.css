@@ -401,6 +401,17 @@
   body {
     padding-bottom: calc(60px + env(safe-area-inset-bottom));
   }
+
+  /* ── Mode immersif : conversation ouverte en plein écran ── */
+  body.wa-chat-fullscreen .navbar,
+  body.wa-chat-fullscreen .navbar-mobile-top,
+  body.wa-chat-fullscreen .navbar-mobile-bottom {
+    display: none !important;
+  }
+
+  body.wa-chat-fullscreen {
+    padding-bottom: 0;
+  }
 }
 
 /* Cacher la bottom bar et top bar sur desktop */
