@@ -99,7 +99,7 @@ const Avatar = memo(({ name, size = 48, online = false, profilePic = null }) => 
 Avatar.displayName = "Avatar";
 
 // ─── MessageBubble (memoized — re-renders only when msg object changes) ─────
-const MessageBubble = memo(({ msg, authUserId, baseUrl, t, onImageClick, onContextMenu, onTouchStart, onTouchEnd, onReplyClick, isHighlighted }) => {
+const MessageBubble = memo(({ msg, authUserId, baseUrl, t, onImageClick, onContextMenu, onTouchStart, onTouchEnd, onCancelLongPress, onReplyClick, onClick, onSwipeReply, isHighlighted }) => {
   const isOwn = String(msg.user_id) === String(authUserId);
   const fileUrl = msg.file_path ? `${baseUrl}/storage/${msg.file_path}` : null;
   const isImage = msg.file_type?.startsWith("image");
@@ -108,8 +108,42 @@ const MessageBubble = memo(({ msg, authUserId, baseUrl, t, onImageClick, onConte
   const isDeleted = !!msg.deleted_for_everyone_at;
   const replyTo = msg.reply_to;
 
-  const handleImageClick = () => {
+  const touchStartRef = useRef({ x: 0, y: 0 });
+  const [swipeX, setSwipeX] = useState(0);
+  const [isSwiping, setIsSwiping] = useState(false);
+
+  const handleImageClick = (e) => {
+    e.stopPropagation();
     if (!isTemp) onImageClick(msg.id);
+  };
+
+  const handleTouchStartLocal = (e) => {
+    const touch = e.touches[0];
+    touchStartRef.current = { x: touch.clientX, y: touch.clientY };
+    onTouchStart(e, msg.id);
+  };
+
+  const handleTouchMoveLocal = (e) => {
+    const touch = e.touches[0];
+    const dx = touch.clientX - touchStartRef.current.x;
+    const dy = touch.clientY - touchStartRef.current.y;
+    if (Math.abs(dy) > Math.abs(dx)) return; // vertical scroll — let it happen
+    if (Math.abs(dx) > 8) {
+      onCancelLongPress?.();
+      if (dx > 0) { // swipe right only (WhatsApp-style)
+        setIsSwiping(true);
+        setSwipeX(Math.min(dx, 70));
+      }
+    }
+  };
+
+  const handleTouchEndLocal = (e) => {
+    onTouchEnd(e);
+    if (swipeX > 45 && !isTemp) {
+      onSwipeReply(msg);
+    }
+    setSwipeX(0);
+    setIsSwiping(false);
   };
 
   if (isDeleted) {
@@ -127,24 +161,36 @@ const MessageBubble = memo(({ msg, authUserId, baseUrl, t, onImageClick, onConte
     );
   }
 
-  return (
+ return (
     <div
       id={`msg-${msg.id}`}
       className={`wa-msg-row ${isOwn ? "own" : "other"}`}
     >
+      {/* Swipe-to-reply icon, revealed as the bubble slides right */}
+      {!isTemp && !isDeleted && (
+        <span
+          className="wa-swipe-reply-icon"
+          style={{ opacity: Math.min(swipeX / 45, 1) }}
+        >
+          ↩
+        </span>
+      )}
       <div
         className={`wa-bubble ${isOwn ? "own" : "other"} ${
           isFailed ? "wa-bubble--failed" : ""
         } ${isTemp && !isFailed ? "wa-bubble--sending" : ""} ${
           isHighlighted ? "wa-bubble--highlighted" : ""
-        }`}
+        } ${isSwiping ? "wa-bubble--swiping" : ""}`}
+        style={swipeX ? { transform: `translateX(${swipeX}px)` } : undefined}
+        onClick={!isTemp ? (e) => onClick(e, msg.id) : undefined}
         onContextMenu={!isTemp ? (e) => onContextMenu(e, msg.id) : undefined}
-        onTouchStart={!isTemp ? (e) => onTouchStart(e, msg.id) : undefined}
-        onTouchEnd={!isTemp ? onTouchEnd : undefined}
+        onTouchStart={!isTemp ? handleTouchStartLocal : undefined}
+        onTouchMove={!isTemp ? handleTouchMoveLocal : undefined}
+        onTouchEnd={!isTemp ? handleTouchEndLocal : undefined}
       >
         {/* Reply quote */}
         {replyTo && (
-          <div className="wa-reply-quote" onClick={() => onReplyClick(replyTo.id)}>
+          <div className="wa-reply-quote" onClick={(e) => { e.stopPropagation(); onReplyClick(replyTo.id); }}>
             <span className="wa-reply-quote-author">{replyTo.user?.name}</span>
             <span className="wa-reply-quote-text">
               {replyTo.deleted_for_everyone_at
@@ -272,8 +318,9 @@ const [errorMsg, setErrorMsg] = useState(null);
       return new Set(raw ? JSON.parse(raw) : []);
     } catch { return new Set(); }
   });
-  const [highlightedMsgId, setHighlightedMsgId] = useState(null);
+const [highlightedMsgId, setHighlightedMsgId] = useState(null);
   const longPressTimerRef = useRef(null);
+  const lastTouchEndRef = useRef(0);
 
   const messagesEndRef = useRef(null);
   const messagesContainerRef = useRef(null);
@@ -612,13 +659,24 @@ const [errorMsg, setErrorMsg] = useState(null);
     }
   }, []);
 
-  // ── Context menu (right-click desktop / long-press mobile) ─────────────────
+ // ── Context menu (right-click / left-click desktop, long-press mobile) ─────
+  // Clamped so it never renders off-screen (fixes cut-off menu on mobile)
   const openContextMenu = useCallback((msgId, x, y) => {
-    setContextMenu({ msgId, x, y });
+    const menuWidth = 180;
+    const menuHeight = 100;
+    const clampedX = Math.max(12, Math.min(x, window.innerWidth - menuWidth - 12));
+    const clampedY = Math.max(12, Math.min(y, window.innerHeight - menuHeight - 12));
+    setContextMenu({ msgId, x: clampedX, y: clampedY });
   }, []);
 
   const handleContextMenu = useCallback((e, msgId) => {
     e.preventDefault();
+    openContextMenu(msgId, e.clientX, e.clientY);
+  }, [openContextMenu]);
+
+  // Desktop left-click also opens the menu (ignored right after a touch, so mobile taps don't double-trigger it)
+  const handleBubbleClick = useCallback((e, msgId) => {
+    if (Date.now() - lastTouchEndRef.current < 500) return;
     openContextMenu(msgId, e.clientX, e.clientY);
   }, [openContextMenu]);
 
@@ -629,8 +687,13 @@ const [errorMsg, setErrorMsg] = useState(null);
     }, 500);
   }, [openContextMenu]);
 
+  const cancelLongPress = useCallback(() => {
+    clearTimeout(longPressTimerRef.current);
+  }, []);
+
   const handleTouchEnd = useCallback(() => {
     clearTimeout(longPressTimerRef.current);
+    lastTouchEndRef.current = Date.now();
   }, []);
 
   const startReply = useCallback((msg) => {
@@ -1018,10 +1081,13 @@ const replyToId = replyingToMsg?.id || null;
                     baseUrl={baseUrl}
                     t={t}
                     onImageClick={handleImageClick}
+                    onClick={handleBubbleClick}
                     onContextMenu={handleContextMenu}
                     onTouchStart={handleTouchStart}
                     onTouchEnd={handleTouchEnd}
+                    onCancelLongPress={cancelLongPress}
                     onReplyClick={scrollToMessage}
+                    onSwipeReply={startReply}
                     isHighlighted={highlightedMsgId === msg.id}
                   />
                 ))}
