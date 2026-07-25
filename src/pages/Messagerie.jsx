@@ -99,24 +99,61 @@ const Avatar = memo(({ name, size = 48, online = false, profilePic = null }) => 
 Avatar.displayName = "Avatar";
 
 // ─── MessageBubble (memoized — re-renders only when msg object changes) ─────
-const MessageBubble = memo(({ msg, authUserId, baseUrl, t, onImageClick }) => {
+const MessageBubble = memo(({ msg, authUserId, baseUrl, t, onImageClick, onContextMenu, onTouchStart, onTouchEnd, onReplyClick, isHighlighted }) => {
   const isOwn = String(msg.user_id) === String(authUserId);
   const fileUrl = msg.file_path ? `${baseUrl}/storage/${msg.file_path}` : null;
   const isImage = msg.file_type?.startsWith("image");
   const isTemp = String(msg.id).startsWith("tmp_");
   const isFailed = !!msg._failed;
+  const isDeleted = !!msg.deleted_for_everyone_at;
+  const replyTo = msg.reply_to;
 
   const handleImageClick = () => {
     if (!isTemp) onImageClick(msg.id);
   };
 
+  if (isDeleted) {
+    return (
+      <div id={`msg-${msg.id}`} className={`wa-msg-row ${isOwn ? "own" : "other"}`}>
+        <div className={`wa-bubble ${isOwn ? "own" : "other"} wa-bubble--deleted`}>
+          <p className="wa-bubble-text wa-bubble-text--deleted">
+            {t("messagerie.messageDeleted", "Ce message a été supprimé.")}
+          </p>
+          <div className="wa-bubble-meta">
+            <span className="wa-time">{formatTime(msg.created_at)}</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className={`wa-msg-row ${isOwn ? "own" : "other"}`}>
+    <div
+      id={`msg-${msg.id}`}
+      className={`wa-msg-row ${isOwn ? "own" : "other"}`}
+    >
       <div
         className={`wa-bubble ${isOwn ? "own" : "other"} ${
           isFailed ? "wa-bubble--failed" : ""
-        } ${isTemp && !isFailed ? "wa-bubble--sending" : ""}`}
+        } ${isTemp && !isFailed ? "wa-bubble--sending" : ""} ${
+          isHighlighted ? "wa-bubble--highlighted" : ""
+        }`}
+        onContextMenu={!isTemp ? (e) => onContextMenu(e, msg.id) : undefined}
+        onTouchStart={!isTemp ? (e) => onTouchStart(e, msg.id) : undefined}
+        onTouchEnd={!isTemp ? onTouchEnd : undefined}
       >
+        {/* Reply quote */}
+        {replyTo && (
+          <div className="wa-reply-quote" onClick={() => onReplyClick(replyTo.id)}>
+            <span className="wa-reply-quote-author">{replyTo.user?.name}</span>
+            <span className="wa-reply-quote-text">
+              {replyTo.deleted_for_everyone_at
+                ? t("messagerie.messageDeleted", "Ce message a été supprimé.")
+                : (replyTo.content || (replyTo.file_path ? t("messagerie.attachment") : ""))}
+            </span>
+          </div>
+        )}
+
         {/* Image attachment */}
         {msg.file_path && isImage && (
           <img
@@ -153,10 +190,11 @@ const MessageBubble = memo(({ msg, authUserId, baseUrl, t, onImageClick }) => {
     </div>
   );
 }, (prev, next) => {
-  // Custom equality: only re-render if the message object reference, user, or baseUrl changes
+  // Custom equality: only re-render if the message object reference, user, baseUrl, or highlight changes
   return prev.msg === next.msg &&
          prev.authUserId === next.authUserId &&
-         prev.baseUrl === next.baseUrl;
+         prev.baseUrl === next.baseUrl &&
+         prev.isHighlighted === next.isHighlighted;
 });
 MessageBubble.displayName = "MessageBubble";
 
@@ -220,9 +258,22 @@ const Messagerie = ({ authUserId, baseUrl = import.meta.env.VITE_API_URL }) => {
   const [onlineUsers, setOnlineUsers] = useState(new Set());
   const [showScrollFab, setShowScrollFab] = useState(false);
   const [messagesLoading, setMessagesLoading] = useState(false);
-  const [errorMsg, setErrorMsg] = useState(null);
+const [errorMsg, setErrorMsg] = useState(null);
   const [echoReady, setEchoReady] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(null);
+
+  // ── Reply & Delete state ─────────────────────────────────────────────────
+  const [replyingToMsg, setReplyingToMsg] = useState(null);
+  const [contextMenu, setContextMenu] = useState(null); // { msgId, x, y }
+  const [deleteConfirm, setDeleteConfirm] = useState(null); // msgId awaiting confirmation
+  const [hiddenForMe, setHiddenForMe] = useState(() => {
+    try {
+      const raw = localStorage.getItem(`hiddenMessages_${authUserId}`);
+      return new Set(raw ? JSON.parse(raw) : []);
+    } catch { return new Set(); }
+  });
+  const [highlightedMsgId, setHighlightedMsgId] = useState(null);
+  const longPressTimerRef = useRef(null);
 
   const messagesEndRef = useRef(null);
   const messagesContainerRef = useRef(null);
@@ -523,6 +574,79 @@ const Messagerie = ({ authUserId, baseUrl = import.meta.env.VITE_API_URL }) => {
     }
   }, [authUserId, selectedUser, t]);
 
+ // ── Hide a message locally (Delete for me) — stored per-user in localStorage ──
+  const hideForMe = useCallback((msgId) => {
+    setHiddenForMe(prev => {
+      const next = new Set(prev);
+      next.add(msgId);
+      try {
+        localStorage.setItem(`hiddenMessages_${authUserId}`, JSON.stringify([...next]));
+      } catch {}
+      return next;
+    });
+    setContextMenu(null);
+    setDeleteConfirm(null);
+  }, [authUserId]);
+
+  // ── Delete a message for everyone (backend) ─────────────────────────────────
+  const deleteForEveryone = useCallback(async (msgId) => {
+    try {
+      const res = await api.delete(`/messages/${msgId}`, { data: { user_id: authUserId } });
+      setMessages(prev => prev.map(m => m.id === msgId ? res.data : m));
+    } catch (err) {
+      console.error("deleteForEveryone", err);
+      setErrorMsg(t("messagerie.errors.deleteMessage", "Impossible de supprimer ce message"));
+    } finally {
+      setContextMenu(null);
+      setDeleteConfirm(null);
+    }
+  }, [authUserId, t]);
+
+  // ── Scroll to (and briefly highlight) the original message of a reply ──────
+  const scrollToMessage = useCallback((msgId) => {
+    const el = document.getElementById(`msg-${msgId}`);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+      setHighlightedMsgId(msgId);
+      setTimeout(() => setHighlightedMsgId(null), 1500);
+    }
+  }, []);
+
+  // ── Context menu (right-click desktop / long-press mobile) ─────────────────
+  const openContextMenu = useCallback((msgId, x, y) => {
+    setContextMenu({ msgId, x, y });
+  }, []);
+
+  const handleContextMenu = useCallback((e, msgId) => {
+    e.preventDefault();
+    openContextMenu(msgId, e.clientX, e.clientY);
+  }, [openContextMenu]);
+
+  const handleTouchStart = useCallback((e, msgId) => {
+    const touch = e.touches[0];
+    longPressTimerRef.current = setTimeout(() => {
+      openContextMenu(msgId, touch.clientX, touch.clientY);
+    }, 500);
+  }, [openContextMenu]);
+
+  const handleTouchEnd = useCallback(() => {
+    clearTimeout(longPressTimerRef.current);
+  }, []);
+
+  const startReply = useCallback((msg) => {
+    setReplyingToMsg(msg);
+    setContextMenu(null);
+    setTimeout(() => inputRef.current?.focus(), 50);
+  }, []);
+
+  // Close context menu on outside click
+  useEffect(() => {
+    if (!contextMenu) return;
+    const close = () => setContextMenu(null);
+    document.addEventListener('click', close);
+    return () => document.removeEventListener('click', close);
+  }, [contextMenu]);
+
   // ── Send message (optimistic + retry-aware) ────────────────────────────────
   const handleSend = useCallback(async () => {
     if ((!content.trim() && files.length === 0) || sending) return;
@@ -560,12 +684,15 @@ const Messagerie = ({ authUserId, baseUrl = import.meta.env.VITE_API_URL }) => {
           created_at: new Date(baseTs).toISOString(),
         }];
 
+const replyToId = replyingToMsg?.id || null;
+
     setMessages(prev => [...prev, ...optimisticMessages]);
     isAtBottomRef.current = true;
     setContent("");
     setFiles([]);
     setFilePreviews([]);
     setShowEmoji(false);
+    setReplyingToMsg(null);
     clearTimeout(typingTimeoutRef.current);
     api.post(`/messages/${conversationId}/typing`, { user_id: authUserId, is_typing: false }).catch(() => {});
 
@@ -578,6 +705,9 @@ const Messagerie = ({ authUserId, baseUrl = import.meta.env.VITE_API_URL }) => {
           formData.append("user_id", authUserId);
           if (i === 0 && textToSend) {
             formData.append("content", textToSend);
+          }
+          if (i === 0 && replyToId) {
+            formData.append("reply_to_id", replyToId);
           }
           formData.append("file", filesToSend[i]);
           const res = await api.post(`/messages/${conversationId}`, formData);
@@ -592,6 +722,9 @@ const Messagerie = ({ authUserId, baseUrl = import.meta.env.VITE_API_URL }) => {
         const formData = new FormData();
         formData.append("user_id", authUserId);
         formData.append("content", textToSend);
+        if (replyToId) {
+          formData.append("reply_to_id", replyToId);
+        }
         const res = await api.post(`/messages/${conversationId}`, formData);
         setMessages(prev => prev.map(m =>
           m.id === tempIds[0] ? res.data : m
@@ -669,15 +802,17 @@ const Messagerie = ({ authUserId, baseUrl = import.meta.env.VITE_API_URL }) => {
 
 
 
-  // ── Group messages by date (memoized) ──────────────────────────────────────
+  // ── Group messages by date (memoized) — excludes messages hidden locally ────
   const groupedMessages = useMemo(() => {
-    return messages.reduce((acc, msg) => {
-      const date = formatDate(msg.created_at, t);
-      if (!acc[date]) acc[date] = [];
-      acc[date].push(msg);
-      return acc;
-    }, {});
-  }, [messages, t]);
+    return messages
+      .filter(msg => !hiddenForMe.has(msg.id))
+      .reduce((acc, msg) => {
+        const date = formatDate(msg.created_at, t);
+        if (!acc[date]) acc[date] = [];
+        acc[date].push(msg);
+        return acc;
+      }, {});
+  }, [messages, t, hiddenForMe]);
 
   // ── Filter + sort connections by most recent message (memoized) ────────────
   const filtered = useMemo(() => {
@@ -883,6 +1018,11 @@ const Messagerie = ({ authUserId, baseUrl = import.meta.env.VITE_API_URL }) => {
                     baseUrl={baseUrl}
                     t={t}
                     onImageClick={handleImageClick}
+                    onContextMenu={handleContextMenu}
+                    onTouchStart={handleTouchStart}
+                    onTouchEnd={handleTouchEnd}
+                    onReplyClick={scrollToMessage}
+                    isHighlighted={highlightedMsgId === msg.id}
                   />
                 ))}
               </div>
@@ -906,9 +1046,28 @@ const Messagerie = ({ authUserId, baseUrl = import.meta.env.VITE_API_URL }) => {
           </button>
         )}
 
-        {/* Input Area */}
+       {/* Input Area */}
         {selectedUser && (
           <div className="wa-input-area">
+            {/* Reply preview */}
+            {replyingToMsg && (
+              <div className="wa-reply-preview">
+                <div className="wa-reply-preview-content">
+                  <span className="wa-reply-preview-author">{replyingToMsg.user?.name || t("messagerie.you")}</span>
+                  <span className="wa-reply-preview-text">
+                    {replyingToMsg.content || (replyingToMsg.file_path ? t("messagerie.attachment") : "")}
+                  </span>
+                </div>
+                <button
+                  className="wa-reply-preview-close"
+                  onClick={() => setReplyingToMsg(null)}
+                  aria-label={t("messagerie.cancelReply", "Annuler la réponse")}
+                >
+                  ✕
+                </button>
+              </div>
+            )}
+
             {/* File previews — supports up to 2 images */}
             {files.length > 0 && (
               <div className="wa-files-preview">
@@ -1020,6 +1179,59 @@ const Messagerie = ({ authUserId, baseUrl = import.meta.env.VITE_API_URL }) => {
           onClose={() => setLightboxIndex(null)}
         />
       )}
+
+      {/* Context menu (right-click / long-press) */}
+      {contextMenu && (() => {
+        const targetMsg = messages.find(m => m.id === contextMenu.msgId);
+        if (!targetMsg || targetMsg.deleted_for_everyone_at) return null;
+        return (
+          <div
+            className="wa-context-menu"
+            style={{ top: contextMenu.y, left: contextMenu.x }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button className="wa-context-menu-item" onClick={() => startReply(targetMsg)}>
+              {t("messagerie.reply", "Répondre")}
+            </button>
+            <button
+              className="wa-context-menu-item wa-context-menu-item--danger"
+              onClick={() => setDeleteConfirm(contextMenu.msgId)}
+            >
+              {t("messagerie.delete", "Supprimer")}
+            </button>
+          </div>
+        );
+      })()}
+
+      {/* Delete confirmation modal */}
+      {deleteConfirm && (() => {
+        const targetMsg = messages.find(m => m.id === deleteConfirm);
+        if (!targetMsg) return null;
+        const isOwnMsg = String(targetMsg.user_id) === String(authUserId);
+        return (
+          <div className="wa-delete-modal-overlay" onClick={() => setDeleteConfirm(null)}>
+            <div className="wa-delete-modal" onClick={(e) => e.stopPropagation()}>
+              <p className="wa-delete-modal-title">
+                {t("messagerie.deleteMessageTitle", "Supprimer ce message ?")}
+              </p>
+              <button className="wa-delete-modal-btn" onClick={() => hideForMe(deleteConfirm)}>
+                {t("messagerie.deleteForMe", "Supprimer pour moi")}
+              </button>
+              {isOwnMsg && (
+                <button
+                  className="wa-delete-modal-btn wa-delete-modal-btn--danger"
+                  onClick={() => deleteForEveryone(deleteConfirm)}
+                >
+                  {t("messagerie.deleteForEveryone", "Supprimer pour tout le monde")}
+                </button>
+              )}
+              <button className="wa-delete-modal-btn wa-delete-modal-btn--cancel" onClick={() => setDeleteConfirm(null)}>
+                {t("messagerie.cancel", "Annuler")}
+              </button>
+            </div>
+          </div>
+        );
+      })()}
     </div>
   );
 };
