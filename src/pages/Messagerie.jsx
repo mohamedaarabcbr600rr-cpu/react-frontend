@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
 import { getEcho } from "../lib/echo";
+import ImageLightbox from "../components/ImageLightbox";
 import "./Messagerie.css";
 
 /* ============================================================
@@ -98,15 +99,15 @@ const Avatar = memo(({ name, size = 48, online = false, profilePic = null }) => 
 Avatar.displayName = "Avatar";
 
 // ─── MessageBubble (memoized — re-renders only when msg object changes) ─────
-const MessageBubble = memo(({ msg, authUserId, baseUrl, t }) => {
+const MessageBubble = memo(({ msg, authUserId, baseUrl, t, onImageClick }) => {
   const isOwn = String(msg.user_id) === String(authUserId);
   const fileUrl = msg.file_path ? `${baseUrl}/storage/${msg.file_path}` : null;
   const isImage = msg.file_type?.startsWith("image");
   const isTemp = String(msg.id).startsWith("tmp_");
   const isFailed = !!msg._failed;
 
-  const onImageClick = () => {
-    if (!isTemp) window.open(fileUrl, "_blank");
+  const handleImageClick = () => {
+    if (!isTemp) onImageClick(msg.id);
   };
 
   return (
@@ -122,7 +123,7 @@ const MessageBubble = memo(({ msg, authUserId, baseUrl, t }) => {
             className="wa-bubble-img"
             src={fileUrl}
             alt={t("messagerie.attachment")}
-            onClick={onImageClick}
+            onClick={handleImageClick}
             style={{ opacity: isTemp ? 0.65 : 1 }}
           />
         )}
@@ -221,6 +222,7 @@ const Messagerie = ({ authUserId, baseUrl = import.meta.env.VITE_API_URL }) => {
   const [messagesLoading, setMessagesLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState(null);
   const [echoReady, setEchoReady] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(null);
 
   const messagesEndRef = useRef(null);
   const messagesContainerRef = useRef(null);
@@ -645,6 +647,21 @@ const Messagerie = ({ authUserId, baseUrl = import.meta.env.VITE_API_URL }) => {
     setFilePreviews(prev => prev.filter((_, i) => i !== index));
   }, []);
 
+
+// ── Build the flat list of all images in this conversation (for the lightbox) ──
+  const conversationImages = useMemo(() => {
+    return messages
+      .filter(m => m.file_path && m.file_type?.startsWith("image") && !String(m.id).startsWith("tmp_"))
+      .map(m => ({ id: m.id, url: `${baseUrl}/storage/${m.file_path}` }));
+  }, [messages, baseUrl]);
+
+  const handleImageClick = useCallback((msgId) => {
+    const idx = conversationImages.findIndex(img => img.id === msgId);
+    if (idx !== -1) setLightboxIndex(idx);
+  }, [conversationImages]);
+
+
+
   // ── Group messages by date (memoized) ──────────────────────────────────────
   const groupedMessages = useMemo(() => {
     return messages.reduce((acc, msg) => {
@@ -851,13 +868,14 @@ const Messagerie = ({ authUserId, baseUrl = import.meta.env.VITE_API_URL }) => {
             Object.entries(groupedMessages).map(([date, msgs]) => (
               <div key={date}>
                 <DateSeparator date={date} />
-                {msgs.map(msg => (
+{msgs.map(msg => (
                   <MessageBubble
                     key={msg.id}
                     msg={msg}
                     authUserId={authUserId}
                     baseUrl={baseUrl}
                     t={t}
+                    onImageClick={handleImageClick}
                   />
                 ))}
               </div>
@@ -973,7 +991,7 @@ const Messagerie = ({ authUserId, baseUrl = import.meta.env.VITE_API_URL }) => {
                 className="wa-send-btn"
                 onClick={handleSend}
                 disabled={(!content.trim() && files.length === 0) || sending}
-                aria-label={t("messagerie.")}
+                aria-label={t("messagerie.send")}
               >
                 {sending ? (
                   <div className="wa-loading-spinner wa-loading-spinner--small" />
@@ -986,7 +1004,15 @@ const Messagerie = ({ authUserId, baseUrl = import.meta.env.VITE_API_URL }) => {
             </div>
           </div>
         )}
-      </main>
+     </main>
+
+      {lightboxIndex !== null && conversationImages.length > 0 && (
+        <ImageLightbox
+          images={conversationImages}
+          initialIndex={lightboxIndex}
+          onClose={() => setLightboxIndex(null)}
+        />
+      )}
     </div>
   );
 };
