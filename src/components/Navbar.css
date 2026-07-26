@@ -423,6 +423,12 @@
   body.ai-tutor-fullscreen-mobile {
     padding-bottom: 0;
   }
+
+  /* ── Section Messages/Groups : cache logo+search et FR/Logout/Premium, garde la bottom nav ── */
+  body.msg-section-fullscreen-mobile .navbar,
+  body.msg-section-fullscreen-mobile .navbar-mobile-top {
+    display: none !important;
+  }
 }
 
 /* Cacher la bottom bar et top bar sur desktop */

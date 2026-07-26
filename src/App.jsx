@@ -92,6 +92,13 @@ const { i18n } = useTranslation();
     return () => document.body.classList.remove('ai-tutor-fullscreen-mobile');
   }, [location.pathname]);
 
+  // ── Immersive mode: hide top navbar bars on mobile for Messages/Groups section ──
+  useEffect(() => {
+    const isMessagingRoute = location.pathname === '/messagerie';
+    document.body.classList.toggle('msg-section-fullscreen-mobile', isMessagingRoute);
+    return () => document.body.classList.remove('msg-section-fullscreen-mobile');
+  }, [location.pathname]);
+
 // ✅ UNREAD COUNTS (for Navbar badges)
 const [unreadMessages, setUnreadMessages] = useState(0);
 const [unreadNotifications, setUnreadNotifications] = useState(0);
