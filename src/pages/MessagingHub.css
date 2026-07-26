@@ -78,23 +78,48 @@
    ==================================================== */
 @media (max-width: 768px) {
 
+  /* Le header Messages/Groups fait doublon avec le header interne de Messagerie.jsx sur mobile — on le cache */
   .msg-hub-tabs {
-    height: 52px;
+    display: none !important;
   }
 
-  /* Pousse la liste des conversations sous la barre d'onglets au lieu de la recouvrir */
+  /* Plus besoin de compenser une hauteur de header puisqu'il est caché */
   .msg-hub-content .wa-sidebar {
-    top: 52px;
-    height: calc(100% - 52px);
+    top: 0;
+    height: 100%;
   }
 
-  /* Laisse le panneau de chat remplir l'espace disponible plutôt que de forcer 100dvh */
   .msg-hub-content .wa-chat {
     height: 100% !important;
   }
 
-  /* Conversation ouverte : cacher entièrement la barre d'onglets pour donner toute la hauteur au chat */
-  body.wa-chat-fullscreen .msg-hub-tabs {
+  /* Bouton "Groups" flottant, positionné à droite du header natif de Messagerie ("M  Messages") */
+  .msg-hub-mobile-groups-tab {
+    position: absolute;
+    top: 18px;
+    right: 16px;
+    z-index: 60;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: #f3f4f6;
+    color: #4b5563;
+    border: none;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  /* Caché quand une conversation est ouverte (le header de Messagerie glisse hors écran aussi) */
+  body.wa-chat-fullscreen .msg-hub-mobile-groups-tab {
+    display: none !important;
+  }
+}
+
+@media (min-width: 769px) {
+  .msg-hub-mobile-groups-tab {
     display: none !important;
   }
 }
