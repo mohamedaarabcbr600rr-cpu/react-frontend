@@ -28,14 +28,22 @@ import "./components.css";
 const AITutor = () => {
   const location = useLocation();
   const [activeTab, setActiveTab] = useState(location.state?.initialTab || "chat");
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(() => {
+    try {
+      return localStorage.getItem("aiTutorDarkMode") === "true";
+    } catch {
+      return false;
+    }
+  });
   const [drawerOpen, setDrawerOpen] = useState(false);
   const { t } = useTranslation();
 
-  // Switch tab if we navigate here again with a different initialTab
+ // Switch tab if we navigate here again with a different initialTab
+  // (history/score merged into a single "stats" tab — old links still work)
   useEffect(() => {
     if (location.state?.initialTab) {
-      setActiveTab(location.state.initialTab);
+      const requested = location.state.initialTab;
+      setActiveTab(requested === "history" || requested === "score" ? "stats" : requested);
     }
   }, [location.state]);
 
@@ -44,21 +52,34 @@ const AITutor = () => {
     { id: "qcm", icon: <FileText size={20} />, label: t("tutor.menu.qcm") },
     { id: "summary", icon: <LayoutDashboard size={20} />, label: t("tutor.menu.summary") },
     { id: "dashboard", icon: <BarChart3 size={20} />, label: t("tutor.menu.dashboard") },
-    { id: "history", icon: <History size={20} />, label: t("tutor.menu.history") },
-    { id: "score", icon: <BarChart3 size={20} />, label: t("tutor.menu.score") },
+    { id: "stats", icon: <History size={20} />, label: t("tutor.menu.history") },
     { id: "coach", icon: <Brain size={20} />, label: t("tutor.menu.coach") }
   ];
 
-  useEffect(() => {
+ useEffect(() => {
     document.body.style.overflow = drawerOpen ? "hidden" : "auto";
     return () => {
       document.body.style.overflow = "auto";
     };
   }, [drawerOpen]);
 
+  // ── Full-bleed chat layout (Claude/ChatGPT style) — no card, no padding ────
+  useEffect(() => {
+    document.body.classList.toggle('ai-chat-fullbleed', activeTab === 'chat');
+    return () => document.body.classList.remove('ai-chat-fullbleed');
+  }, [activeTab]);
+
   const handleSelect = (id) => {
     setActiveTab(id);
     setDrawerOpen(false);
+  };
+
+  const toggleDarkMode = () => {
+    setDarkMode(prev => {
+      const next = !prev;
+      try { localStorage.setItem("aiTutorDarkMode", String(next)); } catch {}
+      return next;
+    });
   };
 
   return (
@@ -74,7 +95,7 @@ const AITutor = () => {
           </svg>
         </button>
         <h3>{t("tutor.title")}</h3>
-        <button className="theme-btn" onClick={() => setDarkMode(!darkMode)} aria-label={t("tutor.toggleTheme")}>
+        <button className="theme-btn" onClick={toggleDarkMode} aria-label={t("tutor.toggleTheme")}>
           {darkMode ? <Sun size={18} /> : <Moon size={18} />}
         </button>
       </div>
@@ -97,7 +118,7 @@ const AITutor = () => {
             <span>{item.label}</span>
           </div>
         ))}
-        <div className="toggle" onClick={() => setDarkMode(!darkMode)} role="button" tabIndex={0}>
+        <div className="toggle" onClick={toggleDarkMode} role="button" tabIndex={0}>
           {darkMode ? (
             <>
               <Sun size={14} />
@@ -158,7 +179,7 @@ const AITutor = () => {
                 <span>{item.label}</span>
               </motion.div>
             ))}
-            <div className="toggle" onClick={() => setDarkMode(!darkMode)} role="button" tabIndex={0}>
+            <div className="toggle" onClick={toggleDarkMode} role="button" tabIndex={0}>
               {darkMode ? (
                 <>
                   <Sun size={14} />
@@ -183,12 +204,16 @@ const AITutor = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.2 }}
       >
-        {activeTab === "chat" && <AIChat />}
+       {activeTab === "chat" && <AIChat />}
         {activeTab === "qcm" && <QCMTab />}
         {activeTab === "summary" && <SummaryTab />}
         {activeTab === "dashboard" && <StudentDashboard />}
-        {activeTab === "history" && <HistoryTab />}
-        {activeTab === "score" && <ScoreChart />}
+        {activeTab === "stats" && (
+          <div className="stats-merged-section">
+            <ScoreChart />
+            <HistoryTab />
+          </div>
+        )}
         {activeTab === "coach" && <AICoach />}
       </motion.div>
 

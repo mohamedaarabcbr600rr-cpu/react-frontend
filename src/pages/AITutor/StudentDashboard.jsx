@@ -85,13 +85,39 @@ const StudentDashboard = () => {
     return "poor";
   };
 
+  const levelIcons = {
+    debutant: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/>
+        <path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/>
+        <path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/>
+      </svg>
+    ),
+    intermediaire: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>
+      </svg>
+    ),
+    avance: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z"/>
+      </svg>
+    ),
+    default: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+        <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+      </svg>
+    )
+  };
+
   const getLevelInfo = (niveau) => {
     const levels = {
-      "debutant": { icon: "🌱", color: "#4caf50", description: t('dashboard.levels.beginner'), bgColor: "#e8f5e9" },
-      "intermediaire": { icon: "📚", color: "#ff9800", description: t('dashboard.levels.intermediate'), bgColor: "#fff3e0" },
-      "avance": { icon: "🚀", color: "#f44336", description: t('dashboard.levels.advanced'), bgColor: "#ffebee" }
+      "debutant": { icon: levelIcons.debutant, color: "#4caf50", description: t('dashboard.levels.beginner'), bgColor: "#e8f5e9" },
+      "intermediaire": { icon: levelIcons.intermediaire, color: "#ff9800", description: t('dashboard.levels.intermediate'), bgColor: "#fff3e0" },
+      "avance": { icon: levelIcons.avance, color: "#f44336", description: t('dashboard.levels.advanced'), bgColor: "#ffebee" }
     };
-    return levels[niveau?.toLowerCase()] || { icon: "📖", color: "#2196f3", description: t('dashboard.levels.default'), bgColor: "#e3f2fd" };
+    return levels[niveau?.toLowerCase()] || { icon: levelIcons.default, color: "#2196f3", description: t('dashboard.levels.default'), bgColor: "#e3f2fd" };
   };
 
   const getRecommendations = (weakPoints, niveau, scoreMoyen) => {
@@ -186,8 +212,13 @@ const StudentDashboard = () => {
   if (!data) {
     return (
       <div className="dashboard-container">
-        <div className="empty-screen">
-          <span className="empty-icon">📭</span>
+       <div className="empty-screen">
+          <span className="empty-icon">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--text-faint)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <rect width="20" height="16" x="2" y="4" rx="2"/>
+              <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+            </svg>
+          </span>
           <h3>{t('dashboard.empty.title')}</h3>
           <p>{t('dashboard.empty.description')}</p>
         </div>
@@ -401,15 +432,12 @@ const StudentDashboard = () => {
             {weakPointsArray.length > 0 ? (
               weakPointsArray.map((weakPoint, index) => (
                 <div key={index} className="weak-point-card">
-                  <div className="weak-point-icon">
-                    {weakPoint.includes("Conjugaison") && "📝"}
-                    {weakPoint.includes("Grammaire") && "📖"}
-                    {weakPoint.includes("Vocabulaire") && "📚"}
-                    {weakPoint.includes("Orthographe") && "✍️"}
-                    {!weakPoint.includes("Conjugaison") &&
-                     !weakPoint.includes("Grammaire") &&
-                     !weakPoint.includes("Vocabulaire") &&
-                     !weakPoint.includes("Orthographe") && "⚠️"}
+<div className="weak-point-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="12" r="10"/>
+                      <line x1="12" y1="8" x2="12" y2="12"/>
+                      <line x1="12" y1="16" x2="12.01" y2="16"/>
+                    </svg>
                   </div>
                   <div className="weak-point-content">
                     <h4>{weakPoint}</h4>
@@ -419,7 +447,12 @@ const StudentDashboard = () => {
               ))
             ) : (
               <div className="empty-state-small">
-                <span>🎉</span>
+                <span>
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--success)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <path d="m9 12 2 2 4-4"/>
+                  </svg>
+                </span>
                 <p>{t('dashboard.weakPoints.empty')}</p>
               </div>
             )}

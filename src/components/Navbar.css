@@ -412,6 +412,17 @@
   body.wa-chat-fullscreen {
     padding-bottom: 0;
   }
+
+  /* ── Mode immersif : AI Tutor plein écran ── */
+  body.ai-tutor-fullscreen-mobile .navbar,
+  body.ai-tutor-fullscreen-mobile .navbar-mobile-top,
+  body.ai-tutor-fullscreen-mobile .navbar-mobile-bottom {
+    display: none !important;
+  }
+
+  body.ai-tutor-fullscreen-mobile {
+    padding-bottom: 0;
+  }
 }
 
 /* Cacher la bottom bar et top bar sur desktop */

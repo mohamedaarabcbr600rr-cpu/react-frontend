@@ -85,6 +85,13 @@ const { i18n } = useTranslation();
     }
   }, [location.search]);
 
+  // ── Immersive mode: hide global navbar on mobile when on AI Tutor ──────────
+  useEffect(() => {
+    const isAIRoute = location.pathname === '/ai';
+    document.body.classList.toggle('ai-tutor-fullscreen-mobile', isAIRoute);
+    return () => document.body.classList.remove('ai-tutor-fullscreen-mobile');
+  }, [location.pathname]);
+
 // ✅ UNREAD COUNTS (for Navbar badges)
 const [unreadMessages, setUnreadMessages] = useState(0);
 const [unreadNotifications, setUnreadNotifications] = useState(0);

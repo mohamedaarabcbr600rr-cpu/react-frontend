@@ -83,11 +83,41 @@ const HistoryTab = () => {
     return "score-poor";
   };
 
-  const getScoreEmoji = (score) => {
-    if (score >= 80) return "🏆";
-    if (score >= 60) return "👍";
-    if (score >= 40) return "📝";
-    return "💪";
+  const getScoreIcon = (score) => {
+    if (score >= 80) {
+      return (
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/>
+          <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/>
+          <path d="M4 22h16"/>
+          <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/>
+          <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/>
+          <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/>
+        </svg>
+      );
+    }
+    if (score >= 60) {
+      return (
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M7 10v12"/>
+          <path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2h0a3.13 3.13 0 0 1 3 3.88Z"/>
+        </svg>
+      );
+    }
+    if (score >= 40) {
+      return (
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+        </svg>
+      );
+    }
+    return (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M6.5 6.5 17.5 17.5"/>
+        <path d="M17.5 6.5 6.5 17.5"/>
+        <circle cx="12" cy="12" r="10"/>
+      </svg>
+    );
   };
 
   const getScoreMessage = (score) => {
@@ -320,7 +350,7 @@ const HistoryTab = () => {
             <div key={item.id || index} className="history-card">
               <div className="history-card-header">
                 <div className="score-badge">
-                  <span className="score-emoji">{getScoreEmoji(item.score)}</span>
+                  <span className="score-emoji">{getScoreIcon(item.score)}</span>
                   <span className={`score-value ${getScoreColor(item.score)}`}>
                     {item.score}%
                   </span>
