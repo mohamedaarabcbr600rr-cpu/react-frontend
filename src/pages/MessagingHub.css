@@ -45,11 +45,18 @@
   flex: 1;
   min-height: 0;
   display: flex;
+  overflow: hidden;
 }
 
 .msg-hub-content > * {
   flex: 1;
   min-width: 0;
+  min-height: 0;
+}
+
+/* Override Messagerie's own 100dvh so it fills only the space left by the tabs bar, not the whole viewport */
+.msg-hub-content .wa-root {
+  height: 100% !important;
 }
 
 @media (max-width: 768px) {
