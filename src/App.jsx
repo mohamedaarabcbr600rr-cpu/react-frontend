@@ -9,7 +9,7 @@ import "./i18n";
 
 // ✅ Lazy loading - chargés seulement quand nécessaire
 const Profile = lazy(() => import('./pages/Profile/Profile'));
-const Messagerie = lazy(() => import('./pages/Messagerie'));
+const MessagingHub = lazy(() => import('./pages/MessagingHub'));
 const Reseau = lazy(() => import('./pages/Reseau'));
 const Notifications = lazy(() => import('./pages/Notifications'));
 const AITutor = lazy(() => import('./pages/AITutor/AITutor'));
@@ -511,10 +511,10 @@ const [adminToken, setAdminToken] = useState(() =>
             </ProtectedContent>
           } />
 
-          {/* MESSAGERIE */}
+{/* MESSAGERIE */}
           <Route path="/messagerie" element={
   <ProtectedContent title="Connectez-vous pour accéder à vos messages" user={user} styles={styles} openLogin={() => setShowLoginModal(true)}>
-    <Messagerie authUserId={user?.id} />
+    <MessagingHub authUserId={user?.id} />
   </ProtectedContent>
 } />
 

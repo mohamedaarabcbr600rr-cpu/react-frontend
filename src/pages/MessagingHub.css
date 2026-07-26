@@ -1,0 +1,64 @@
+.msg-hub-root {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  width: 100%;
+  overflow: hidden;
+}
+
+.msg-hub-tabs {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 22px;
+  background: #ffffff;
+  border-bottom: 1px solid #eef0f3;
+  flex-shrink: 0;
+}
+
+.msg-hub-tab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 16px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #6b7280;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.msg-hub-tab:hover {
+  background: #f5f6f8;
+  color: #111827;
+}
+
+.msg-hub-tab.active {
+  background: #6366f1;
+  color: #ffffff;
+}
+
+.msg-hub-content {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+}
+
+.msg-hub-content > * {
+  flex: 1;
+  min-width: 0;
+}
+
+@media (max-width: 768px) {
+  .msg-hub-tabs {
+    padding: 8px 14px;
+  }
+  .msg-hub-tab {
+    flex: 1;
+    justify-content: center;
+    padding: 9px 10px;
+  }
+}
