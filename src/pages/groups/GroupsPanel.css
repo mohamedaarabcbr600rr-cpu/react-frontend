@@ -440,3 +440,63 @@
     height: 55%;
   }
 }
+
+
+/* ====================================================
+   GROUP CHAT — layout adjustments
+   ==================================================== */
+.groups-main--chat {
+  align-items: stretch;
+  justify-content: flex-start;
+  padding: 24px;
+}
+
+.groups-detail:has(.groups-chat) {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-width: 720px;
+}
+
+.groups-chat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  margin-top: 18px;
+  background: #fff;
+  border-radius: 16px;
+  border: 1px solid #eef0f3;
+  overflow: hidden;
+}
+
+.groups-chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.groups-chat-msg-author {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #6366f1;
+  margin-bottom: 3px;
+}
+
+.groups-chat-input-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 18px;
+  border-top: 1px solid #eef0f3;
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .groups-main--chat {
+    padding: 14px;
+  }
+}

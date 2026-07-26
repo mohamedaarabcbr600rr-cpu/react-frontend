@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import axios from "axios";
+import GroupChat from "./GroupChat";
 import "./GroupsPanel.css";
 
 const api = axios.create({
@@ -16,7 +17,7 @@ api.interceptors.request.use((config) => {
 const getInitials = (name = "") =>
   name.split(" ").map((w) => w[0]).join("").toUpperCase().slice(0, 2);
 
-const GroupsPanel = () => {
+const GroupsPanel = ({ authUserId }) => {
   const [groups, setGroups] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -171,7 +172,7 @@ const GroupsPanel = () => {
         </div>
       </aside>
 
-      <main className="groups-main">
+      <main className={`groups-main ${selectedGroup?.is_member ? "groups-main--chat" : ""}`}>
         {!selectedGroup ? (
           <div className="groups-welcome">
             <div className="groups-welcome-icon">
@@ -213,9 +214,14 @@ const GroupsPanel = () => {
               )}
             </div>
             {selectedGroup.description && <p className="groups-detail-description">{selectedGroup.description}</p>}
-            <div className="groups-detail-placeholder">
-              <p>{t("groups.discussionsComingSoon", "Group discussions are coming soon.")}</p>
-            </div>
+
+            {selectedGroup.is_member ? (
+              <GroupChat group={selectedGroup} authUserId={authUserId} />
+            ) : (
+              <div className="groups-detail-placeholder">
+                <p>{t("groups.joinToChat", "Join this group to see and send messages.")}</p>
+              </div>
+            )}
           </div>
         )}
       </main>

@@ -54,7 +54,7 @@ const MessagingHub = ({ authUserId }) => {
             </button>
           </>
         )}
-        {activeSection === "groups" && <GroupsPanel />}
+        {activeSection === "groups" && <GroupsPanel authUserId={authUserId} />}
       </div>
     </div>
   );
