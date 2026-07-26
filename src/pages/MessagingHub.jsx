@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import Messagerie from "./Messagerie";
-import GroupsPanel from "./Groups/GroupsPanel";
+import GroupsPanel from "./groups/GroupsPanel";
 import "./MessagingHub.css";
 
 const MessagingHub = ({ authUserId }) => {
