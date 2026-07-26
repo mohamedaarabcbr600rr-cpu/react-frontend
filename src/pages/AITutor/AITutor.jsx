@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import axios from "axios";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
 import {
@@ -37,6 +38,50 @@ const AITutor = () => {
   });
   const [drawerOpen, setDrawerOpen] = useState(false);
   const { t } = useTranslation();
+
+  // ── Conversation history (owns the list; AIChat is now controlled) ─────────
+  const [activeConversationId, setActiveConversationId] = useState(null);
+  const [conversations, setConversations] = useState([]);
+  const isAuthed = !!localStorage.getItem('token');
+
+  const conversationsApi = axios.create({
+    baseURL: `${import.meta.env.VITE_API_URL}/api`,
+    headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+  });
+
+  const fetchConversations = () => {
+    if (!isAuthed) return;
+    conversationsApi.get('/ai-conversations')
+      .then(res => setConversations(res.data || []))
+      .catch(() => {});
+  };
+
+  useEffect(() => {
+    fetchConversations();
+  }, []);
+
+  const handleSelectConversation = (id) => {
+    setActiveConversationId(id);
+    setActiveTab('chat');
+    setDrawerOpen(false);
+  };
+
+  const handleNewChat = () => {
+    setActiveConversationId(null);
+    setActiveTab('chat');
+    setDrawerOpen(false);
+  };
+
+  const handleDeleteConversation = (id, e) => {
+    e.stopPropagation();
+    if (!window.confirm(t('aiChat.confirmDeleteConversation', 'Supprimer cette conversation ?'))) return;
+    conversationsApi.delete(`/ai-conversations/${id}`)
+      .then(() => {
+        setConversations(prev => prev.filter(c => c.id !== id));
+        if (activeConversationId === id) setActiveConversationId(null);
+      })
+      .catch(() => {});
+  };
 
  // Switch tab if we navigate here again with a different initialTab
   // (history/score merged into a single "stats" tab — old links still work)
@@ -118,7 +163,38 @@ const AITutor = () => {
             <span>{item.label}</span>
           </div>
         ))}
-        <div className="toggle" onClick={toggleDarkMode} role="button" tabIndex={0}>
+
+        {isAuthed && (
+          <div className="sidebar-recents">
+            <div className="sidebar-recents-title">{t('aiChat.conversationHistory', 'Récents')}</div>
+            {conversations.length === 0 ? (
+              <div className="sidebar-recents-empty">{t('aiChat.noConversations', 'Aucune conversation')}</div>
+            ) : (
+              conversations.map((conv) => (
+                <div
+                  key={conv.id}
+                  className={`sidebar-recent-item ${activeTab === 'chat' && activeConversationId === conv.id ? "active" : ""}`}
+                  onClick={() => handleSelectConversation(conv.id)}
+                >
+                  <span className="sidebar-recent-item-title">{conv.title || t('aiChat.untitled', 'Nouvelle conversation')}</span>
+                  <button
+                    className="sidebar-recent-item-delete"
+                    onClick={(e) => handleDeleteConversation(conv.id, e)}
+                    aria-label="Delete"
+                  >
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M3 6h18"/>
+                      <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+                      <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                    </svg>
+                  </button>
+                </div>
+              ))
+            )}
+          </div>
+        )}
+
+        <div className="toggle" onClick={() => setDarkMode(!darkMode)} role="button" tabIndex={0}>
           {darkMode ? (
             <>
               <Sun size={14} />
@@ -204,7 +280,13 @@ const AITutor = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.2 }}
       >
-       {activeTab === "chat" && <AIChat />}
+       {activeTab === "chat" && (
+          <AIChat
+            conversationId={activeConversationId}
+            onConversationIdChange={setActiveConversationId}
+            onConversationCreated={fetchConversations}
+          />
+        )}
         {activeTab === "qcm" && <QCMTab />}
         {activeTab === "summary" && <SummaryTab />}
         {activeTab === "dashboard" && <StudentDashboard />}

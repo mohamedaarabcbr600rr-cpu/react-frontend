@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import axios from "axios";
 
-const AIChat = () => {
+const AIChat = ({ conversationId = null, onConversationIdChange, onConversationCreated }) => {
 const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -12,12 +12,6 @@ const [messages, setMessages] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(true);
   const [userName, setUserName] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-  // ── Conversation history (authenticated users only) ─────────────────────────
-  const [conversationId, setConversationId] = useState(null);
-  const [conversations, setConversations] = useState([]);
-  const [conversationsLoading, setConversationsLoading] = useState(false);
-  const [historyPanelOpen, setHistoryPanelOpen] = useState(false);
 
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
@@ -51,28 +45,21 @@ const [messages, setMessages] = useState([]);
     inputRef.current?.focus();
   }, []);
 
-  // Once we know auth status, load the right kind of history
+  // React to the conversation selected in the sidebar (or "new chat" = null)
   useEffect(() => {
-    if (isAuthenticated) {
-      fetchConversations();
-    } else {
+    if (!isAuthenticated) {
       loadChatHistory();
+      return;
     }
-  }, [isAuthenticated]);
-
-  const fetchConversations = async () => {
-    setConversationsLoading(true);
-    try {
-      const res = await axiosInstance.get("/ai-conversations");
-      setConversations(res.data || []);
-    } catch (err) {
-      console.error(t('aiChat.errors.fetchConversations', 'Erreur chargement historique'), err);
-    } finally {
-      setConversationsLoading(false);
+    if (conversationId) {
+      loadConversationMessages(conversationId);
+    } else {
+      setMessages([]);
+      setShowSuggestions(true);
     }
-  };
+  }, [isAuthenticated, conversationId]);
 
-  const selectConversation = async (id) => {
+  const loadConversationMessages = async (id) => {
     try {
       const res = await axiosInstance.get(`/ai-conversations/${id}`);
       const interactions = res.data.interactions || [];
@@ -81,32 +68,9 @@ const [messages, setMessages] = useState([]);
         { sender: "ai", text: it.ai_response, timestamp: it.created_at, id: `a_${it.id}` },
       ]);
       setMessages(loadedMessages);
-      setConversationId(id);
       setShowSuggestions(loadedMessages.length === 0);
-      setHistoryPanelOpen(false);
     } catch (err) {
       console.error(t('aiChat.errors.loadConversation', 'Erreur chargement conversation'), err);
-    }
-  };
-
-  const startNewConversation = () => {
-    setConversationId(null);
-    setMessages([]);
-    setShowSuggestions(true);
-    setHistoryPanelOpen(false);
-  };
-
-  const deleteConversation = async (id, e) => {
-    e.stopPropagation();
-    if (!window.confirm(t('aiChat.confirmDeleteConversation', 'Supprimer cette conversation ?'))) return;
-    try {
-      await axiosInstance.delete(`/ai-conversations/${id}`);
-      setConversations(prev => prev.filter(c => c.id !== id));
-      if (conversationId === id) {
-        startNewConversation();
-      }
-    } catch (err) {
-      console.error(t('aiChat.errors.deleteConversation', 'Erreur suppression conversation'), err);
     }
   };
 
@@ -250,9 +214,9 @@ const [messages, setMessages] = useState([]);
 
 if (isAuthenticated && res.data.conversation_id) {
         const isNewConversation = !conversationId;
-        setConversationId(res.data.conversation_id);
+        onConversationIdChange?.(res.data.conversation_id);
         if (isNewConversation) {
-          fetchConversations(); // refresh sidebar list so the new conversation appears
+          onConversationCreated?.(); // parent refreshes its sidebar list
         }
       }
 
@@ -345,20 +309,7 @@ if (isAuthenticated && res.data.conversation_id) {
             </p>
           </div>
         </div>
-        <div className="header-actions">
-          {isAuthenticated && (
-            <button
-              onClick={() => setHistoryPanelOpen(v => !v)}
-              className="clear-btn"
-              title={t('aiChat.conversationHistory', 'Historique')}
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
-                <path d="M3 3v5h5"/>
-                <path d="M12 7v5l4 2"/>
-              </svg>
-            </button>
-          )}
+<div className="header-actions">
           {!isAuthenticated && (
             <button
               onClick={clearChatHistory}
@@ -375,7 +326,9 @@ if (isAuthenticated && res.data.conversation_id) {
           <button
             onClick={() => {
               if (isAuthenticated) {
-                startNewConversation();
+                onConversationIdChange?.(null);
+                setMessages([]);
+                setShowSuggestions(true);
               } else {
                 setMessages([]);
                 setShowSuggestions(true);
@@ -393,46 +346,6 @@ if (isAuthenticated && res.data.conversation_id) {
           </button>
         </div>
       </div>
-
-  {/* Conversation history panel */}
-      {isAuthenticated && historyPanelOpen && (
-        <div className="chat-history-overlay" onClick={() => setHistoryPanelOpen(false)}>
-          <div className="chat-history-panel" onClick={(e) => e.stopPropagation()}>
-            <div className="chat-history-panel-header">
-              <h3>{t('aiChat.conversationHistory', 'Historique')}</h3>
-              <button onClick={() => setHistoryPanelOpen(false)} className="chat-history-close" aria-label="Close">✕</button>
-            </div>
-            <div className="chat-history-list">
-              {conversationsLoading ? (
-                <div className="chat-history-loading">{t('common.loading', 'Chargement...')}</div>
-              ) : conversations.length === 0 ? (
-                <div className="chat-history-empty">{t('aiChat.noConversations', 'Aucune conversation')}</div>
-              ) : (
-                conversations.map((conv) => (
-                  <div
-                    key={conv.id}
-                    className={`chat-history-item ${conversationId === conv.id ? "active" : ""}`}
-                    onClick={() => selectConversation(conv.id)}
-                  >
-                    <span className="chat-history-item-title">{conv.title || t('aiChat.untitled', 'Nouvelle conversation')}</span>
-                    <button
-                      className="chat-history-item-delete"
-                      onClick={(e) => deleteConversation(conv.id, e)}
-                      aria-label="Delete"
-                    >
-                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M3 6h18"/>
-                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
-                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
-                      </svg>
-                    </button>
-                  </div>
-                ))
-              )}
-            </div>
-          </div>
-        </div>
-      )}
 
 
 

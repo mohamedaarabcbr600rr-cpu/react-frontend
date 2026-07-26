@@ -595,3 +595,90 @@ body.ai-chat-fullbleed .content {
   padding: 0;
   max-width: none;
 }
+
+/* ====================================================
+   SIDEBAR — Récents (historique des conversations)
+   ==================================================== */
+.sidebar-recents {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+
+.sidebar-recents-title {
+  padding: 0 14px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.sidebar-recents-empty {
+  padding: 8px 14px;
+  font-size: 12.5px;
+  color: var(--text-faint);
+}
+
+.sidebar-recent-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 8px 14px;
+  margin-bottom: 1px;
+  border-radius: var(--r-md);
+  font-size: 13px;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: background var(--duration-fast) var(--ease-out),
+              color var(--duration-fast) var(--ease-out);
+}
+
+.sidebar-recent-item:hover {
+  background: var(--bg-muted);
+  color: var(--text);
+}
+
+.sidebar-recent-item.active {
+  background: var(--brand-50);
+  color: var(--brand-700);
+  font-weight: 500;
+}
+
+.app.dark .sidebar-recent-item.active {
+  background: rgba(99, 102, 241, 0.14);
+  color: var(--brand-300);
+}
+
+.sidebar-recent-item-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+  min-width: 0;
+}
+
+.sidebar-recent-item-delete {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: var(--r-sm);
+  color: var(--text-faint);
+  flex-shrink: 0;
+  opacity: 0;
+  transition: opacity var(--duration-fast) var(--ease-out),
+              background var(--duration-fast) var(--ease-out),
+              color var(--duration-fast) var(--ease-out);
+}
+
+.sidebar-recent-item:hover .sidebar-recent-item-delete {
+  opacity: 1;
+}
+
+.sidebar-recent-item-delete:hover {
+  background: var(--danger-bg);
+  color: var(--danger);
+}
