@@ -18,7 +18,6 @@ import {
 import AIChat from "./AIChat.jsx";
 import AICoach from "./AICoach.jsx";
 import QCMTab from "./QCMTab.jsx";
-import HistoryTab from "./HistoryTab.jsx";
 import ScoreChart from "./ScoreChart.jsx";
 import StudentDashboard from "./StudentDashboard.jsx";
 import SummaryTab from "./SummaryTab.jsx";
@@ -321,12 +320,7 @@ const AITutor = () => {
         {activeTab === "qcm" && <QCMTab />}
         {activeTab === "summary" && <SummaryTab />}
         {activeTab === "dashboard" && <StudentDashboard />}
-        {activeTab === "stats" && (
-          <div className="stats-merged-section">
-            <ScoreChart />
-            <HistoryTab />
-          </div>
-        )}
+{activeTab === "stats" && <ScoreChart />}
         {activeTab === "coach" && <AICoach />}
       </motion.div>
 
