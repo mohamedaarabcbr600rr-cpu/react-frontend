@@ -33,6 +33,23 @@ const formatListTime = (dateStr) => {
   return d.toLocaleDateString([], { day: "numeric", month: "short" });
 };
 
+/* ── Safe image helper ── */
+const SafeImg = ({ src, alt, className, fallbackText, onClick }) => {
+  const [err, setErr] = useState(false);
+  if (err || !src) {
+    return (
+      <div className={className} onClick={onClick} style={onClick ? { cursor: "pointer" } : undefined}>
+        <span>{fallbackText}</span>
+      </div>
+    );
+  }
+  return (
+    <div className={className} onClick={onClick} style={onClick ? { cursor: "pointer" } : undefined}>
+      <img src={src} alt={alt} onError={() => setErr(true)} />
+    </div>
+  );
+};
+
 const GroupsPanel = ({ authUserId }) => {
   const [groups, setGroups] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -47,9 +64,18 @@ const GroupsPanel = ({ authUserId }) => {
   const [creating, setCreating] = useState(false);
   const [joiningId, setJoiningId] = useState(null);
   const [groupMembers, setGroupMembers] = useState([]);
-const [headerMenuOpen, setHeaderMenuOpen] = useState(false);
+  const [headerMenuOpen, setHeaderMenuOpen] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
+  const [profileUser, setProfileUser] = useState(null);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const { t } = useTranslation();
+
+  /* Mobile detection */
+  useEffect(() => {
+    const onResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
 
   const handleShareGroup = (group) => {
     const link = `${window.location.origin}/messagerie?groupInvite=${group.invite_token}`;
@@ -125,7 +151,7 @@ const [headerMenuOpen, setHeaderMenuOpen] = useState(false);
     }
   };
 
-const handleLeave = async (id) => {
+  const handleLeave = async (id) => {
     setHeaderMenuOpen(false);
     try {
       await api.post(`/groups/${id}/leave`);
@@ -134,6 +160,7 @@ const handleLeave = async (id) => {
           g.id === id ? { ...g, is_member: false, members_count: Math.max(0, g.members_count - 1) } : g
         )
       );
+      if (isMobile) setSelectedGroupId(null);
     } catch {}
   };
 
@@ -183,9 +210,15 @@ const handleLeave = async (id) => {
     }
   };
 
+  const selectGroup = (id) => {
+    setSelectedGroupId(id);
+  };
+
+  const goBackToList = () => setSelectedGroupId(null);
+
   return (
     <div className="groups-root">
-      <aside className="groups-sidebar">
+      <aside className={`groups-sidebar ${isMobile && selectedGroupId ? "groups-sidebar--hidden-mobile" : ""}`}>
         <div className="groups-sidebar-header">
           <div className="groups-search-box">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -234,11 +267,14 @@ const handleLeave = async (id) => {
                 <div
                   key={group.id}
                   className={`groups-item ${selectedGroupId === group.id ? "active" : ""}`}
-                  onClick={() => setSelectedGroupId(group.id)}
+                  onClick={() => selectGroup(group.id)}
                 >
-                  <div className="groups-item-avatar">
-                    {group.cover_image ? <img src={group.cover_image} alt={group.name} /> : <span>{getInitials(group.name)}</span>}
-                  </div>
+                  <SafeImg
+                    className="groups-item-avatar"
+                    src={group.cover_image}
+                    alt={group.name}
+                    fallbackText={getInitials(group.name)}
+                  />
                   <div className="groups-item-info">
                     <div className="groups-item-top">
                       <span className="groups-item-name">{group.name}</span>
@@ -266,7 +302,7 @@ const handleLeave = async (id) => {
         </div>
       </aside>
 
-      <main className={`groups-main ${selectedGroup?.is_member ? "groups-main--chat" : ""}`}>
+      <main className={`groups-main ${selectedGroup?.is_member ? "groups-main--chat" : ""} ${isMobile && !selectedGroupId ? "groups-main--hidden-mobile" : ""}`}>
         {!selectedGroup ? (
           <div className="groups-welcome">
             <div className="groups-welcome-icon">
@@ -286,25 +322,39 @@ const handleLeave = async (id) => {
         ) : (
           <div className="groups-detail">
             <div className="groups-detail-header">
-              <div className="groups-detail-avatar">
-                {selectedGroup.cover_image ? (
-                  <img src={selectedGroup.cover_image} alt={selectedGroup.name} />
-                ) : (
-                  <span>{getInitials(selectedGroup.name)}</span>
-                )}
-              </div>
+              {isMobile && (
+                <button className="groups-back-btn" onClick={goBackToList} aria-label={t("groups.back", "Back")}>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M19 12H5" />
+                    <path d="M12 19l-7-7 7-7" />
+                  </svg>
+                </button>
+              )}
+              <SafeImg
+                className="groups-detail-avatar"
+                src={selectedGroup.cover_image}
+                alt={selectedGroup.name}
+                fallbackText={getInitials(selectedGroup.name)}
+              />
               <div className="groups-detail-titles">
                 <h2>{selectedGroup.name}</h2>
                 <div className="groups-detail-meta">
                   {selectedGroup.is_member && groupMembers.length > 0 && (
                     <div className="groups-avatar-stack">
                       {groupMembers.slice(0, 3).map((m) => (
-                        <div key={m.id} className="groups-avatar-stack-item">
-                          {m.profile_pic ? <img src={m.profile_pic} alt={m.name} /> : <span>{getInitials(m.name)}</span>}
-                        </div>
+                        <SafeImg
+                          key={m.id}
+                          className="groups-avatar-stack-item"
+                          src={m.profile_pic}
+                          alt={m.name}
+                          fallbackText={getInitials(m.name)}
+                          onClick={() => setProfileUser(m)}
+                        />
                       ))}
                       {groupMembers.length > 3 && (
-                        <div className="groups-avatar-stack-item groups-avatar-stack-more">+{groupMembers.length - 3}</div>
+                        <div className="groups-avatar-stack-item groups-avatar-stack-more" onClick={() => setProfileUser(groupMembers[3])} style={{ cursor: "pointer" }}>
+                          +{groupMembers.length - 3}
+                        </div>
                       )}
                     </div>
                   )}
@@ -324,10 +374,10 @@ const handleLeave = async (id) => {
                       <circle cx="12" cy="19" r="1.6" />
                     </svg>
                   </button>
-                 {headerMenuOpen && (
+                  {headerMenuOpen && (
                     <>
                       <div className="groups-header-menu-overlay" onClick={() => setHeaderMenuOpen(false)} />
-<div className="groups-header-menu">
+                      <div className="groups-header-menu">
                         <button className="groups-header-menu-item" onClick={() => handleShareGroup(selectedGroup)}>
                           {linkCopied ? t("groups.linkCopied", "Link copied!") : t("groups.shareGroup", "Share group")}
                         </button>
@@ -351,7 +401,7 @@ const handleLeave = async (id) => {
             </div>
 
             {selectedGroup.is_member ? (
-              <GroupChat group={selectedGroup} authUserId={authUserId} onMessageSent={fetchGroups} />
+              <GroupChat group={selectedGroup} authUserId={authUserId} onMessageSent={fetchGroups} onMemberClick={setProfileUser} />
             ) : (
               <div className="groups-detail-placeholder">
                 {selectedGroup.description && <p className="groups-detail-description">{selectedGroup.description}</p>}
@@ -362,9 +412,35 @@ const handleLeave = async (id) => {
         )}
       </main>
 
+      {/* ── Profile Modal ── */}
+      {profileUser && (
+        <div className="groups-modal-overlay" onClick={() => setProfileUser(null)}>
+          <div className="groups-profile-modal" onClick={(e) => e.stopPropagation()}>
+            <button className="groups-profile-close" onClick={() => setProfileUser(null)} aria-label="Close">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M18 6L6 18" />
+                <path d="M6 6l12 12" />
+              </svg>
+            </button>
+            <SafeImg
+              className="groups-profile-avatar"
+              src={profileUser.profile_pic}
+              alt={profileUser.name}
+              fallbackText={getInitials(profileUser.name)}
+            />
+            <h3 className="groups-profile-name">{profileUser.name}</h3>
+            <p className="groups-profile-role">{t("groups.member", "Member")}</p>
+            {profileUser.id === authUserId && (
+              <span className="groups-profile-you">{t("groups.you", "You")}</span>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* ── Create Group Modal ── */}
       {showCreateModal && (
         <div className="groups-modal-overlay" onClick={() => setShowCreateModal(false)}>
-<form className="groups-modal" onClick={(e) => e.stopPropagation()} onSubmit={handleCreateGroup}>
+          <form className="groups-modal" onClick={(e) => e.stopPropagation()} onSubmit={handleCreateGroup}>
             <h3>{t("groups.createGroup", "Create Group")}</h3>
 
             <label className="groups-modal-cover-picker">

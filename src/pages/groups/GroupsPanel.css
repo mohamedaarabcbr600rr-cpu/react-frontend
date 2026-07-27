@@ -331,6 +331,25 @@
   flex-shrink: 0;
 }
 
+.groups-back-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  border: none;
+  background: #f3f4f6;
+  color: #374151;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s ease;
+}
+
+.groups-back-btn:hover {
+  background: #e5e7eb;
+}
+
 .groups-detail-avatar {
   width: 42px;
   height: 42px;
@@ -595,6 +614,91 @@
 }
 
 /* ====================================================
+   PROFILE MODAL
+   ==================================================== */
+.groups-profile-modal {
+  background: #fff;
+  border-radius: 20px;
+  padding: 32px 28px;
+  width: 90%;
+  max-width: 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.22);
+  position: relative;
+  text-align: center;
+}
+
+.groups-profile-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: #f3f4f6;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.groups-profile-close:hover {
+  background: #e5e7eb;
+  color: #111827;
+}
+
+.groups-profile-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 28px;
+  font-weight: 700;
+  box-shadow: 0 8px 24px rgba(99, 102, 241, 0.3);
+}
+
+.groups-profile-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.groups-profile-name {
+  font-size: 17px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+
+.groups-profile-role {
+  font-size: 13px;
+  color: #9ca3af;
+  margin: 0;
+}
+
+.groups-profile-you {
+  display: inline-block;
+  margin-top: 4px;
+  background: #eef0ff;
+  color: #6366f1;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 999px;
+}
+
+/* ====================================================
    GROUP CHAT
    ==================================================== */
 .groups-chat {
@@ -845,25 +949,7 @@
   cursor: not-allowed;
 }
 
-/* ── Responsive ── */
-@media (max-width: 768px) {
-  .groups-root {
-    flex-direction: column;
-  }
-  .groups-sidebar {
-    width: 100%;
-    min-width: unset;
-    height: 100%;
-  }
-  .groups-main {
-    height: 100%;
-  }
-  .groups-msg-content {
-    max-width: 78%;
-  }
-}
-
-
+/* ── Cover picker ── */
 .groups-modal-cover-picker {
   width: 100%;
   height: 90px;
@@ -898,7 +984,6 @@
   font-size: 12px;
   font-weight: 600;
 }
-
 
 /* ── Attachments in messages ── */
 .groups-msg-attachment-img {
@@ -1000,4 +1085,76 @@
 .groups-chat-emoji-tray button:hover {
   background: #f3f4f6;
   transform: scale(1.15);
+}
+
+/* ====================================================
+   RESPONSIVE MOBILE
+   ==================================================== */
+@media (max-width: 768px) {
+  .groups-root {
+    flex-direction: column;
+  }
+
+  .groups-sidebar {
+    width: 100%;
+    min-width: unset;
+    height: 100%;
+    border-right: none;
+  }
+
+  .groups-sidebar--hidden-mobile {
+    display: none;
+  }
+
+  .groups-main {
+    width: 100%;
+    height: 100%;
+  }
+
+  .groups-main--hidden-mobile {
+    display: none;
+  }
+
+  .groups-main--chat {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+  }
+
+  .groups-detail-header {
+    padding: 10px 14px;
+    gap: 10px;
+  }
+
+  .groups-detail-titles h2 {
+    font-size: 14px;
+  }
+
+  .groups-msg-content {
+    max-width: 78%;
+  }
+
+  .groups-chat-messages {
+    padding: 10px 14px;
+  }
+
+  .groups-chat-input-row {
+    padding: 8px 12px;
+    gap: 4px;
+  }
+
+  .groups-chat-input {
+    padding: 9px 14px;
+    font-size: 16px; /* prevent iOS zoom */
+  }
+
+  .groups-modal {
+    max-width: 92%;
+    padding: 18px;
+  }
+
+  .groups-profile-modal {
+    max-width: 85%;
+    padding: 28px 22px;
+  }
 }
