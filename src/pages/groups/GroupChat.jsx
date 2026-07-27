@@ -39,26 +39,7 @@ const getFileKind = (fileType) => {
   return "file";
 };
 
-/* ── Safe avatar helper ── */
-const SafeAvatar = ({ user, onClick }) => {
-  const [err, setErr] = useState(false);
-  const initials = getInitials(user?.name);
-  const clickable = !!onClick;
-  if (err || !user?.profile_pic) {
-    return (
-      <div className="groups-msg-avatar" onClick={onClick} style={clickable ? { cursor: "pointer" } : undefined}>
-        <span>{initials}</span>
-      </div>
-    );
-  }
-  return (
-    <div className="groups-msg-avatar" onClick={onClick} style={clickable ? { cursor: "pointer" } : undefined}>
-      <img src={user.profile_pic} alt={user.name} onError={() => setErr(true)} />
-    </div>
-  );
-};
-
-const GroupChat = ({ group, authUserId, onMessageSent, onMemberClick }) => {
+const GroupChat = ({ group, authUserId, onMessageSent }) => {
   const [messages, setMessages] = useState([]);
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(true);
@@ -243,21 +224,16 @@ const GroupChat = ({ group, authUserId, onMessageSent, onMemberClick }) => {
                 return (
                   <div key={msg.id} className={`groups-msg-row ${isOwn ? "own" : "other"}`}>
                     {!isOwn && (
-                      <SafeAvatar
-                        user={msg.user}
-                        onClick={() => onMemberClick?.(msg.user)}
-                      />
+                      <div className="groups-msg-avatar">
+                        {msg.user?.profile_pic ? (
+                          <img src={msg.user.profile_pic} alt={msg.user.name} />
+                        ) : (
+                          <span>{getInitials(msg.user?.name)}</span>
+                        )}
+                      </div>
                     )}
                     <div className="groups-msg-content">
-                      {showAuthor && (
-                        <span
-                          className="groups-msg-author"
-                          onClick={() => onMemberClick?.(msg.user)}
-                          style={{ cursor: "pointer" }}
-                        >
-                          {msg.user?.name}
-                        </span>
-                      )}
+                      {showAuthor && <span className="groups-msg-author">{msg.user?.name}</span>}
                       <div className={`groups-msg-bubble ${isOwn ? "own" : "other"} ${msg._failed ? "failed" : ""}`}>
                         {msg.file_path && (() => {
                           const kind = getFileKind(msg.file_type);
