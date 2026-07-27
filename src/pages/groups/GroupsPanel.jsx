@@ -17,6 +17,22 @@ api.interceptors.request.use((config) => {
 const getInitials = (name = "") =>
   name.split(" ").map((w) => w[0]).join("").toUpperCase().slice(0, 2);
 
+const formatListTime = (dateStr) => {
+  if (!dateStr) return "";
+  const d = new Date(dateStr);
+  const now = new Date();
+  const isToday = d.toDateString() === now.toDateString();
+  const yesterday = new Date(now);
+  yesterday.setDate(now.getDate() - 1);
+  const isYesterday = d.toDateString() === yesterday.toDateString();
+
+  if (isToday) return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  if (isYesterday) return "Yesterday";
+  const diffDays = (now - d) / (1000 * 60 * 60 * 24);
+  if (diffDays < 7) return d.toLocaleDateString([], { weekday: "short" });
+  return d.toLocaleDateString([], { day: "numeric", month: "short" });
+};
+
 const GroupsPanel = ({ authUserId }) => {
   const [groups, setGroups] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -28,6 +44,8 @@ const GroupsPanel = ({ authUserId }) => {
   const [newGroupDescription, setNewGroupDescription] = useState("");
   const [creating, setCreating] = useState(false);
   const [joiningId, setJoiningId] = useState(null);
+  const [groupMembers, setGroupMembers] = useState([]);
+  const [headerMenuOpen, setHeaderMenuOpen] = useState(false);
   const { t } = useTranslation();
 
   const fetchGroups = () => {
@@ -56,6 +74,19 @@ const GroupsPanel = ({ authUserId }) => {
 
   const selectedGroup = groups.find((g) => g.id === selectedGroupId);
 
+  // Fetch member avatars for the header stack whenever a member group is opened
+  useEffect(() => {
+    setHeaderMenuOpen(false);
+    if (!selectedGroup?.is_member) {
+      setGroupMembers([]);
+      return;
+    }
+    api
+      .get(`/groups/${selectedGroup.id}/members`)
+      .then((res) => setGroupMembers(res.data || []))
+      .catch(() => setGroupMembers([]));
+  }, [selectedGroupId, selectedGroup?.is_member]);
+
   const handleJoin = async (id, e) => {
     e?.stopPropagation();
     setJoiningId(id);
@@ -70,8 +101,8 @@ const GroupsPanel = ({ authUserId }) => {
     }
   };
 
-  const handleLeave = async (id, e) => {
-    e?.stopPropagation();
+  const handleLeave = async (id) => {
+    setHeaderMenuOpen(false);
     try {
       await api.post(`/groups/${id}/leave`);
       setGroups((prev) =>
@@ -108,7 +139,7 @@ const GroupsPanel = ({ authUserId }) => {
       <aside className="groups-sidebar">
         <div className="groups-sidebar-header">
           <div className="groups-search-box">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <circle cx="11" cy="11" r="8" />
               <path d="m21 21-4.35-4.35" />
             </svg>
@@ -120,13 +151,11 @@ const GroupsPanel = ({ authUserId }) => {
             />
           </div>
           <button className="groups-create-btn" onClick={() => setShowCreateModal(true)}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-              <circle cx="9" cy="7" r="4" />
-              <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 5v14" />
+              <path d="M5 12h14" />
             </svg>
-            {t("groups.createGroup", "Create Group")}
+            {t("groups.create", "Create")}
           </button>
         </div>
 
@@ -150,24 +179,40 @@ const GroupsPanel = ({ authUserId }) => {
           ) : filtered.length === 0 ? (
             <div className="groups-empty-list">{t("groups.noGroups", "No groups found")}</div>
           ) : (
-            filtered.map((group) => (
-              <div
-                key={group.id}
-                className={`groups-item ${selectedGroupId === group.id ? "active" : ""}`}
-                onClick={() => setSelectedGroupId(group.id)}
-              >
-                <div className="groups-item-avatar">
-                  {group.cover_image ? <img src={group.cover_image} alt={group.name} /> : <span>{getInitials(group.name)}</span>}
+            filtered.map((group) => {
+              const unread = group.unread_count || 0;
+              return (
+                <div
+                  key={group.id}
+                  className={`groups-item ${selectedGroupId === group.id ? "active" : ""}`}
+                  onClick={() => setSelectedGroupId(group.id)}
+                >
+                  <div className="groups-item-avatar">
+                    {group.cover_image ? <img src={group.cover_image} alt={group.name} /> : <span>{getInitials(group.name)}</span>}
+                  </div>
+                  <div className="groups-item-info">
+                    <div className="groups-item-top">
+                      <span className="groups-item-name">{group.name}</span>
+                      {group.last_message && (
+                        <span className="groups-item-time">{formatListTime(group.last_message.created_at)}</span>
+                      )}
+                    </div>
+                    <div className="groups-item-bottom">
+                      <span className={`groups-item-preview ${unread > 0 ? "groups-item-preview--unread" : ""}`}>
+                        {group.last_message
+                          ? `${group.last_message.user_name ? group.last_message.user_name + ": " : ""}${group.last_message.content || t("groups.attachment", "Attachment")}`
+                          : t("groups.membersCount", { count: group.members_count, defaultValue: `${group.members_count} members` })}
+                      </span>
+                      {unread > 0 ? (
+                        <span className="groups-item-badge">{unread > 9 ? "9+" : unread}</span>
+                      ) : (
+                        <span className="groups-item-members">{group.members_count}</span>
+                      )}
+                    </div>
+                  </div>
                 </div>
-                <div className="groups-item-info">
-                  <span className="groups-item-name">{group.name}</span>
-                  <span className="groups-item-members">
-                    {t("groups.membersCount", { count: group.members_count, defaultValue: `${group.members_count} members` })}
-                  </span>
-                </div>
-                {group.is_member && <span className="groups-item-dot" />}
-              </div>
-            ))
+              );
+            })
           )}
         </div>
       </aside>
@@ -176,7 +221,7 @@ const GroupsPanel = ({ authUserId }) => {
         {!selectedGroup ? (
           <div className="groups-welcome">
             <div className="groups-welcome-icon">
-              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
                 <circle cx="9" cy="7" r="4" />
                 <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
@@ -201,24 +246,58 @@ const GroupsPanel = ({ authUserId }) => {
               </div>
               <div className="groups-detail-titles">
                 <h2>{selectedGroup.name}</h2>
-                <p>{t("groups.membersCount", { count: selectedGroup.members_count, defaultValue: `${selectedGroup.members_count} members` })}</p>
+                <div className="groups-detail-meta">
+                  {selectedGroup.is_member && groupMembers.length > 0 && (
+                    <div className="groups-avatar-stack">
+                      {groupMembers.slice(0, 3).map((m) => (
+                        <div key={m.id} className="groups-avatar-stack-item">
+                          {m.profile_pic ? <img src={m.profile_pic} alt={m.name} /> : <span>{getInitials(m.name)}</span>}
+                        </div>
+                      ))}
+                      {groupMembers.length > 3 && (
+                        <div className="groups-avatar-stack-item groups-avatar-stack-more">+{groupMembers.length - 3}</div>
+                      )}
+                    </div>
+                  )}
+                  <span>
+                    {t("groups.membersCount", { count: selectedGroup.members_count, defaultValue: `${selectedGroup.members_count} Members` })}
+                    {" · "}{t("groups.public", "Public")}
+                  </span>
+                </div>
               </div>
+
               {selectedGroup.is_member ? (
-                <button className="groups-leave-btn" onClick={(e) => handleLeave(selectedGroup.id, e)}>
-                  {t("groups.leave", "Leave")}
-                </button>
+                <div className="groups-header-menu-wrap">
+                  <button className="groups-header-menu-btn" onClick={() => setHeaderMenuOpen((v) => !v)} aria-label="Menu">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                      <circle cx="12" cy="5" r="1.6" />
+                      <circle cx="12" cy="12" r="1.6" />
+                      <circle cx="12" cy="19" r="1.6" />
+                    </svg>
+                  </button>
+                  {headerMenuOpen && (
+                    <>
+                      <div className="groups-header-menu-overlay" onClick={() => setHeaderMenuOpen(false)} />
+                      <div className="groups-header-menu">
+                        <button className="groups-header-menu-item groups-header-menu-item--danger" onClick={() => handleLeave(selectedGroup.id)}>
+                          {t("groups.leave", "Leave group")}
+                        </button>
+                      </div>
+                    </>
+                  )}
+                </div>
               ) : (
                 <button className="groups-join-btn" onClick={(e) => handleJoin(selectedGroup.id, e)} disabled={joiningId === selectedGroup.id}>
                   {t("groups.join", "Join")}
                 </button>
               )}
             </div>
-            {selectedGroup.description && <p className="groups-detail-description">{selectedGroup.description}</p>}
 
             {selectedGroup.is_member ? (
-              <GroupChat group={selectedGroup} authUserId={authUserId} />
+              <GroupChat group={selectedGroup} authUserId={authUserId} onMessageSent={fetchGroups} />
             ) : (
               <div className="groups-detail-placeholder">
+                {selectedGroup.description && <p className="groups-detail-description">{selectedGroup.description}</p>}
                 <p>{t("groups.joinToChat", "Join this group to see and send messages.")}</p>
               </div>
             )}

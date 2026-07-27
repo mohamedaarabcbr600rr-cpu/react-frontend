@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import axios from "axios";
 import { getEcho } from "../../lib/echo";
-import "../Messagerie.css";
+import "./GroupsPanel.css";
 
 const api = axios.create({
   baseURL: `${import.meta.env.VITE_API_URL}/api`,
@@ -14,10 +14,23 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+const getInitials = (name = "") =>
+  name.split(" ").map((w) => w[0]).join("").toUpperCase().slice(0, 2);
+
 const formatTime = (dateStr) =>
   new Date(dateStr).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 
-const GroupChat = ({ group, authUserId }) => {
+const formatDateSep = (dateStr) => {
+  const d = new Date(dateStr);
+  const today = new Date();
+  const yesterday = new Date(today);
+  yesterday.setDate(today.getDate() - 1);
+  if (d.toDateString() === today.toDateString()) return "Today";
+  if (d.toDateString() === yesterday.toDateString()) return "Yesterday";
+  return d.toLocaleDateString([], { day: "numeric", month: "short", year: "numeric" });
+};
+
+const GroupChat = ({ group, authUserId, onMessageSent }) => {
   const [messages, setMessages] = useState([]);
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(true);
@@ -35,7 +48,6 @@ const GroupChat = ({ group, authUserId }) => {
     groupIdRef.current = group.id;
   }, [group.id]);
 
-  // ── Load messages + slow polling fallback ───────────────────────────────
   useEffect(() => {
     let cancelled = false;
     const activeGroupId = group.id;
@@ -43,7 +55,8 @@ const GroupChat = ({ group, authUserId }) => {
 
     const fetchMessages = () => {
       if (cancelled || groupIdRef.current !== activeGroupId) return;
-      api.get(`/groups/${activeGroupId}/messages`)
+      api
+        .get(`/groups/${activeGroupId}/messages`)
         .then((res) => {
           if (cancelled || groupIdRef.current !== activeGroupId) return;
           setMessages(res.data || []);
@@ -63,7 +76,6 @@ const GroupChat = ({ group, authUserId }) => {
     };
   }, [group.id]);
 
-  // ── Reverb: init Echo + subscribe to this group's channel ───────────────
   useEffect(() => {
     const token = localStorage.getItem("token") || sessionStorage.getItem("token");
     const echo = getEcho(token);
@@ -102,7 +114,6 @@ const GroupChat = ({ group, authUserId }) => {
     };
   }, [echoReady, group.id]);
 
-  // ── Auto-scroll ───────────────────────────────────────────────────────────
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
@@ -132,50 +143,91 @@ const GroupChat = ({ group, authUserId }) => {
       formData.append("content", text);
       const res = await api.post(`/groups/${group.id}/messages`, formData);
       setMessages((prev) => prev.map((m) => (m.id === tempId ? res.data : m)));
+      onMessageSent?.();
     } catch (err) {
       setMessages((prev) => prev.map((m) => (m.id === tempId ? { ...m, _failed: true } : m)));
     } finally {
       setSending(false);
     }
-  }, [content, sending, group.id, authUserId]);
+  }, [content, sending, group.id, authUserId, onMessageSent]);
+
+  const grouped = messages.reduce((acc, msg) => {
+    const date = formatDateSep(msg.created_at);
+    if (!acc[date]) acc[date] = [];
+    acc[date].push(msg);
+    return acc;
+  }, {});
 
   return (
     <div className="groups-chat">
       <div className="groups-chat-messages">
         {loading ? (
-          <div className="wa-loading-overlay" style={{ position: "static", background: "transparent" }}>
-            <div className="wa-loading-spinner" />
+          <div className="groups-chat-loading">
+            <div className="groups-spinner" />
           </div>
         ) : messages.length === 0 ? (
-          <div className="wa-empty">
-            <div className="wa-empty-icon">💬</div>
-            <p className="wa-empty-title">{t("groups.noMessages", "No messages yet")}</p>
-            <p className="wa-empty-sub">{t("groups.beFirst", "Be the first to say something!")}</p>
+          <div className="groups-chat-empty">
+            <div className="groups-chat-empty-icon">
+              <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+              </svg>
+            </div>
+            <h3>{t("groups.welcomeToGroup", "Welcome to the group! 🎉")}</h3>
+            <p>{t("groups.startDiscussion", "Introduce yourself and start the first discussion.")}</p>
           </div>
         ) : (
-          messages.map((msg) => {
-            const isOwn = String(msg.user_id) === String(authUserId);
-            return (
-              <div key={msg.id} className={`wa-msg-row ${isOwn ? "own" : "other"}`}>
-                <div className={`wa-bubble ${isOwn ? "own" : "other"} ${msg._failed ? "wa-bubble--failed" : ""}`}>
-                  {!isOwn && <div className="groups-chat-msg-author">{msg.user?.name}</div>}
-                  {msg.content && <p className="wa-bubble-text">{msg.content}</p>}
-                  <div className="wa-bubble-meta">
-                    <span className="wa-time">{formatTime(msg.created_at)}</span>
+          Object.entries(grouped).map(([date, msgs]) => (
+            <div key={date}>
+              <div className="groups-date-sep"><span>{date}</span></div>
+              {msgs.map((msg, i) => {
+                const isOwn = String(msg.user_id) === String(authUserId);
+                const prevMsg = msgs[i - 1];
+                const showAuthor = !isOwn && (!prevMsg || String(prevMsg.user_id) !== String(msg.user_id));
+                return (
+                  <div key={msg.id} className={`groups-msg-row ${isOwn ? "own" : "other"}`}>
+                    {!isOwn && (
+                      <div className="groups-msg-avatar">
+                        {msg.user?.profile_pic ? (
+                          <img src={msg.user.profile_pic} alt={msg.user.name} />
+                        ) : (
+                          <span>{getInitials(msg.user?.name)}</span>
+                        )}
+                      </div>
+                    )}
+                    <div className="groups-msg-content">
+                      {showAuthor && <span className="groups-msg-author">{msg.user?.name}</span>}
+                      <div className={`groups-msg-bubble ${isOwn ? "own" : "other"} ${msg._failed ? "failed" : ""}`}>
+                        {msg.content && <p>{msg.content}</p>}
+                        <span className="groups-msg-time">{formatTime(msg.created_at)}</span>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-            );
-          })
+                );
+              })}
+            </div>
+          ))
         )}
         <div ref={messagesEndRef} />
       </div>
 
       <div className="groups-chat-input-row">
+        <button className="groups-chat-icon-btn" tabIndex={-1} aria-hidden="true">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="10" />
+            <path d="M8 14s1.5 2 4 2 4-2 4-2" />
+            <line x1="9" y1="9" x2="9.01" y2="9" />
+            <line x1="15" y1="9" x2="15.01" y2="9" />
+          </svg>
+        </button>
+        <button className="groups-chat-icon-btn" tabIndex={-1} aria-hidden="true">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" />
+          </svg>
+        </button>
         <input
           ref={inputRef}
           type="text"
-          className="wa-text-input"
+          className="groups-chat-input"
           placeholder={t("groups.typeMessage", "Type a message...")}
           value={content}
           onChange={(e) => setContent(e.target.value)}
@@ -188,15 +240,15 @@ const GroupChat = ({ group, authUserId }) => {
           disabled={sending}
         />
         <button
-          className="wa-send-btn"
+          className="groups-chat-send-btn"
           onClick={handleSend}
           disabled={!content.trim() || sending}
           aria-label={t("groups.send", "Send")}
         >
           {sending ? (
-            <div className="wa-loading-spinner wa-loading-spinner--small" />
+            <div className="groups-spinner groups-spinner--small" />
           ) : (
-            <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
               <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
             </svg>
           )}
