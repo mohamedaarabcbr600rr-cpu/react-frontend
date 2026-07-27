@@ -30,15 +30,28 @@ const formatDateSep = (dateStr) => {
   return d.toLocaleDateString([], { day: "numeric", month: "short", year: "numeric" });
 };
 
+const emojis = ["😊","😂","❤️","👍","🙏","😍","🤔","😢","🎉","🔥","✅","💯","😎","🤗","😅","👏","💪","🥰","😏","🤣","😭","🤩","💀","😡","🤦","🙄","👀","💬","🎊","✨"];
+
+const getFileKind = (fileType) => {
+  if (!fileType) return "file";
+  if (fileType.startsWith("image/")) return "image";
+  if (fileType.startsWith("video/")) return "video";
+  return "file";
+};
+
 const GroupChat = ({ group, authUserId, onMessageSent }) => {
   const [messages, setMessages] = useState([]);
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const [echoReady, setEchoReady] = useState(false);
+  const [showEmoji, setShowEmoji] = useState(false);
+  const [file, setFile] = useState(null);
+  const [filePreview, setFilePreview] = useState(null);
 
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
+  const fileInputRef = useRef(null);
   const pollingRef = useRef(null);
   const echoRef = useRef(null);
   const groupIdRef = useRef(group.id);
@@ -118,29 +131,54 @@ const GroupChat = ({ group, authUserId, onMessageSent }) => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  const handleFileSelect = (e) => {
+    const selected = e.target.files?.[0];
+    if (!selected) return;
+    setFile(selected);
+    if (selected.type.startsWith("image/")) {
+      const reader = new FileReader();
+      reader.onload = (ev) => setFilePreview(ev.target.result);
+      reader.readAsDataURL(selected);
+    } else {
+      setFilePreview(null);
+    }
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  const removeFile = () => {
+    setFile(null);
+    setFilePreview(null);
+  };
+
   const handleSend = useCallback(async () => {
     const text = content.trim();
-    if (!text || sending) return;
+    if ((!text && !file) || sending) return;
 
     setSending(true);
     const tempId = `tmp_${Date.now()}`;
+    const fileToSend = file;
     const optimisticMsg = {
       id: tempId,
       group_id: group.id,
       user_id: authUserId,
-      content: text,
-      file_path: null,
-      file_type: null,
+      content: text || null,
+      file_path: fileToSend ? URL.createObjectURL(fileToSend) : null,
+      file_type: fileToSend?.type || null,
+      _local: true,
       created_at: new Date().toISOString(),
       user: { id: authUserId },
     };
 
     setMessages((prev) => [...prev, optimisticMsg]);
     setContent("");
+    setFile(null);
+    setFilePreview(null);
+    setShowEmoji(false);
 
     try {
       const formData = new FormData();
-      formData.append("content", text);
+      if (text) formData.append("content", text);
+      if (fileToSend) formData.append("file", fileToSend);
       const res = await api.post(`/groups/${group.id}/messages`, formData);
       setMessages((prev) => prev.map((m) => (m.id === tempId ? res.data : m)));
       onMessageSent?.();
@@ -149,7 +187,7 @@ const GroupChat = ({ group, authUserId, onMessageSent }) => {
     } finally {
       setSending(false);
     }
-  }, [content, sending, group.id, authUserId, onMessageSent]);
+  }, [content, file, sending, group.id, authUserId, onMessageSent]);
 
   const grouped = messages.reduce((acc, msg) => {
     const date = formatDateSep(msg.created_at);
@@ -197,6 +235,25 @@ const GroupChat = ({ group, authUserId, onMessageSent }) => {
                     <div className="groups-msg-content">
                       {showAuthor && <span className="groups-msg-author">{msg.user?.name}</span>}
                       <div className={`groups-msg-bubble ${isOwn ? "own" : "other"} ${msg._failed ? "failed" : ""}`}>
+                        {msg.file_path && (() => {
+                          const kind = getFileKind(msg.file_type);
+                          const url = msg._local ? msg.file_path : `${import.meta.env.VITE_API_URL}/storage/${msg.file_path}`;
+                          if (kind === "image") {
+                            return <img src={url} alt="attachment" className="groups-msg-attachment-img" />;
+                          }
+                          if (kind === "video") {
+                            return <video src={url} controls className="groups-msg-attachment-video" />;
+                          }
+                          return (
+                            <a href={url} target="_blank" rel="noopener noreferrer" className="groups-msg-attachment-file">
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                <path d="M14 2v6h6" />
+                              </svg>
+                              {t("groups.attachment", "Attachment")}
+                            </a>
+                          );
+                        })()}
                         {msg.content && <p>{msg.content}</p>}
                         <span className="groups-msg-time">{formatTime(msg.created_at)}</span>
                       </div>
@@ -210,20 +267,53 @@ const GroupChat = ({ group, authUserId, onMessageSent }) => {
         <div ref={messagesEndRef} />
       </div>
 
+      {file && (
+        <div className="groups-chat-file-preview">
+          {filePreview ? (
+            <img src={filePreview} alt={file.name} />
+          ) : (
+            <div className="groups-chat-file-preview-generic">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                <path d="M14 2v6h6" />
+              </svg>
+              <span>{file.name}</span>
+            </div>
+          )}
+          <button onClick={removeFile} aria-label="Remove">✕</button>
+        </div>
+      )}
+
+      {showEmoji && (
+        <div className="groups-chat-emoji-tray">
+          {emojis.map((e) => (
+            <button key={e} onClick={() => setContent((prev) => prev + e)}>
+              {e}
+            </button>
+          ))}
+        </div>
+      )}
+
       <div className="groups-chat-input-row">
-        <button className="groups-chat-icon-btn" tabIndex={-1} aria-hidden="true">
-          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="12" cy="12" r="10" />
-            <path d="M8 14s1.5 2 4 2 4-2 4-2" />
-            <line x1="9" y1="9" x2="9.01" y2="9" />
-            <line x1="15" y1="9" x2="15.01" y2="9" />
-          </svg>
+        <button
+          className="groups-chat-icon-btn"
+          onClick={() => setShowEmoji((v) => !v)}
+          aria-label={t("groups.emoji", "Emoji")}
+        >
+          {showEmoji ? "😁" : "😊"}
         </button>
-        <button className="groups-chat-icon-btn" tabIndex={-1} aria-hidden="true">
+        <label className="groups-chat-icon-btn" title={t("groups.attach", "Attach")}>
           <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" />
           </svg>
-        </button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*,video/*,.pdf,.doc,.docx,.txt"
+            onChange={handleFileSelect}
+            style={{ display: "none" }}
+          />
+        </label>
         <input
           ref={inputRef}
           type="text"
@@ -242,7 +332,7 @@ const GroupChat = ({ group, authUserId, onMessageSent }) => {
         <button
           className="groups-chat-send-btn"
           onClick={handleSend}
-          disabled={!content.trim() || sending}
+          disabled={(!content.trim() && !file) || sending}
           aria-label={t("groups.send", "Send")}
         >
           {sending ? (

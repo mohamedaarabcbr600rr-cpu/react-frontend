@@ -5,7 +5,9 @@ import GroupsPanel from "./groups/GroupsPanel";
 import "./MessagingHub.css";
 
 const MessagingHub = ({ authUserId }) => {
-  const [activeSection, setActiveSection] = useState("messages"); // "messages" | "groups"
+  const [activeSection, setActiveSection] = useState(() =>
+    localStorage.getItem('pending_group_invite') ? "groups" : "messages"
+  ); // "messages" | "groups"
   const { t } = useTranslation();
 
   return (

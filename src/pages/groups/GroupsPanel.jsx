@@ -42,11 +42,22 @@ const GroupsPanel = ({ authUserId }) => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [newGroupName, setNewGroupName] = useState("");
   const [newGroupDescription, setNewGroupDescription] = useState("");
+  const [newGroupCover, setNewGroupCover] = useState(null);
+  const [newGroupCoverPreview, setNewGroupCoverPreview] = useState(null);
   const [creating, setCreating] = useState(false);
   const [joiningId, setJoiningId] = useState(null);
   const [groupMembers, setGroupMembers] = useState([]);
-  const [headerMenuOpen, setHeaderMenuOpen] = useState(false);
+const [headerMenuOpen, setHeaderMenuOpen] = useState(false);
+  const [linkCopied, setLinkCopied] = useState(false);
   const { t } = useTranslation();
+
+  const handleShareGroup = (group) => {
+    const link = `${window.location.origin}/messagerie?groupInvite=${group.invite_token}`;
+    navigator.clipboard.writeText(link).then(() => {
+      setLinkCopied(true);
+      setTimeout(() => setLinkCopied(false), 2000);
+    });
+  };
 
   const fetchGroups = () => {
     setLoading(true);
@@ -59,6 +70,19 @@ const GroupsPanel = ({ authUserId }) => {
 
   useEffect(() => {
     fetchGroups();
+  }, []);
+
+  // ── Auto-join if the user arrived via a group invite link (?groupInvite=TOKEN) ──
+  useEffect(() => {
+    const token = localStorage.getItem('pending_group_invite');
+    if (!token) return;
+    localStorage.removeItem('pending_group_invite');
+    api.post(`/groups/join-by-token/${token}`)
+      .then((res) => {
+        fetchGroups();
+        setSelectedGroupId(res.data.id);
+      })
+      .catch(() => {});
   }, []);
 
   const filtered = useMemo(() => {
@@ -101,7 +125,7 @@ const GroupsPanel = ({ authUserId }) => {
     }
   };
 
-  const handleLeave = async (id) => {
+const handleLeave = async (id) => {
     setHeaderMenuOpen(false);
     try {
       await api.post(`/groups/${id}/leave`);
@@ -113,18 +137,43 @@ const GroupsPanel = ({ authUserId }) => {
     } catch {}
   };
 
+  const handleDeleteGroup = async (id) => {
+    setHeaderMenuOpen(false);
+    if (!window.confirm(t("groups.confirmDelete", "Delete this group permanently? This cannot be undone."))) return;
+    try {
+      await api.delete(`/groups/${id}`);
+      setGroups((prev) => prev.filter((g) => g.id !== id));
+      setSelectedGroupId(null);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleCoverSelect = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setNewGroupCover(file);
+    const reader = new FileReader();
+    reader.onload = (ev) => setNewGroupCoverPreview(ev.target.result);
+    reader.readAsDataURL(file);
+  };
+
   const handleCreateGroup = async (e) => {
     e.preventDefault();
     if (!newGroupName.trim()) return;
     setCreating(true);
     try {
-      const res = await api.post("/groups", {
-        name: newGroupName.trim(),
-        description: newGroupDescription.trim() || null,
-      });
+      const formData = new FormData();
+      formData.append("name", newGroupName.trim());
+      if (newGroupDescription.trim()) formData.append("description", newGroupDescription.trim());
+      if (newGroupCover) formData.append("cover_image", newGroupCover);
+
+      const res = await api.post("/groups", formData);
       setShowCreateModal(false);
       setNewGroupName("");
       setNewGroupDescription("");
+      setNewGroupCover(null);
+      setNewGroupCoverPreview(null);
       fetchGroups();
       setSelectedGroupId(res.data.id);
     } catch (err) {
@@ -275,10 +324,18 @@ const GroupsPanel = ({ authUserId }) => {
                       <circle cx="12" cy="19" r="1.6" />
                     </svg>
                   </button>
-                  {headerMenuOpen && (
+                 {headerMenuOpen && (
                     <>
                       <div className="groups-header-menu-overlay" onClick={() => setHeaderMenuOpen(false)} />
-                      <div className="groups-header-menu">
+<div className="groups-header-menu">
+                        <button className="groups-header-menu-item" onClick={() => handleShareGroup(selectedGroup)}>
+                          {linkCopied ? t("groups.linkCopied", "Link copied!") : t("groups.shareGroup", "Share group")}
+                        </button>
+                        {selectedGroup.is_admin && (
+                          <button className="groups-header-menu-item groups-header-menu-item--danger" onClick={() => handleDeleteGroup(selectedGroup.id)}>
+                            {t("groups.deleteGroup", "Delete group")}
+                          </button>
+                        )}
                         <button className="groups-header-menu-item groups-header-menu-item--danger" onClick={() => handleLeave(selectedGroup.id)}>
                           {t("groups.leave", "Leave group")}
                         </button>
@@ -307,8 +364,26 @@ const GroupsPanel = ({ authUserId }) => {
 
       {showCreateModal && (
         <div className="groups-modal-overlay" onClick={() => setShowCreateModal(false)}>
-          <form className="groups-modal" onClick={(e) => e.stopPropagation()} onSubmit={handleCreateGroup}>
+<form className="groups-modal" onClick={(e) => e.stopPropagation()} onSubmit={handleCreateGroup}>
             <h3>{t("groups.createGroup", "Create Group")}</h3>
+
+            <label className="groups-modal-cover-picker">
+              {newGroupCoverPreview ? (
+                <img src={newGroupCoverPreview} alt="Cover preview" />
+              ) : (
+                <span>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                    <circle cx="9" cy="7" r="4" />
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                  </svg>
+                  {t("groups.addCoverPhoto", "Add cover photo")}
+                </span>
+              )}
+              <input type="file" accept="image/*" onChange={handleCoverSelect} style={{ display: "none" }} />
+            </label>
+
             <input
               type="text"
               placeholder={t("groups.namePlaceholder", "Group name")}

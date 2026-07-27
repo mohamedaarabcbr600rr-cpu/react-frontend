@@ -85,6 +85,15 @@ const { i18n } = useTranslation();
     }
   }, [location.search]);
 
+  // ── Capture group invite token from URL (?groupInvite=TOKEN) until the user is on Groups ──
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const groupInvite = params.get('groupInvite');
+    if (groupInvite) {
+      localStorage.setItem('pending_group_invite', groupInvite);
+    }
+  }, [location.search]);
+
   // ── Immersive mode: hide global navbar on mobile when on AI Tutor ──────────
   useEffect(() => {
     const isAIRoute = location.pathname === '/ai';
