@@ -41,7 +41,7 @@ const formatListTime = (dateStr) => {
   return d.toLocaleDateString([], { day: "numeric", month: "short" });
 };
 
-const GroupsPanel = ({ authUserId, onGroupOpenChange }) => {
+const GroupsPanel = ({ authUserId, onGroupOpenChange, activeSection = "groups", onSectionChange }) => {
   const [groups, setGroups] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -209,26 +209,46 @@ const handleLeave = async (id) => {
     <div className="groups-root">
       <aside className={`groups-sidebar ${!selectedGroupId ? "groups-sidebar--open" : ""}`}>
         <div className="groups-sidebar-header">
-          <div className="groups-search-box">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <circle cx="11" cy="11" r="8" />
-              <path d="m21 21-4.35-4.35" />
-            </svg>
-            <input
-              type="text"
-              placeholder={t("groups.searchPlaceholder", "Search groups...")}
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
-          <button className="groups-create-btn" onClick={() => setShowCreateModal(true)}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M12 5v14" />
-              <path d="M5 12h14" />
-            </svg>
-            {t("groups.create", "Create")}
-          </button>
-        </div>
+  <div className="groups-sidebar-header-top">
+    <h1 className="groups-sidebar-title">{t("groups.title", "Groupes")}</h1>
+    <div className="wa-hub-switch">
+      <button
+        type="button"
+        className={`wa-hub-switch-btn ${activeSection === "messages" ? "active" : ""}`}
+        onClick={() => onSectionChange?.("messages")}
+      >
+        {t("messagingHub.messages", "Messages")}
+      </button>
+      <button
+        type="button"
+        className={`wa-hub-switch-btn ${activeSection === "groups" ? "active" : ""}`}
+        onClick={() => onSectionChange?.("groups")}
+      >
+        {t("messagingHub.groups", "Groups")}
+      </button>
+    </div>
+  </div>
+
+  <div className="groups-search-box">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <circle cx="11" cy="11" r="8" />
+      <path d="m21 21-4.35-4.35" />
+    </svg>
+    <input
+      type="text"
+      placeholder={t("groups.searchPlaceholder", "Search groups...")}
+      value={searchTerm}
+      onChange={(e) => setSearchTerm(e.target.value)}
+    />
+  </div>
+  <button className="groups-create-btn" onClick={() => setShowCreateModal(true)}>
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 5v14" />
+      <path d="M5 12h14" />
+    </svg>
+    {t("groups.create", "Create")}
+  </button>
+</div>
 
         <div className="groups-filters">
           <button className={`groups-filter-btn ${filter === "all" ? "active" : ""}`} onClick={() => setFilter("all")}>

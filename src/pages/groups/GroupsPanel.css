@@ -1492,3 +1492,15 @@
   border: none;
   color: #9ca3af;
 }
+
+.groups-sidebar-header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.groups-sidebar-title {
+  font-size: 19px;
+  font-weight: 600;
+  margin: 0;
+}

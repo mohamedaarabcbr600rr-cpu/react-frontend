@@ -2765,3 +2765,32 @@
   pointer-events: none;
   transition: opacity var(--dur-fast) var(--ease);
 }
+
+
+.wa-sidebar-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.wa-hub-switch {
+  margin-left: auto;
+  display: flex;
+  background: rgba(0,0,0,0.06);
+  border-radius: 20px;
+  padding: 3px;
+}
+.wa-hub-switch-btn {
+  border: none;
+  background: transparent;
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #555;
+  cursor: pointer;
+}
+.wa-hub-switch-btn.active {
+  background: #fff;
+  color: #128C7E;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+}

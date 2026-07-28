@@ -283,7 +283,12 @@ const EmptyState = ({ hasUser, userName, t }) => (
 );
 
 // ─── Main Component ───────────────────────────────────────────────────────────
-const Messagerie = ({ authUserId, baseUrl = import.meta.env.VITE_API_URL }) => {
+const Messagerie = ({
+  authUserId,
+  baseUrl = import.meta.env.VITE_API_URL,
+  activeSection = "messages",
+  onSectionChange,
+}) => {
   const location = useLocation();
   const [connections, setConnections] = useState([]);
   const [conversationId, setConversationId] = useState(null);
@@ -935,10 +940,26 @@ const replyToId = replyingToMsg?.id || null;
       {/* ── Sidebar ── */}
       <aside className={`wa-sidebar ${sidebarOpen || !selectedUser ? "wa-sidebar--open" : ""}`}>
         {/* Header */}
-        <div className="wa-sidebar-header">
-          <Avatar name="Me" size={38} />
-          <h1 className="wa-sidebar-title">{t("messagerie.title")}</h1>
-        </div>
+<div className="wa-sidebar-header">
+  <Avatar name="Me" size={38} />
+  <h1 className="wa-sidebar-title">{t("messagerie.title")}</h1>
+  <div className="wa-hub-switch">
+    <button
+      type="button"
+      className={`wa-hub-switch-btn ${activeSection === "messages" ? "active" : ""}`}
+      onClick={() => onSectionChange?.("messages")}
+    >
+      {t("messagingHub.messages", "Messages")}
+    </button>
+    <button
+      type="button"
+      className={`wa-hub-switch-btn ${activeSection === "groups" ? "active" : ""}`}
+      onClick={() => onSectionChange?.("groups")}
+    >
+      {t("messagingHub.groups", "Groups")}
+    </button>
+  </div>
+</div>
 
         {/* Search */}
         <div className="wa-search-wrap">
