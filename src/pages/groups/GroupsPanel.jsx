@@ -41,7 +41,7 @@ const formatListTime = (dateStr) => {
   return d.toLocaleDateString([], { day: "numeric", month: "short" });
 };
 
-const GroupsPanel = ({ authUserId }) => {
+const GroupsPanel = ({ authUserId, onGroupOpenChange }) => {
   const [groups, setGroups] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -106,6 +106,12 @@ const [headerMenuOpen, setHeaderMenuOpen] = useState(false);
   }, [groups, filter, searchTerm]);
 
   const selectedGroup = groups.find((g) => g.id === selectedGroupId);
+
+  // Let the parent (MessagingHub) know whether a group chat is open, so it can
+  // hide its own "← Groups" mobile header and give full height to the chat.
+  useEffect(() => {
+    onGroupOpenChange?.(!!selectedGroupId);
+  }, [selectedGroupId, onGroupOpenChange]);
 
   // Fetch member avatars for the header stack whenever a member group is opened
   useEffect(() => {

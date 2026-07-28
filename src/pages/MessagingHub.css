@@ -59,6 +59,23 @@
   height: 100% !important;
 }
 
+.msg-hub-groups-wrapper {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.msg-hub-groups-wrapper .groups-root {
+  flex: 1;
+  min-height: 0;
+}
+
+.msg-hub-mobile-groups-header {
+  display: none;
+}
+
 @media (max-width: 768px) {
   .msg-hub-tabs {
     padding: 8px 14px;
@@ -68,8 +85,31 @@
     justify-content: center;
     padding: 9px 10px;
   }
-}
 
+  /* "← Groups" mobile-native header, replaces desktop tabs while browsing the groups list */
+  .msg-hub-mobile-groups-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 16px;
+    background: #ffffff;
+    border-bottom: 1px solid #eef0f3;
+    font-size: 16px;
+    font-weight: 700;
+    color: #111827;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .msg-hub-mobile-back-arrow {
+    font-size: 24px;
+    font-weight: 400;
+    color: #6366f1;
+    line-height: 1;
+  }
+}
 
 /* ====================================================
    MOBILE — Fix: la sidebar (liste des conversations) est en
@@ -93,23 +133,19 @@
     height: 100% !important;
   }
 
-  /* Bouton "Groups" flottant, positionné à droite du header natif de Messagerie ("M  Messages") */
+  /* "Groups" tab, positionné à droite du header natif de Messagerie ("M  Messages"), style texte simple */
   .msg-hub-mobile-groups-tab {
     position: absolute;
-    top: 18px;
-    right: 16px;
+    top: 22px;
+    right: 18px;
     z-index: 60;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 8px 14px;
-    border-radius: 999px;
-    background: #f3f4f6;
-    color: #4b5563;
+    background: none;
+    color: #6366f1;
     border: none;
-    font-size: 13px;
-    font-weight: 600;
+    font-size: 15px;
+    font-weight: 700;
     cursor: pointer;
+    padding: 0;
   }
 
   /* Caché quand une conversation est ouverte (le header de Messagerie glisse hors écran aussi) */

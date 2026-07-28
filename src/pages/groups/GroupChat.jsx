@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { getEcho } from "../../lib/echo";
+import ImageLightbox from "../../components/ImageLightbox";
 import "./GroupsPanel.css";
 
 const api = axios.create({
@@ -68,6 +69,7 @@ const GroupChat = ({ group, authUserId, onMessageSent }) => {
     } catch { return new Set(); }
   });
   const [highlightedMsgId, setHighlightedMsgId] = useState(null);
+  const [lightboxIndex, setLightboxIndex] = useState(null);
   const longPressTimerRef = useRef(null);
   const lastTouchEndRef = useRef(0);
 
@@ -163,6 +165,18 @@ const GroupChat = ({ group, authUserId, onMessageSent }) => {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  // ── Build the flat list of all images in this group conversation (for the lightbox) ──
+  const groupImages = useMemo(() => {
+    return messages
+      .filter((m) => m.file_path && m.file_type?.startsWith("image") && !String(m.id).startsWith("tmp_"))
+      .map((m) => ({ id: m.id, url: getImageUrl(`/storage/${m.file_path}`) }));
+  }, [messages]);
+
+  const handleImageClick = useCallback((msgId) => {
+    const idx = groupImages.findIndex((img) => img.id === msgId);
+    if (idx !== -1) setLightboxIndex(idx);
+  }, [groupImages]);
 
   const handleFileSelect = (e) => {
     const selected = e.target.files?.[0];
@@ -404,11 +418,22 @@ const GroupChat = ({ group, authUserId, onMessageSent }) => {
                           </div>
                         )}
 
-                        {msg.file_path && (() => {
+                       {msg.file_path && (() => {
                           const kind = getFileKind(msg.file_type);
                           const url = msg._local ? msg.file_path : getImageUrl(`/storage/${msg.file_path}`);
                           if (kind === "image") {
-                            return <img src={url} alt="attachment" className="groups-msg-attachment-img" />;
+                            return (
+                              <img
+                                src={url}
+                                alt="attachment"
+                                className="groups-msg-attachment-img"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  if (!isTemp) handleImageClick(msg.id);
+                                }}
+                                style={{ cursor: isTemp ? "default" : "pointer" }}
+                              />
+                            );
                           }
                           if (kind === "video") {
                             return <video src={url} controls className="groups-msg-attachment-video" />;
@@ -572,6 +597,14 @@ const GroupChat = ({ group, authUserId, onMessageSent }) => {
           </div>
         );
       })()}
+
+      {lightboxIndex !== null && groupImages.length > 0 && (
+        <ImageLightbox
+          images={groupImages}
+          initialIndex={lightboxIndex}
+          onClose={() => setLightboxIndex(null)}
+        />
+      )}
     </div>
   );
 };
