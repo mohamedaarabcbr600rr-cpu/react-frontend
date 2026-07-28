@@ -22,9 +22,22 @@
 .groups-sidebar-header {
   padding: 14px 14px 10px;
   display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border-bottom: 1px solid #eef0f3;
+}
+
+.groups-sidebar-header > div:not(.groups-sidebar-header-top),
+.groups-sidebar-header > .groups-search-box {
+  display: flex;
   align-items: center;
   gap: 8px;
-  border-bottom: 1px solid #eef0f3;
+}
+
+.groups-search-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .groups-search-box {

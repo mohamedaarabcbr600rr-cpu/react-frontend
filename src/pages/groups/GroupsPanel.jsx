@@ -55,7 +55,7 @@ const GroupsPanel = ({ authUserId, onGroupOpenChange, activeSection = "groups", 
   const [creating, setCreating] = useState(false);
   const [joiningId, setJoiningId] = useState(null);
   const [groupMembers, setGroupMembers] = useState([]);
-const [headerMenuOpen, setHeaderMenuOpen] = useState(false);
+  const [headerMenuOpen, setHeaderMenuOpen] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -147,7 +147,7 @@ const [headerMenuOpen, setHeaderMenuOpen] = useState(false);
     }
   };
 
-const handleLeave = async (id) => {
+  const handleLeave = async (id) => {
     setHeaderMenuOpen(false);
     try {
       await api.post(`/groups/${id}/leave`);
@@ -209,46 +209,48 @@ const handleLeave = async (id) => {
     <div className="groups-root">
       <aside className={`groups-sidebar ${!selectedGroupId ? "groups-sidebar--open" : ""}`}>
         <div className="groups-sidebar-header">
-  <div className="groups-sidebar-header-top">
-    <h1 className="groups-sidebar-title">{t("groups.title", "Groupes")}</h1>
-    <div className="wa-hub-switch">
-      <button
-        type="button"
-        className={`wa-hub-switch-btn ${activeSection === "messages" ? "active" : ""}`}
-        onClick={() => onSectionChange?.("messages")}
-      >
-        {t("messagingHub.messages", "Messages")}
-      </button>
-      <button
-        type="button"
-        className={`wa-hub-switch-btn ${activeSection === "groups" ? "active" : ""}`}
-        onClick={() => onSectionChange?.("groups")}
-      >
-        {t("messagingHub.groups", "Groups")}
-      </button>
-    </div>
-  </div>
+          <div className="groups-sidebar-header-top">
+            <h1 className="groups-sidebar-title">{t("groups.title", "Groupes")}</h1>
+            <div className="wa-hub-switch">
+              <button
+                type="button"
+                className={`wa-hub-switch-btn ${activeSection === "messages" ? "active" : ""}`}
+                onClick={() => onSectionChange?.("messages")}
+              >
+                {t("messagingHub.messages", "Messages")}
+              </button>
+              <button
+                type="button"
+                className={`wa-hub-switch-btn ${activeSection === "groups" ? "active" : ""}`}
+                onClick={() => onSectionChange?.("groups")}
+              >
+                {t("messagingHub.groups", "Groups")}
+              </button>
+            </div>
+          </div>
 
-  <div className="groups-search-box">
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <circle cx="11" cy="11" r="8" />
-      <path d="m21 21-4.35-4.35" />
-    </svg>
-    <input
-      type="text"
-      placeholder={t("groups.searchPlaceholder", "Search groups...")}
-      value={searchTerm}
-      onChange={(e) => setSearchTerm(e.target.value)}
-    />
-  </div>
-  <button className="groups-create-btn" onClick={() => setShowCreateModal(true)}>
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M12 5v14" />
-      <path d="M5 12h14" />
-    </svg>
-    {t("groups.create", "Create")}
-  </button>
-</div>
+          <div className="groups-search-row">
+            <div className="groups-search-box">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="11" cy="11" r="8" />
+                <path d="m21 21-4.35-4.35" />
+              </svg>
+              <input
+                type="text"
+                placeholder={t("groups.searchPlaceholder", "Search groups...")}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+            <button className="groups-create-btn" onClick={() => setShowCreateModal(true)}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 5v14" />
+                <path d="M5 12h14" />
+              </svg>
+              {t("groups.create", "Create")}
+            </button>
+          </div>
+        </div>
 
         <div className="groups-filters">
           <button className={`groups-filter-btn ${filter === "all" ? "active" : ""}`} onClick={() => setFilter("all")}>
@@ -327,7 +329,7 @@ const handleLeave = async (id) => {
           </div>
         ) : (
           <div className="groups-detail">
-<div className="groups-detail-header">
+            <div className="groups-detail-header">
               <button
                 className="groups-back-btn"
                 onClick={() => setSelectedGroupId(null)}
@@ -345,7 +347,7 @@ const handleLeave = async (id) => {
               <div className="groups-detail-titles">
                 <h2>{selectedGroup.name}</h2>
                 <div className="groups-detail-meta">
-{selectedGroup.is_member && groupMembers.length > 0 && (
+                  {selectedGroup.is_member && groupMembers.length > 0 && (
                     <div className="groups-avatar-stack">
                       {groupMembers.slice(0, 3).map((m) => (
                         <div
@@ -362,7 +364,7 @@ const handleLeave = async (id) => {
                       )}
                     </div>
                   )}
-                  
+
                   <span>
                     {t("groups.membersCount", { count: selectedGroup.members_count, defaultValue: `${selectedGroup.members_count} Members` })}
                     {" · "}{t("groups.public", "Public")}
@@ -379,10 +381,10 @@ const handleLeave = async (id) => {
                       <circle cx="12" cy="19" r="1.6" />
                     </svg>
                   </button>
-                 {headerMenuOpen && (
+                  {headerMenuOpen && (
                     <>
                       <div className="groups-header-menu-overlay" onClick={() => setHeaderMenuOpen(false)} />
-<div className="groups-header-menu">
+                      <div className="groups-header-menu">
                         <button className="groups-header-menu-item" onClick={() => handleShareGroup(selectedGroup)}>
                           {linkCopied ? t("groups.linkCopied", "Link copied!") : t("groups.shareGroup", "Share group")}
                         </button>
@@ -419,7 +421,7 @@ const handleLeave = async (id) => {
 
       {showCreateModal && (
         <div className="groups-modal-overlay" onClick={() => setShowCreateModal(false)}>
-<form className="groups-modal" onClick={(e) => e.stopPropagation()} onSubmit={handleCreateGroup}>
+          <form className="groups-modal" onClick={(e) => e.stopPropagation()} onSubmit={handleCreateGroup}>
             <h3>{t("groups.createGroup", "Create Group")}</h3>
 
             <label className="groups-modal-cover-picker">
