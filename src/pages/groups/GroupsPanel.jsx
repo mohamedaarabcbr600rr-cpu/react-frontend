@@ -120,6 +120,13 @@ const [headerMenuOpen, setHeaderMenuOpen] = useState(false);
       .catch(() => setGroupMembers([]));
   }, [selectedGroupId, selectedGroup?.is_member]);
 
+  // ── Immersive mode: hide global navbar on mobile when a group is open ──────
+  useEffect(() => {
+    const isGroupOpen = !!selectedGroupId;
+    document.body.classList.toggle('groups-chat-fullscreen', isGroupOpen);
+    return () => document.body.classList.remove('groups-chat-fullscreen');
+  }, [selectedGroupId]);
+
   const handleJoin = async (id, e) => {
     e?.stopPropagation();
     setJoiningId(id);

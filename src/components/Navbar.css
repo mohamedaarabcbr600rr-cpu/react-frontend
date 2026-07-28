@@ -424,10 +424,21 @@
     padding-bottom: 0;
   }
 
-  /* ── Section Messages/Groups : cache logo+search et FR/Logout/Premium, garde la bottom nav ── */
+/* ── Section Messages/Groups : cache logo+search et FR/Logout/Premium, garde la bottom nav ── */
   body.msg-section-fullscreen-mobile .navbar,
   body.msg-section-fullscreen-mobile .navbar-mobile-top {
     display: none !important;
+  }
+
+  /* ── Groupe ouvert en plein écran : cache aussi la bottom nav, comme la messagerie privée ── */
+  body.groups-chat-fullscreen .navbar,
+  body.groups-chat-fullscreen .navbar-mobile-top,
+  body.groups-chat-fullscreen .navbar-mobile-bottom {
+    display: none !important;
+  }
+
+  body.groups-chat-fullscreen {
+    padding-bottom: 0;
   }
 }
 
