@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import GroupChat from "./GroupChat";
 import "./GroupsPanel.css";
@@ -16,6 +17,13 @@ api.interceptors.request.use((config) => {
 
 const getInitials = (name = "") =>
   name.split(" ").map((w) => w[0]).join("").toUpperCase().slice(0, 2);
+
+const getImageUrl = (path) => {
+  if (!path) return null;
+  if (path.startsWith("http")) return path;
+  const base = import.meta.env.VITE_API_URL;
+  return path.startsWith("/storage") ? `${base}${path}` : `${base}/storage/${path}`;
+};
 
 const formatListTime = (dateStr) => {
   if (!dateStr) return "";
@@ -50,6 +58,7 @@ const GroupsPanel = ({ authUserId }) => {
 const [headerMenuOpen, setHeaderMenuOpen] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   const handleShareGroup = (group) => {
     const link = `${window.location.origin}/messagerie?groupInvite=${group.invite_token}`;
@@ -237,7 +246,7 @@ const handleLeave = async (id) => {
                   onClick={() => setSelectedGroupId(group.id)}
                 >
                   <div className="groups-item-avatar">
-                    {group.cover_image ? <img src={group.cover_image} alt={group.name} /> : <span>{getInitials(group.name)}</span>}
+                    {group.cover_image ? <img src={getImageUrl(group.cover_image)} alt={group.name} /> : <span>{getInitials(group.name)}</span>}
                   </div>
                   <div className="groups-item-info">
                     <div className="groups-item-top">
@@ -288,7 +297,7 @@ const handleLeave = async (id) => {
             <div className="groups-detail-header">
               <div className="groups-detail-avatar">
                 {selectedGroup.cover_image ? (
-                  <img src={selectedGroup.cover_image} alt={selectedGroup.name} />
+                  <img src={getImageUrl(selectedGroup.cover_image)} alt={selectedGroup.name} />
                 ) : (
                   <span>{getInitials(selectedGroup.name)}</span>
                 )}
@@ -296,11 +305,16 @@ const handleLeave = async (id) => {
               <div className="groups-detail-titles">
                 <h2>{selectedGroup.name}</h2>
                 <div className="groups-detail-meta">
-                  {selectedGroup.is_member && groupMembers.length > 0 && (
+{selectedGroup.is_member && groupMembers.length > 0 && (
                     <div className="groups-avatar-stack">
                       {groupMembers.slice(0, 3).map((m) => (
-                        <div key={m.id} className="groups-avatar-stack-item">
-                          {m.profile_pic ? <img src={m.profile_pic} alt={m.name} /> : <span>{getInitials(m.name)}</span>}
+                        <div
+                          key={m.id}
+                          className="groups-avatar-stack-item"
+                          onClick={() => navigate(`/profile/${m.id}`)}
+                          title={m.name}
+                        >
+                          {m.profile_pic ? <img src={getImageUrl(m.profile_pic)} alt={m.name} /> : <span>{getInitials(m.name)}</span>}
                         </div>
                       ))}
                       {groupMembers.length > 3 && (
@@ -308,6 +322,7 @@ const handleLeave = async (id) => {
                       )}
                     </div>
                   )}
+                  
                   <span>
                     {t("groups.membersCount", { count: selectedGroup.members_count, defaultValue: `${selectedGroup.members_count} Members` })}
                     {" · "}{t("groups.public", "Public")}

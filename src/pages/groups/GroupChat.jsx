@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { getEcho } from "../../lib/echo";
 import "./GroupsPanel.css";
@@ -16,6 +17,13 @@ api.interceptors.request.use((config) => {
 
 const getInitials = (name = "") =>
   name.split(" ").map((w) => w[0]).join("").toUpperCase().slice(0, 2);
+
+const getImageUrl = (path) => {
+  if (!path) return null;
+  if (path.startsWith("http")) return path;
+  const base = import.meta.env.VITE_API_URL;
+  return path.startsWith("/storage") ? `${base}${path}` : `${base}/storage/${path}`;
+};
 
 const formatTime = (dateStr) =>
   new Date(dateStr).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
@@ -56,6 +64,11 @@ const GroupChat = ({ group, authUserId, onMessageSent }) => {
   const echoRef = useRef(null);
   const groupIdRef = useRef(group.id);
   const { t } = useTranslation();
+  const navigate = useNavigate();
+
+  const goToProfile = (userId) => {
+    if (userId) navigate(`/profile/${userId}`);
+  };
 
   useEffect(() => {
     groupIdRef.current = group.id;
@@ -223,17 +236,21 @@ const GroupChat = ({ group, authUserId, onMessageSent }) => {
                 const showAuthor = !isOwn && (!prevMsg || String(prevMsg.user_id) !== String(msg.user_id));
                 return (
                   <div key={msg.id} className={`groups-msg-row ${isOwn ? "own" : "other"}`}>
-                    {!isOwn && (
-                      <div className="groups-msg-avatar">
+{!isOwn && (
+                      <div className="groups-msg-avatar" onClick={() => goToProfile(msg.user_id)} style={{ cursor: "pointer" }}>
                         {msg.user?.profile_pic ? (
-                          <img src={msg.user.profile_pic} alt={msg.user.name} />
+                          <img src={getImageUrl(msg.user.profile_pic)} alt={msg.user.name} />
                         ) : (
                           <span>{getInitials(msg.user?.name)}</span>
                         )}
                       </div>
                     )}
                     <div className="groups-msg-content">
-                      {showAuthor && <span className="groups-msg-author">{msg.user?.name}</span>}
+                      {showAuthor && (
+                        <span className="groups-msg-author" onClick={() => goToProfile(msg.user_id)} style={{ cursor: "pointer" }}>
+                          {msg.user?.name}
+                        </span>
+                      )}
                       <div className={`groups-msg-bubble ${isOwn ? "own" : "other"} ${msg._failed ? "failed" : ""}`}>
                         {msg.file_path && (() => {
                           const kind = getFileKind(msg.file_type);

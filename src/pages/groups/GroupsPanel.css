@@ -415,6 +415,7 @@
   color: #fff;
   font-size: 8px;
   font-weight: 700;
+  cursor: pointer;
 }
 
 .groups-avatar-stack-item:first-child {
@@ -828,6 +829,10 @@
   color: #6366f1;
   margin-bottom: 2px;
   margin-left: 12px;
+}
+
+.groups-msg-author:hover {
+  text-decoration: underline;
 }
 
 .groups-msg-bubble {
