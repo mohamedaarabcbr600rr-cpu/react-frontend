@@ -15,6 +15,15 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+const emojis = ["😊","😂","❤️","👍","🙏","😍","🤔","😢","🎉","🔥","✅","💯","😎","🤗","😅","👏","💪","🥰","😏","🤣","😭","🤩","💀","😡","🤦","🙄","👀","💬","🎊","✨"];
+
+const getFileKind = (fileType) => {
+  if (!fileType) return "file";
+  if (fileType.startsWith("image/")) return "image";
+  if (fileType.startsWith("video/")) return "video";
+  return "file";
+};
+
 const getInitials = (name = "") =>
   name.split(" ").map((w) => w[0]).join("").toUpperCase().slice(0, 2);
 
@@ -38,15 +47,6 @@ const formatDateSep = (dateStr) => {
   return d.toLocaleDateString([], { day: "numeric", month: "short", year: "numeric" });
 };
 
-const emojis = ["😊","😂","❤️","👍","🙏","😍","🤔","😢","🎉","🔥","✅","💯","😎","🤗","😅","👏","💪","🥰","😏","🤣","😭","🤩","💀","😡","🤦","🙄","👀","💬","🎊","✨"];
-
-const getFileKind = (fileType) => {
-  if (!fileType) return "file";
-  if (fileType.startsWith("image/")) return "image";
-  if (fileType.startsWith("video/")) return "video";
-  return "file";
-};
-
 const GroupChat = ({ group, authUserId, onMessageSent }) => {
   const [messages, setMessages] = useState([]);
   const [content, setContent] = useState("");
@@ -56,6 +56,20 @@ const GroupChat = ({ group, authUserId, onMessageSent }) => {
   const [showEmoji, setShowEmoji] = useState(false);
   const [file, setFile] = useState(null);
   const [filePreview, setFilePreview] = useState(null);
+
+  // ── Reply & Delete state (mirrors Messagerie.jsx) ────────────────────────
+  const [replyingToMsg, setReplyingToMsg] = useState(null);
+  const [contextMenu, setContextMenu] = useState(null);
+  const [deleteConfirm, setDeleteConfirm] = useState(null);
+  const [hiddenForMe, setHiddenForMe] = useState(() => {
+    try {
+      const raw = localStorage.getItem(`hiddenGroupMessages_${authUserId}_${group.id}`);
+      return new Set(raw ? JSON.parse(raw) : []);
+    } catch { return new Set(); }
+  });
+  const [highlightedMsgId, setHighlightedMsgId] = useState(null);
+  const longPressTimerRef = useRef(null);
+  const lastTouchEndRef = useRef(0);
 
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
@@ -119,7 +133,13 @@ const GroupChat = ({ group, authUserId, onMessageSent }) => {
     channel.listen(".group-message.sent", (e) => {
       if (groupIdRef.current !== e.group_id) return;
       setMessages((prev) => {
-        if (prev.some((m) => m.id === e.id)) return prev;
+        // Replace if this is an update (edit/delete) to an existing message
+        const existingIdx = prev.findIndex((m) => m.id === e.id);
+        if (existingIdx !== -1) {
+          const next = prev.slice();
+          next[existingIdx] = e;
+          return next;
+        }
         const idx = prev.findIndex(
           (m) => String(m.id).startsWith("tmp_") && m.user_id === e.user_id && m.content === e.content
         );
@@ -163,6 +183,89 @@ const GroupChat = ({ group, authUserId, onMessageSent }) => {
     setFilePreview(null);
   };
 
+  // ── Delete for me (local only) ──────────────────────────────────────────
+  const hideForMe = useCallback((msgId) => {
+    setHiddenForMe((prev) => {
+      const next = new Set(prev);
+      next.add(msgId);
+      try {
+        localStorage.setItem(`hiddenGroupMessages_${authUserId}_${group.id}`, JSON.stringify([...next]));
+      } catch {}
+      return next;
+    });
+    setContextMenu(null);
+    setDeleteConfirm(null);
+  }, [authUserId, group.id]);
+
+  // ── Delete for everyone (backend) ───────────────────────────────────────
+  const deleteForEveryone = useCallback(async (msgId) => {
+    try {
+      const res = await api.delete(`/group-messages/${msgId}`);
+      setMessages((prev) => prev.map((m) => (m.id === msgId ? res.data : m)));
+    } catch (err) {
+      console.error("deleteForEveryone", err);
+    } finally {
+      setContextMenu(null);
+      setDeleteConfirm(null);
+    }
+  }, []);
+
+  const scrollToMessage = useCallback((msgId) => {
+    const el = document.getElementById(`gmsg-${msgId}`);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+      setHighlightedMsgId(msgId);
+      setTimeout(() => setHighlightedMsgId(null), 1500);
+    }
+  }, []);
+
+  const openContextMenu = useCallback((msgId, x, y) => {
+    const menuWidth = 180;
+    const menuHeight = 100;
+    const clampedX = Math.max(12, Math.min(x, window.innerWidth - menuWidth - 12));
+    const clampedY = Math.max(12, Math.min(y, window.innerHeight - menuHeight - 12));
+    setContextMenu({ msgId, x: clampedX, y: clampedY });
+  }, []);
+
+  const handleContextMenu = useCallback((e, msgId) => {
+    e.preventDefault();
+    openContextMenu(msgId, e.clientX, e.clientY);
+  }, [openContextMenu]);
+
+  const handleBubbleClick = useCallback((e, msgId) => {
+    if (Date.now() - lastTouchEndRef.current < 500) return;
+    openContextMenu(msgId, e.clientX, e.clientY);
+  }, [openContextMenu]);
+
+  const handleTouchStart = useCallback((e, msgId) => {
+    const touch = e.touches[0];
+    longPressTimerRef.current = setTimeout(() => {
+      openContextMenu(msgId, touch.clientX, touch.clientY);
+    }, 500);
+  }, [openContextMenu]);
+
+  const cancelLongPress = useCallback(() => {
+    clearTimeout(longPressTimerRef.current);
+  }, []);
+
+  const handleTouchEnd = useCallback(() => {
+    clearTimeout(longPressTimerRef.current);
+    lastTouchEndRef.current = Date.now();
+  }, []);
+
+  const startReply = useCallback((msg) => {
+    setReplyingToMsg(msg);
+    setContextMenu(null);
+    setTimeout(() => inputRef.current?.focus(), 50);
+  }, []);
+
+  useEffect(() => {
+    if (!contextMenu) return;
+    const close = () => setContextMenu(null);
+    document.addEventListener("click", close);
+    return () => document.removeEventListener("click", close);
+  }, [contextMenu]);
+
   const handleSend = useCallback(async () => {
     const text = content.trim();
     if ((!text && !file) || sending) return;
@@ -170,6 +273,7 @@ const GroupChat = ({ group, authUserId, onMessageSent }) => {
     setSending(true);
     const tempId = `tmp_${Date.now()}`;
     const fileToSend = file;
+    const replyToId = replyingToMsg?.id || null;
     const optimisticMsg = {
       id: tempId,
       group_id: group.id,
@@ -180,6 +284,11 @@ const GroupChat = ({ group, authUserId, onMessageSent }) => {
       _local: true,
       created_at: new Date().toISOString(),
       user: { id: authUserId },
+      reply_to: replyingToMsg ? {
+        id: replyingToMsg.id,
+        content: replyingToMsg.content,
+        user: { name: replyingToMsg.user?.name },
+      } : null,
     };
 
     setMessages((prev) => [...prev, optimisticMsg]);
@@ -187,11 +296,13 @@ const GroupChat = ({ group, authUserId, onMessageSent }) => {
     setFile(null);
     setFilePreview(null);
     setShowEmoji(false);
+    setReplyingToMsg(null);
 
     try {
       const formData = new FormData();
       if (text) formData.append("content", text);
       if (fileToSend) formData.append("file", fileToSend);
+      if (replyToId) formData.append("reply_to_id", replyToId);
       const res = await api.post(`/groups/${group.id}/messages`, formData);
       setMessages((prev) => prev.map((m) => (m.id === tempId ? res.data : m)));
       onMessageSent?.();
@@ -200,14 +311,16 @@ const GroupChat = ({ group, authUserId, onMessageSent }) => {
     } finally {
       setSending(false);
     }
-  }, [content, file, sending, group.id, authUserId, onMessageSent]);
+  }, [content, file, sending, replyingToMsg, group.id, authUserId, onMessageSent]);
 
-  const grouped = messages.reduce((acc, msg) => {
-    const date = formatDateSep(msg.created_at);
-    if (!acc[date]) acc[date] = [];
-    acc[date].push(msg);
-    return acc;
-  }, {});
+  const visibleGrouped = messages
+    .filter((msg) => !hiddenForMe.has(msg.id))
+    .reduce((acc, msg) => {
+      const date = formatDateSep(msg.created_at);
+      if (!acc[date]) acc[date] = [];
+      acc[date].push(msg);
+      return acc;
+    }, {});
 
   return (
     <div className="groups-chat">
@@ -227,16 +340,34 @@ const GroupChat = ({ group, authUserId, onMessageSent }) => {
             <p>{t("groups.startDiscussion", "Introduce yourself and start the first discussion.")}</p>
           </div>
         ) : (
-          Object.entries(grouped).map(([date, msgs]) => (
+          Object.entries(visibleGrouped).map(([date, msgs]) => (
             <div key={date}>
               <div className="groups-date-sep"><span>{date}</span></div>
               {msgs.map((msg, i) => {
                 const isOwn = String(msg.user_id) === String(authUserId);
                 const prevMsg = msgs[i - 1];
                 const showAuthor = !isOwn && (!prevMsg || String(prevMsg.user_id) !== String(msg.user_id));
+                const isTemp = String(msg.id).startsWith("tmp_");
+                const isDeleted = !!msg.deleted_for_everyone_at;
+                const isHighlighted = highlightedMsgId === msg.id;
+
+                if (isDeleted) {
+                  return (
+                    <div key={msg.id} id={`gmsg-${msg.id}`} className={`groups-msg-row ${isOwn ? "own" : "other"}`}>
+                      {!isOwn && <div className="groups-msg-avatar-spacer" />}
+                      <div className="groups-msg-content">
+                        <div className={`groups-msg-bubble ${isOwn ? "own" : "other"} groups-msg-bubble--deleted`}>
+                          <p className="groups-msg-deleted-text">{t("groups.messageDeleted", "This message was deleted.")}</p>
+                          <span className="groups-msg-time">{formatTime(msg.created_at)}</span>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                }
+
                 return (
-                  <div key={msg.id} className={`groups-msg-row ${isOwn ? "own" : "other"}`}>
-{!isOwn && (
+                  <div key={msg.id} id={`gmsg-${msg.id}`} className={`groups-msg-row ${isOwn ? "own" : "other"}`}>
+                    {!isOwn && (
                       <div className="groups-msg-avatar" onClick={() => goToProfile(msg.user_id)} style={{ cursor: "pointer" }}>
                         {msg.user?.profile_pic ? (
                           <img src={getImageUrl(msg.user.profile_pic)} alt={msg.user.name} />
@@ -251,10 +382,31 @@ const GroupChat = ({ group, authUserId, onMessageSent }) => {
                           {msg.user?.name}
                         </span>
                       )}
-                      <div className={`groups-msg-bubble ${isOwn ? "own" : "other"} ${msg._failed ? "failed" : ""}`}>
+                      <div
+                        className={`groups-msg-bubble ${isOwn ? "own" : "other"} ${msg._failed ? "failed" : ""} ${isHighlighted ? "groups-msg-bubble--highlighted" : ""}`}
+                        onClick={!isTemp ? (e) => handleBubbleClick(e, msg.id) : undefined}
+                        onContextMenu={!isTemp ? (e) => handleContextMenu(e, msg.id) : undefined}
+                        onTouchStart={!isTemp ? (e) => handleTouchStart(e, msg.id) : undefined}
+                        onTouchEnd={!isTemp ? handleTouchEnd : undefined}
+                        onTouchMove={!isTemp ? cancelLongPress : undefined}
+                      >
+                        {msg.reply_to && (
+                          <div
+                            className="groups-reply-quote"
+                            onClick={(e) => { e.stopPropagation(); scrollToMessage(msg.reply_to.id); }}
+                          >
+                            <span className="groups-reply-quote-author">{msg.reply_to.user?.name}</span>
+                            <span className="groups-reply-quote-text">
+                              {msg.reply_to.deleted_for_everyone_at
+                                ? t("groups.messageDeleted", "This message was deleted.")
+                                : (msg.reply_to.content || t("groups.attachment", "Attachment"))}
+                            </span>
+                          </div>
+                        )}
+
                         {msg.file_path && (() => {
                           const kind = getFileKind(msg.file_type);
-                          const url = msg._local ? msg.file_path : `${import.meta.env.VITE_API_URL}/storage/${msg.file_path}`;
+                          const url = msg._local ? msg.file_path : getImageUrl(`/storage/${msg.file_path}`);
                           if (kind === "image") {
                             return <img src={url} alt="attachment" className="groups-msg-attachment-img" />;
                           }
@@ -262,7 +414,7 @@ const GroupChat = ({ group, authUserId, onMessageSent }) => {
                             return <video src={url} controls className="groups-msg-attachment-video" />;
                           }
                           return (
-                            <a href={url} target="_blank" rel="noopener noreferrer" className="groups-msg-attachment-file">
+                            <a href={url} target="_blank" rel="noopener noreferrer" className="groups-msg-attachment-file" onClick={(e) => e.stopPropagation()}>
                               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
                                 <path d="M14 2v6h6" />
@@ -283,6 +435,24 @@ const GroupChat = ({ group, authUserId, onMessageSent }) => {
         )}
         <div ref={messagesEndRef} />
       </div>
+
+      {replyingToMsg && (
+        <div className="groups-reply-preview">
+          <div className="groups-reply-preview-content">
+            <span className="groups-reply-preview-author">{replyingToMsg.user?.name || t("groups.you", "You")}</span>
+            <span className="groups-reply-preview-text">
+              {replyingToMsg.content || (replyingToMsg.file_path ? t("groups.attachment", "Attachment") : "")}
+            </span>
+          </div>
+          <button
+            className="groups-reply-preview-close"
+            onClick={() => setReplyingToMsg(null)}
+            aria-label={t("groups.cancelReply", "Cancel reply")}
+          >
+            ✕
+          </button>
+        </div>
+      )}
 
       {file && (
         <div className="groups-chat-file-preview">
@@ -361,6 +531,47 @@ const GroupChat = ({ group, authUserId, onMessageSent }) => {
           )}
         </button>
       </div>
+
+      {/* Context menu (right-click / left-click desktop, long-press mobile) */}
+      {contextMenu && (() => {
+        const targetMsg = messages.find((m) => m.id === contextMenu.msgId);
+        if (!targetMsg || targetMsg.deleted_for_everyone_at) return null;
+        return (
+          <div className="groups-context-menu" style={{ top: contextMenu.y, left: contextMenu.x }} onClick={(e) => e.stopPropagation()}>
+            <button className="groups-context-menu-item" onClick={() => startReply(targetMsg)}>
+              {t("groups.reply", "Reply")}
+            </button>
+            <button className="groups-context-menu-item groups-context-menu-item--danger" onClick={() => setDeleteConfirm(contextMenu.msgId)}>
+              {t("groups.delete", "Delete")}
+            </button>
+          </div>
+        );
+      })()}
+
+      {/* Delete confirmation modal */}
+      {deleteConfirm && (() => {
+        const targetMsg = messages.find((m) => m.id === deleteConfirm);
+        if (!targetMsg) return null;
+        const isOwnMsg = String(targetMsg.user_id) === String(authUserId);
+        return (
+          <div className="groups-delete-modal-overlay" onClick={() => setDeleteConfirm(null)}>
+            <div className="groups-delete-modal" onClick={(e) => e.stopPropagation()}>
+              <p className="groups-delete-modal-title">{t("groups.deleteMessageTitle", "Delete this message?")}</p>
+              <button className="groups-delete-modal-btn" onClick={() => hideForMe(deleteConfirm)}>
+                {t("groups.deleteForMe", "Delete for me")}
+              </button>
+              {isOwnMsg && (
+                <button className="groups-delete-modal-btn groups-delete-modal-btn--danger" onClick={() => deleteForEveryone(deleteConfirm)}>
+                  {t("groups.deleteForEveryone", "Delete for everyone")}
+                </button>
+              )}
+              <button className="groups-delete-modal-btn groups-delete-modal-btn--cancel" onClick={() => setDeleteConfirm(null)}>
+                {t("groups.cancel", "Cancel")}
+              </button>
+            </div>
+          </div>
+        );
+      })()}
     </div>
   );
 };

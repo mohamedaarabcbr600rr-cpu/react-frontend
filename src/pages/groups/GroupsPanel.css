@@ -1280,3 +1280,215 @@
     padding: 16px;
   }
 }
+
+
+/* ====================================================
+   REPLY / DELETE — group chat
+   ==================================================== */
+.groups-msg-avatar-spacer {
+  width: 26px;
+  flex-shrink: 0;
+}
+
+.groups-reply-quote {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 5px 9px;
+  margin-bottom: 5px;
+  border-radius: 8px;
+  cursor: pointer;
+  border-left: 3px solid #6366f1;
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.groups-msg-bubble.own .groups-reply-quote {
+  background: rgba(255, 255, 255, 0.16);
+  border-left-color: rgba(255, 255, 255, 0.7);
+}
+
+.groups-reply-quote-author {
+  font-size: 11px;
+  font-weight: 700;
+  color: #6366f1;
+}
+
+.groups-msg-bubble.own .groups-reply-quote-author {
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.groups-reply-quote-text {
+  font-size: 11.5px;
+  color: #6b7280;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 220px;
+}
+
+.groups-msg-bubble.own .groups-reply-quote-text {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.groups-msg-bubble--highlighted {
+  animation: groupsHighlightPulse 1.5s ease both;
+}
+
+@keyframes groupsHighlightPulse {
+  0%   { box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.35); }
+  70%  { box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.35); }
+  100% { box-shadow: none; }
+}
+
+.groups-reply-preview {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 16px;
+  background: #eef0ff;
+  border-left: 3px solid #6366f1;
+  border-top: 1px solid #eef0f3;
+}
+
+.groups-reply-preview-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.groups-reply-preview-author {
+  font-size: 12px;
+  font-weight: 700;
+  color: #6366f1;
+}
+
+.groups-reply-preview-text {
+  font-size: 12.5px;
+  color: #6b7280;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.groups-reply-preview-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #9ca3af;
+  font-size: 14px;
+  padding: 4px 8px;
+  flex-shrink: 0;
+}
+
+.groups-msg-bubble--deleted {
+  opacity: 0.65;
+  font-style: italic;
+}
+
+.groups-msg-deleted-text {
+  color: #9ca3af !important;
+  font-style: italic;
+}
+
+.groups-context-menu {
+  position: fixed;
+  z-index: 500;
+  background: #fff;
+  border: 1px solid #eef0f3;
+  border-radius: 12px;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.14);
+  padding: 6px;
+  min-width: 160px;
+}
+
+.groups-context-menu-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 9px 12px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #111827;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+.groups-context-menu-item:hover {
+  background: #f5f6f8;
+}
+
+.groups-context-menu-item--danger {
+  color: #ef4444;
+}
+
+.groups-context-menu-item--danger:hover {
+  background: #fef2f2;
+}
+
+.groups-delete-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 14, 26, 0.5);
+  backdrop-filter: blur(6px);
+  z-index: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.groups-delete-modal {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 24px 48px rgba(15, 23, 42, 0.2);
+  padding: 20px;
+  width: 90%;
+  max-width: 340px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.groups-delete-modal-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 6px;
+  text-align: center;
+}
+
+.groups-delete-modal-btn {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #eef0f3;
+  background: #f9fafb;
+  color: #111827;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.groups-delete-modal-btn:hover {
+  background: #f3f4f6;
+}
+
+.groups-delete-modal-btn--danger {
+  background: #fef2f2;
+  color: #ef4444;
+  border-color: transparent;
+}
+
+.groups-delete-modal-btn--danger:hover {
+  background: #ef4444;
+  color: #fff;
+}
+
+.groups-delete-modal-btn--cancel {
+  background: none;
+  border: none;
+  color: #9ca3af;
+}
