@@ -1092,23 +1092,39 @@
   transform: scale(1.15);
 }
 
-/* ====================================================
-   RESPONSIVE MOBILE
-   ==================================================== */
+/* ── Responsive (mobile) ── */
 @media (max-width: 768px) {
   .groups-root {
-    flex-direction: column;
+    position: relative;
   }
 
+  /* Liste des groupes : plein écran, masquée dès qu'un groupe est ouvert */
   .groups-sidebar {
+    position: absolute;
+    inset: 0;
     width: 100%;
     min-width: unset;
     height: 100%;
-    border-right: none;
+    transform: translateX(-100%);
+    transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 10;
   }
 
-  .groups-sidebar--hidden-mobile {
-    display: none;
+  .groups-sidebar--open {
+    transform: translateX(0);
+  }
+
+  .groups-sidebar-header {
+    padding: 14px 16px 10px;
+  }
+
+  .groups-item {
+    padding: 12px 10px;
+  }
+
+  .groups-item-avatar {
+    width: 48px;
+    height: 48px;
   }
 
   .groups-main {
@@ -1116,50 +1132,151 @@
     height: 100%;
   }
 
-  .groups-main--hidden-mobile {
-    display: none;
+  /* Bouton retour, visible uniquement mobile */
+  .groups-back-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    border: none;
+    background: none;
+    color: #4b5563;
+    font-size: 26px;
+    font-weight: 300;
+    line-height: 1;
+    cursor: pointer;
+    flex-shrink: 0;
+    margin-right: -2px;
   }
 
-  .groups-main--chat {
-    position: fixed;
-    inset: 0;
-    z-index: 50;
+  .groups-back-btn:active {
+    background: #f3f4f6;
   }
 
   .groups-detail-header {
-    padding: 10px 14px;
+    padding: 12px 14px;
     gap: 10px;
+  }
+
+  .groups-detail-avatar {
+    width: 40px;
+    height: 40px;
   }
 
   .groups-detail-titles h2 {
     font-size: 14px;
   }
 
-  .groups-msg-content {
-    max-width: 78%;
+  .groups-header-menu {
+    right: -6px;
+    min-width: 180px;
   }
 
+  .groups-header-menu-item {
+    padding: 12px 12px;
+    font-size: 14px;
+  }
+
+  /* Zone de messages : plus d'air, bulles plus lisibles */
   .groups-chat-messages {
-    padding: 10px 14px;
+    padding: 16px 14px 10px;
+    gap: 8px;
   }
 
+  .groups-msg-row {
+    gap: 9px;
+  }
+
+  .groups-msg-content {
+    max-width: 80%;
+  }
+
+  .groups-msg-avatar {
+    width: 30px;
+    height: 30px;
+  }
+
+  .groups-msg-bubble {
+    padding: 10px 13px 7px;
+    border-radius: 16px;
+  }
+
+  .groups-msg-bubble p {
+    font-size: 14.5px;
+    line-height: 1.55;
+  }
+
+  .groups-msg-author {
+    font-size: 12px;
+    margin-left: 14px;
+    margin-bottom: 3px;
+  }
+
+  .groups-date-sep {
+    margin: 14px 0 10px;
+  }
+
+  .groups-msg-attachment-img {
+    max-width: 220px;
+  }
+
+  .groups-msg-attachment-video {
+    max-width: 220px;
+  }
+
+  /* Zone de saisie : cibles tactiles plus grandes, plus d'espace */
   .groups-chat-input-row {
-    padding: 8px 12px;
-    gap: 4px;
+    padding: 12px 14px calc(12px + env(safe-area-inset-bottom));
+    gap: 8px;
+  }
+
+  .groups-chat-icon-btn {
+    width: 40px;
+    height: 40px;
   }
 
   .groups-chat-input {
-    padding: 9px 14px;
-    font-size: 16px; /* prevent iOS zoom */
+    padding: 12px 16px;
+    font-size: 15px;
   }
 
+  .groups-chat-send-btn {
+    width: 42px;
+    height: 42px;
+  }
+
+  .groups-chat-emoji-tray {
+    padding: 12px;
+    max-height: 200px;
+  }
+
+  .groups-chat-emoji-tray button {
+    font-size: 24px;
+    padding: 8px;
+  }
+
+  .groups-chat-file-preview {
+    padding: 10px 14px;
+  }
+
+  /* Modale de création de groupe, adaptée mobile */
   .groups-modal {
     max-width: 92%;
-    padding: 18px;
+    padding: 20px 18px;
   }
 
-  .groups-profile-modal {
-    max-width: 85%;
-    padding: 28px 22px;
+  .groups-modal-cover-picker {
+    height: 100px;
+  }
+
+  /* État vide et welcome, un peu plus compacts */
+  .groups-welcome {
+    padding: 20px;
+  }
+
+  .groups-chat-empty {
+    padding: 16px;
   }
 }

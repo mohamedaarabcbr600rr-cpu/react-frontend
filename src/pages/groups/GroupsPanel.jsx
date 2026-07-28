@@ -194,7 +194,7 @@ const handleLeave = async (id) => {
 
   return (
     <div className="groups-root">
-      <aside className="groups-sidebar">
+      <aside className={`groups-sidebar ${!selectedGroupId ? "groups-sidebar--open" : ""}`}>
         <div className="groups-sidebar-header">
           <div className="groups-search-box">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -294,7 +294,14 @@ const handleLeave = async (id) => {
           </div>
         ) : (
           <div className="groups-detail">
-            <div className="groups-detail-header">
+<div className="groups-detail-header">
+              <button
+                className="groups-back-btn"
+                onClick={() => setSelectedGroupId(null)}
+                aria-label={t("groups.back", "Back")}
+              >
+                ‹
+              </button>
               <div className="groups-detail-avatar">
                 {selectedGroup.cover_image ? (
                   <img src={getImageUrl(selectedGroup.cover_image)} alt={selectedGroup.name} />
