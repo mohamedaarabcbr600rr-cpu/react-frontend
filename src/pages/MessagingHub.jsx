@@ -38,33 +38,9 @@ const MessagingHub = ({ authUserId }) => {
       </div>
 
      <div className="msg-hub-content">
-        {activeSection === "messages" && (
-          <>
-            <Messagerie authUserId={authUserId} />
-            {/* Mobile only: floating "Groups" tab overlaid next to Messagerie's own header,
-                since msg-hub-tabs is hidden on mobile to avoid the duplicate header */}
-            <button
-              className="msg-hub-mobile-groups-tab"
-              onClick={() => setActiveSection("groups")}
-            >
-              {t('messagingHub.groups', 'Groups')}
-            </button>
-          </>
-        )}
+        {activeSection === "messages" && <Messagerie authUserId={authUserId} />}
         {activeSection === "groups" && (
-          <div className="msg-hub-groups-wrapper">
-            {/* Mobile only: "← Groups" header, replaced by GroupsPanel's own chat header once a group is open */}
-            {!groupChatOpen && (
-              <button
-                className="msg-hub-mobile-groups-header"
-                onClick={() => setActiveSection("messages")}
-              >
-                <span className="msg-hub-mobile-back-arrow">‹</span>
-                {t('messagingHub.groups', 'Groups')}
-              </button>
-            )}
-            <GroupsPanel authUserId={authUserId} onGroupOpenChange={setGroupChatOpen} />
-          </div>
+          <GroupsPanel authUserId={authUserId} onGroupOpenChange={setGroupChatOpen} />
         )}
       </div>
     </div>

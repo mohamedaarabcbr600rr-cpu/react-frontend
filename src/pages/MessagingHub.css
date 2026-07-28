@@ -59,23 +59,6 @@
   height: 100% !important;
 }
 
-.msg-hub-groups-wrapper {
-  flex: 1;
-  min-width: 0;
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
-}
-
-.msg-hub-groups-wrapper .groups-root {
-  flex: 1;
-  min-height: 0;
-}
-
-.msg-hub-mobile-groups-header {
-  display: none;
-}
-
 @media (max-width: 768px) {
   .msg-hub-tabs {
     padding: 8px 14px;
@@ -86,28 +69,18 @@
     padding: 9px 10px;
   }
 
-  /* "← Groups" mobile-native header, replaces desktop tabs while browsing the groups list */
-  .msg-hub-mobile-groups-header {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 14px 16px;
-    background: #ffffff;
-    border-bottom: 1px solid #eef0f3;
-    font-size: 16px;
-    font-weight: 700;
-    color: #111827;
-    border: none;
-    text-align: left;
-    cursor: pointer;
-    flex-shrink: 0;
+  /* Messagerie's own internal header ("M  Messages") would duplicate the active
+     tab above it — hidden only here, inside the hub, on mobile. */
+  .msg-hub-content .wa-sidebar-header {
+    display: none;
   }
 
-  .msg-hub-mobile-back-arrow {
-    font-size: 24px;
-    font-weight: 400;
-    color: #6366f1;
-    line-height: 1;
+  /* Hide the tabs bar while a private conversation or a group chat is open,
+     to give full height back to the conversation (reuses the same body classes
+     that already hide the site navbar in those states). */
+  body.wa-chat-fullscreen .msg-hub-tabs,
+  body.groups-chat-fullscreen .msg-hub-tabs {
+    display: none !important;
   }
 }
 
