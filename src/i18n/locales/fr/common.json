@@ -12,6 +12,7 @@
   "premium": "Essayer Premium"
 },
 
+  
   "rightColumn": {
     "loginTitle": "Suggestions de personnes",
     "loginText": "Connectez-vous pour voir des suggestions personnalisées",
@@ -22,7 +23,16 @@
     "empty": "Aucune suggestion pour le moment",
     "loginToSee": "Connectez-vous pour voir des suggestions",
     "viewAll": "Voir toutes les suggestions",
-    "defaultTitle": "👨‍💻 Développeur"
+    "defaultTitle": "👨‍💻 Développeur",
+
+    "challengeTitle": "Défi du jour",
+    "challengeBodyTitle": "Explique une leçon en 5 lignes seulement",
+    "challengeBodyText": "Partage ton explication et gagne plus d'interactions !",
+    "participantsCount": "{{count}} ont participé",
+    "participate": "Participer maintenant",
+    "needHelp": "Besoin d'aide ?",
+    "needHelpText": "Pose n'importe quelle question à notre IA, elle est là pour toi.",
+    "askAI": "Demander à l'IA"
   },
 
   "footer": {
@@ -189,7 +199,22 @@
         "title": "L'arène est vide... Qui sera le premier héros ? 😎",
         "text": "Publie une idée, une explication ou un défi et lance la compétition 🔥"
       }
+    },
+
+     "aiHero": {
+    "greeting": "Bonjour",
+    "subtitle": "Qu'est-ce qu'on étudie aujourd'hui ?",
+    "tiles": {
+      "summary": { "title": "Résumer un PDF", "subtitle": "Obtiens un résumé clair en secondes" },
+      "quiz": { "title": "Générer un quiz", "subtitle": "Crée des QCM à partir de tes cours" },
+      "chat": { "title": "Poser à l'IA", "subtitle": "Ton assistant pour toutes tes questions" },
+      "coach": { "title": "AI Coach", "subtitle": "Entre dans ton coach personnel" }
     }
+  },
+  "loadingPosts": "Chargement des publications...",
+  "loadingMorePosts": "Chargement des publications suivantes...",
+  "seeMore": "Voir plus",
+  "feedEnd": "Vous avez tout vu 🎉"
   },
 
   
@@ -874,7 +899,32 @@
     "successMessage": "✅ Si un compte existe avec cet email, un lien de réinitialisation vient d'être envoyé.",
     "backToHome": "Retour à l'accueil",
     "genericError": "Une erreur est survenue."
+  },
+
+
+  "invite": {
+    "title": "Invite & gagne des badges",
+    "shareTitle": "Rejoins-moi sur Studmo",
+    "shareText": "Rejoins-moi sur Studmo, la plateforme d'apprentissage entre étudiants !",
+    "inviteFriends": "Inviter des amis",
+    "invitations": "{{count}} invitation",
+    "invitations_plural": "{{count}} invitations",
+    "nextBadgeFirst": "Plus que {{count}} invitations pour débloquer ton premier badge ! 🌟",
+    "nextBadge": "Plus que {{count}} invitations pour débloquer le badge {{name}} ! 🌟",
+    "badges": {
+      "star": { "name": "Étoile" },
+      "medal": { "name": "Médaille" },
+      "trophy": { "name": "Trophée" },
+      "gem": { "name": "Gemme" },
+      "crown": { "name": "Couronne" }
+    }
   }
+
+
+  
+  
+
+  
 
 
 

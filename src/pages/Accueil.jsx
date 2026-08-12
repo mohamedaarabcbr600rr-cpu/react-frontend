@@ -334,35 +334,35 @@ const Accueil = ({
             </div>
             <div className="ai-hero__text">
               <h2 className="ai-hero__greeting">
-                Bonjour{user?.name ? `, ${user.name.split(' ')[0]}` : ''} 👋
+                {t("home.aiHero.greeting")}{user?.name ? `, ${user.name.split(' ')[0]}` : ''} 👋
               </h2>
-              <p className="ai-hero__subtitle">Qu'est-ce qu'on étudie aujourd'hui&nbsp;?</p>
+              <p className="ai-hero__subtitle">{t("home.aiHero.subtitle")}</p>
             </div>
           </div>
 
           <div className="ai-hero__actions">
             <button className="ai-tile ai-tile--blue" onClick={() => (user ? navigate('/ai', { state: { initialTab: 'summary' } }) : openLogin())}>
               <span className="ai-tile__icon"><IconFileText size={22} color="#2563eb" /></span>
-              <span className="ai-tile__title">Résumer un PDF</span>
-              <span className="ai-tile__subtitle">Obtiens un résumé clair en secondes</span>
+              <span className="ai-tile__title">{t("home.aiHero.tiles.summary.title")}</span>
+              <span className="ai-tile__subtitle">{t("home.aiHero.tiles.summary.subtitle")}</span>
             </button>
 
             <button className="ai-tile ai-tile--green" onClick={() => (user ? navigate('/ai', { state: { initialTab: 'qcm' } }) : openLogin())}>
               <span className="ai-tile__icon"><IconQuiz size={22} color="#16a34a" /></span>
-              <span className="ai-tile__title">Générer un quiz</span>
-              <span className="ai-tile__subtitle">Crée des QCM à partir de tes cours</span>
+              <span className="ai-tile__title">{t("home.aiHero.tiles.quiz.title")}</span>
+              <span className="ai-tile__subtitle">{t("home.aiHero.tiles.quiz.subtitle")}</span>
             </button>
 
             <button className="ai-tile ai-tile--violet" onClick={() => (user ? navigate('/ai', { state: { initialTab: 'chat' } }) : openLogin())}>
               <span className="ai-tile__icon"><IconChat size={22} color="#7c3aed" /></span>
-              <span className="ai-tile__title">Poser à l'IA</span>
-              <span className="ai-tile__subtitle">Ton assistant pour toutes tes questions</span>
+              <span className="ai-tile__title">{t("home.aiHero.tiles.chat.title")}</span>
+              <span className="ai-tile__subtitle">{t("home.aiHero.tiles.chat.subtitle")}</span>
             </button>
 
             <button className="ai-tile ai-tile--amber" onClick={() => (user ? navigate('/ai', { state: { initialTab: 'coach' } }) : openLogin())}>
               <span className="ai-tile__icon"><IconTrophy size={22} color="#d97706" /></span>
-              <span className="ai-tile__title">AI Coach</span>
-              <span className="ai-tile__subtitle">Entre dans ton coach personnel</span>
+              <span className="ai-tile__title">{t("home.aiHero.tiles.coach.title")}</span>
+              <span className="ai-tile__subtitle">{t("home.aiHero.tiles.coach.subtitle")}</span>
             </button>
           </div>
         </div>
@@ -470,7 +470,7 @@ const Accueil = ({
         <div className="feed">
           {initialLoading && filteredExperiences.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '60px 20px', color: '#666' }}>
-              Chargement des publications...
+              {t("home.loadingPosts")}
             </div>
           ) : filteredExperiences.length > 0 ? (
             <>
@@ -505,7 +505,7 @@ const Accueil = ({
               {/* ✅ Indicateur de chargement pendant qu'on récupère la page suivante */}
               {filter === 'all' && loadingMore && (
                 <div style={{ textAlign: 'center', padding: '20px', color: '#666' }}>
-                  Chargement des publications suivantes...
+                  {t("home.loadingMorePosts")}
                 </div>
               )}
 
@@ -524,7 +524,7 @@ const Accueil = ({
                       cursor: 'pointer',
                     }}
                   >
-                    Voir plus
+                    {t("home.seeMore")}
                   </button>
                 </div>
               )}
@@ -532,7 +532,7 @@ const Accueil = ({
               {/* ✅ Message de fin de feed */}
               {filter === 'all' && !hasMore && (
                 <div style={{ textAlign: 'center', padding: '16px', color: '#9ca3af', fontSize: '14px' }}>
-                  Vous avez tout vu 🎉
+                  {t("home.feedEnd")}
                 </div>
               )}
             </>

@@ -12,6 +12,7 @@
   "premium": "Try Premium"
 },
 
+  
   "rightColumn": {
     "loginTitle": "People suggestions",
     "loginText": "Login to see personalized suggestions",
@@ -22,7 +23,16 @@
     "empty": "No suggestions available",
     "loginToSee": "Login to see suggestions",
     "viewAll": "See all suggestions",
-    "defaultTitle": "👨‍💻 Developer"
+    "defaultTitle": "👨‍💻 Developer",
+
+    "challengeTitle": "Daily Challenge",
+    "challengeBodyTitle": "Explain a lesson in only 5 lines",
+    "challengeBodyText": "Share your explanation and earn more interactions!",
+    "participantsCount": "{{count}} participated",
+    "participate": "Participate now",
+    "needHelp": "Need help?",
+    "needHelpText": "Ask any question to our AI, it's here for you.",
+    "askAI": "Ask AI"
   },
 
    "footer": {
@@ -160,38 +170,53 @@
 
   
   "home": {
-    "banner": "🏆 Today's Challenge: Explain a lesson in 5 lines only and win more interactions!",
-    "createPostInput": "Share an idea 🔥 or solve an exercise 💡",
-    "loginToPost": "Login to participate",
-    "feedTitle": "🔥 Challenge Arena",
-    "mostInteracted": "Most interacted 🔥",
-    "publicationCount": "{{count}} post",
-    "publicationCount_plural": "{{count}} posts",
-    "actions": {
-      "media": "Media",
-      "event": "Event",
-      "write": "Write"
+  "banner": "🏆 Challenge of the day: Explain a lesson in just 5 lines and get more interactions!",
+  "createPostInput": "Share an idea 🔥 or solve an exercise 💡",
+  "loginToPost": "Log in to participate",
+  "feedTitle": "🔥 The Challenge Arena",
+  "mostInteracted": "Most interactive 🔥",
+  "publicationCount": "{{count}} post",
+  "publicationCount_plural": "{{count}} posts",
+  "actions": {
+    "media": "Media",
+    "event": "Event",
+    "write": "Write"
+  },
+  "filters": {
+    "all": "📰 All",
+    "my": "✍️ My posts",
+    "shared": "🔄 Shared"
+  },
+  "empty": {
+    "myPosts": {
+      "title": "You haven't posted yet",
+      "text": "Share your first experience! 🚀"
     },
-    "filters": {
-      "all": "📰 All",
-      "my": "✍️ My posts",
-      "shared": "🔄 Shared"
+    "shared": {
+      "title": "No shares yet",
+      "text": "Share some interesting posts! 💫"
     },
-    "empty": {
-      "myPosts": {
-        "title": "You haven't posted yet",
-        "text": "Share your first experience! 🚀"
-      },
-      "shared": {
-        "title": "No shares yet",
-        "text": "Share interesting posts! 💫"
-      },
-      "all": {
-        "title": "The arena is empty... Who will be the first hero? 😎",
-        "text": "Post an idea, explanation, or challenge and start the competition 🔥"
-      }
+    "all": {
+      "title": "The arena is empty... Who will be the first hero? 😎",
+      "text": "Post an idea, an explanation, or a challenge and start the competition 🔥"
     }
   },
+
+  "aiHero": {
+    "greeting": "Hello",
+    "subtitle": "What are we studying today?",
+    "tiles": {
+      "summary": { "title": "Summarize a PDF", "subtitle": "Get a clear summary in seconds" },
+      "quiz": { "title": "Generate a quiz", "subtitle": "Create MCQs from your courses" },
+      "chat": { "title": "Ask the AI", "subtitle": "Your assistant for all your questions" },
+      "coach": { "title": "AI Coach", "subtitle": "Enter your personal coach" }
+    }
+  },
+  "loadingPosts": "Loading posts...",
+  "loadingMorePosts": "Loading more posts...",
+  "seeMore": "See more",
+  "feedEnd": "You're all caught up 🎉"
+},
 
   
   "notifications": {
@@ -878,7 +903,27 @@
     "successMessage": "✅ If an account exists with this email, a reset link has just been sent.",
     "backToHome": "Back to home",
     "genericError": "An error occurred."
+  },
+
+  
+  "invite": {
+    "title": "Invite & Earn Badges",
+    "shareTitle": "Join me on Studmo",
+    "shareText": "Join me on Studmo, the learning platform for students!",
+    "inviteFriends": "Invite Friends",
+    "invitations": "{{count}} invitation",
+    "invitations_plural": "{{count}} invitations",
+    "nextBadgeFirst": "{{count}} more invites to unlock your first badge! 🌟",
+    "nextBadge": "{{count}} more invites to unlock {{name}}! 🌟",
+    "badges": {
+      "star": { "name": "Star" },
+      "medal": { "name": "Medal" },
+      "trophy": { "name": "Trophy" },
+      "gem": { "name": "Gem" },
+      "crown": { "name": "Crown" }
+    }
   }
+
 
 
 

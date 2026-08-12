@@ -12,18 +12,29 @@
   "premium": "جرّب بريميوم"
 },
   
+  
   "rightColumn": {
     "loginTitle": "اقتراحات الأشخاص",
     "loginText": "سجّل الدخول لرؤية اقتراحات مخصصة",
     "suggestionsForYou": "اقتراحات لك",
     "popular": "اقتراحات شائعة",
-    "following": "✓ متابع",
+    "following": "✓ متابَع",
     "follow": "+ متابعة",
     "empty": "لا توجد اقتراحات في الوقت الحالي",
     "loginToSee": "سجّل الدخول لرؤية الاقتراحات",
     "viewAll": "عرض جميع الاقتراحات",
-    "defaultTitle": "👨‍💻 مطور"
+    "defaultTitle": "👨‍💻 مطور",
+
+    "challengeTitle": "تحدي اليوم",
+    "challengeBodyTitle": "اشرح درساً في 5 أسطر فقط",
+    "challengeBodyText": "شارك شرحك واحصل على تفاعلات أكثر!",
+    "participantsCount": "شارك {{count}} أشخاص",
+    "participate": "شارك الآن",
+    "needHelp": "تحتاج مساعدة؟",
+    "needHelpText": "اطرح أي سؤال على مساعدنا الذكي، إنه هنا من أجلك.",
+    "askAI": "اسأل الذكاء الاصطناعي"
   },
+
   "footer": {
     "about": "حول",
     "accessibility": "إمكانية الوصول",
@@ -157,38 +168,53 @@
 
   
   "home": {
-    "banner": "🏆 تحدي اليوم: اشرح درس في 5 أسطر فقط واربح تفاعل أكثر!",
-    "createPostInput": "شارك فكرة 🔥 أو حل تمرين 💡",
-    "loginToPost": "سجل الدخول للمشاركة",
-    "feedTitle": "🔥 ساحة التحديات",
-    "mostInteracted": "الأكثر تفاعلاً 🔥",
-    "publicationCount": "منشور {{count}}",
-    "publicationCount_plural": "{{count}} منشورات",
-    "actions": {
-      "media": "وسائط",
-      "event": "حدث",
-      "write": "كتابة"
+  "banner": "🏆 تحدي اليوم: اشرح درساً في 5 أسطر فقط واحصل على المزيد من التفاعلات!",
+  "createPostInput": "شارك فكرة 🔥 أو حل تمريناً 💡",
+  "loginToPost": "سجّل الدخول للمشاركة",
+  "feedTitle": "🔥 ساحة التحدي",
+  "mostInteracted": "الأكثر تفاعلاً 🔥",
+  "publicationCount": "منشور {{count}}",
+  "publicationCount_plural": "{{count}} منشورات",
+  "actions": {
+    "media": "وسائط",
+    "event": "حدث",
+    "write": "كتابة"
+  },
+  "filters": {
+    "all": "📰 الكل",
+    "my": "✍️ منشوراتي",
+    "shared": "🔄 مشاركات"
+  },
+  "empty": {
+    "myPosts": {
+      "title": "لم تنشر شيئاً بعد",
+      "text": "شارك تجربتك الأولى! 🚀"
     },
-    "filters": {
-      "all": "📰 الكل",
-      "my": "✍️ منشوراتي",
-      "shared": "🔄 مشاركات"
+    "shared": {
+      "title": "لا توجد مشاركات بعد",
+      "text": "شارك منشورات مثيرة للاهتمام! 💫"
     },
-    "empty": {
-      "myPosts": {
-        "title": "لم تنشر بعد",
-        "text": "شارك تجربتك الأولى! 🚀"
-      },
-      "shared": {
-        "title": "لا توجد مشاركات حالياً",
-        "text": "شارك منشورات مثيرة للاهتمام! 💫"
-      },
-      "all": {
-        "title": "الساحة فارغة... من سيكون أول بطل؟ 😎",
-        "text": "انشر فكرة، شرح، أو تحدي وابدأ المنافسة 🔥"
-      }
+    "all": {
+      "title": "الساحة فارغة... من سيكون البطل الأول؟ 😎",
+      "text": "انشر فكرة أو شرحاً أو تحدياً وابدأ المنافسة 🔥"
     }
   },
+
+  "aiHero": {
+    "greeting": "مرحباً",
+    "subtitle": "شنو غادي نقراو اليوم؟",
+    "tiles": {
+      "summary": { "title": "تلخيص PDF", "subtitle": "احصل على ملخص واضح في ثوانٍ" },
+      "quiz": { "title": "توليد اختبار", "subtitle": "أنشئ أسئلة اختيار من متعدد من دروسك" },
+      "chat": { "title": "اسأل الذكاء الاصطناعي", "subtitle": "مساعدك لجميع أسئلتك" },
+      "coach": { "title": "مدرب الذكاء الاصطناعي", "subtitle": "ادخل إلى مدربك الشخصي" }
+    }
+  },
+  "loadingPosts": "جارٍ تحميل المنشورات...",
+  "loadingMorePosts": "جارٍ تحميل المزيد من المنشورات...",
+  "seeMore": "عرض المزيد",
+  "feedEnd": "لقد اطّلعت على كل شيء 🎉"
+},
 
   
   "notifications": {
@@ -877,29 +903,51 @@
     "successMessage": "✅ إذا كان هناك حساب مرتبط بهذا البريد، فقد تم إرسال رابط إعادة التعيين.",
     "backToHome": "العودة إلى الصفحة الرئيسية",
     "genericError": "حدث خطأ ما."
+  } ,
+
+
+  
+  "invite": {
+    "title": "ادعُ واربح شارات",
+    "shareTitle": "انضم إليّ على Studmo",
+    "shareText": "انضم إليّ على Studmo، منصة التعلم بين الطلاب!",
+    "inviteFriends": "دعوة الأصدقاء",
+    "invitations": "دعوة واحدة",
+    "invitations_plural": "{{count}} دعوات",
+    "nextBadgeFirst": "تبقى {{count}} دعوات لفتح أول شارة لك! 🌟",
+    "nextBadge": "تبقى {{count}} دعوات لفتح شارة {{name}}! 🌟",
+    "badges": {
+      "star": { "name": "نجمة" },
+      "medal": { "name": "ميدالية" },
+      "trophy": { "name": "كأس" },
+      "gem": { "name": "جوهرة" },
+      "crown": { "name": "تاج" }
+    }
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
