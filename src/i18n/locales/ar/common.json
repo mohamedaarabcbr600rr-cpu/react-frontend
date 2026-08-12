@@ -923,33 +923,69 @@
       "gem": { "name": "جوهرة" },
       "crown": { "name": "تاج" }
     }
-  }
+  },
+
+
+  
+"groups": {
+  "welcomeToGroup": "مرحبًا بك في المجموعة! 🎉",
+  "startDiscussion": "قدّم نفسك وابدأ أول نقاش.",
+  "messageDeleted": "تم حذف هذه الرسالة.",
+  "attachment": "مرفق",
+  "you": "أنت",
+  "cancelReply": "إلغاء الرد",
+  "removeFile": "إزالة الملف",
+  "emoji": "الرموز التعبيرية",
+  "attach": "إرفاق ملف",
+  "typeMessage": "اكتب رسالة...",
+  "send": "إرسال",
+  "reply": "رد",
+  "delete": "حذف",
+  "deleteMessageTitle": "حذف هذه الرسالة؟",
+  "deleteForMe": "حذف عندي فقط",
+  "deleteForEveryone": "حذف عند الجميع",
+  "cancel": "إلغاء",
+  "today": "اليوم",
+  "yesterday": "أمس",
+  "title": "المجموعات",
+  "searchPlaceholder": "البحث عن مجموعات...",
+  "create": "إنشاء",
+  "filters": {
+    "all": "جميع المجموعات",
+    "mine": "مجموعاتي",
+    "discover": "اكتشف"
+  },
+  "noGroups": "لم يتم العثور على أي مجموعة",
+  "membersCount": "{{count}} عضو",
+  "membersCount_plural": "{{count}} أعضاء",
+  "welcome": {
+    "title": "مرحبًا بك في المجموعات",
+    "description": "انضم إلى المجموعات، تواصل مع الآخرين، وناقش المواضيع التي تهمك.",
+    "explore": "استكشف المجموعات"
+  },
+  "back": "رجوع",
+  "menu": "القائمة",
+  "public": "عامة",
+  "join": "انضمام",
+  "linkCopied": "تم نسخ الرابط!",
+  "shareGroup": "مشاركة المجموعة",
+  "deleteGroup": "حذف المجموعة",
+  "leave": "مغادرة المجموعة",
+  "joinToChat": "انضم إلى هذه المجموعة لرؤية الرسائل وإرسالها.",
+  "createGroup": "إنشاء مجموعة",
+  "addCoverPhoto": "إضافة صورة غلاف",
+  "coverPreview": "معاينة الغلاف",
+  "namePlaceholder": "اسم المجموعة",
+  "descriptionPlaceholder": "الوصف (اختياري)",
+  "loading": "جارٍ التحميل...",
+  "confirmDelete": "هل تريد حذف هذه المجموعة نهائيًا؟ لا يمكن التراجع عن هذا الإجراء."
+},
+"messagingHub": {
+  "messages": "الرسائل",
+  "groups": "المجموعات"
 }
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+}
 

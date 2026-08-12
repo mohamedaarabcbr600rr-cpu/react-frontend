@@ -35,19 +35,6 @@ const getImageUrl = (path) => {
   return path.startsWith("/storage") ? `${base}${path}` : `${base}/storage/${path}`;
 };
 
-const formatTime = (dateStr) =>
-  new Date(dateStr).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-
-const formatDateSep = (dateStr) => {
-  const d = new Date(dateStr);
-  const today = new Date();
-  const yesterday = new Date(today);
-  yesterday.setDate(today.getDate() - 1);
-  if (d.toDateString() === today.toDateString()) return "Today";
-  if (d.toDateString() === yesterday.toDateString()) return "Yesterday";
-  return d.toLocaleDateString([], { day: "numeric", month: "short", year: "numeric" });
-};
-
 const GroupChat = ({ group, authUserId, onMessageSent }) => {
   const [messages, setMessages] = useState([]);
   const [content, setContent] = useState("");
@@ -58,7 +45,6 @@ const GroupChat = ({ group, authUserId, onMessageSent }) => {
   const [file, setFile] = useState(null);
   const [filePreview, setFilePreview] = useState(null);
 
-  // ── Reply & Delete state (mirrors Messagerie.jsx) ────────────────────────
   const [replyingToMsg, setReplyingToMsg] = useState(null);
   const [contextMenu, setContextMenu] = useState(null);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
@@ -79,12 +65,28 @@ const GroupChat = ({ group, authUserId, onMessageSent }) => {
   const pollingRef = useRef(null);
   const echoRef = useRef(null);
   const groupIdRef = useRef(group.id);
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
 
   const goToProfile = (userId) => {
     if (userId) navigate(`/profile/${userId}`);
   };
+
+  // ── Date / Time formatting (locale-aware) ────────────────────────────────
+  const formatTime = useCallback((dateStr) =>
+    new Date(dateStr).toLocaleTimeString(i18n.language, { hour: "2-digit", minute: "2-digit" }),
+    [i18n.language]
+  );
+
+  const formatDateSep = useCallback((dateStr) => {
+    const d = new Date(dateStr);
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(today.getDate() - 1);
+    if (d.toDateString() === today.toDateString()) return t("groups.today");
+    if (d.toDateString() === yesterday.toDateString()) return t("groups.yesterday");
+    return d.toLocaleDateString(i18n.language, { day: "numeric", month: "short", year: "numeric" });
+  }, [i18n.language, t]);
 
   useEffect(() => {
     groupIdRef.current = group.id;
@@ -135,7 +137,6 @@ const GroupChat = ({ group, authUserId, onMessageSent }) => {
     channel.listen(".group-message.sent", (e) => {
       if (groupIdRef.current !== e.group_id) return;
       setMessages((prev) => {
-        // Replace if this is an update (edit/delete) to an existing message
         const existingIdx = prev.findIndex((m) => m.id === e.id);
         if (existingIdx !== -1) {
           const next = prev.slice();
@@ -166,7 +167,6 @@ const GroupChat = ({ group, authUserId, onMessageSent }) => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // ── Build the flat list of all images in this group conversation (for the lightbox) ──
   const groupImages = useMemo(() => {
     return messages
       .filter((m) => m.file_path && m.file_type?.startsWith("image") && !String(m.id).startsWith("tmp_"))
@@ -197,7 +197,6 @@ const GroupChat = ({ group, authUserId, onMessageSent }) => {
     setFilePreview(null);
   };
 
-  // ── Delete for me (local only) ──────────────────────────────────────────
   const hideForMe = useCallback((msgId) => {
     setHiddenForMe((prev) => {
       const next = new Set(prev);
@@ -211,7 +210,6 @@ const GroupChat = ({ group, authUserId, onMessageSent }) => {
     setDeleteConfirm(null);
   }, [authUserId, group.id]);
 
-  // ── Delete for everyone (backend) ───────────────────────────────────────
   const deleteForEveryone = useCallback(async (msgId) => {
     try {
       const res = await api.delete(`/group-messages/${msgId}`);
@@ -350,8 +348,8 @@ const GroupChat = ({ group, authUserId, onMessageSent }) => {
                 <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
               </svg>
             </div>
-            <h3>{t("groups.welcomeToGroup", "Welcome to the group! 🎉")}</h3>
-            <p>{t("groups.startDiscussion", "Introduce yourself and start the first discussion.")}</p>
+            <h3>{t("groups.welcomeToGroup")}</h3>
+            <p>{t("groups.startDiscussion")}</p>
           </div>
         ) : (
           Object.entries(visibleGrouped).map(([date, msgs]) => (
@@ -371,7 +369,7 @@ const GroupChat = ({ group, authUserId, onMessageSent }) => {
                       {!isOwn && <div className="groups-msg-avatar-spacer" />}
                       <div className="groups-msg-content">
                         <div className={`groups-msg-bubble ${isOwn ? "own" : "other"} groups-msg-bubble--deleted`}>
-                          <p className="groups-msg-deleted-text">{t("groups.messageDeleted", "This message was deleted.")}</p>
+                          <p className="groups-msg-deleted-text">{t("groups.messageDeleted")}</p>
                           <span className="groups-msg-time">{formatTime(msg.created_at)}</span>
                         </div>
                       </div>
@@ -412,20 +410,20 @@ const GroupChat = ({ group, authUserId, onMessageSent }) => {
                             <span className="groups-reply-quote-author">{msg.reply_to.user?.name}</span>
                             <span className="groups-reply-quote-text">
                               {msg.reply_to.deleted_for_everyone_at
-                                ? t("groups.messageDeleted", "This message was deleted.")
-                                : (msg.reply_to.content || t("groups.attachment", "Attachment"))}
+                                ? t("groups.messageDeleted")
+                                : (msg.reply_to.content || t("groups.attachment"))}
                             </span>
                           </div>
                         )}
 
-                       {msg.file_path && (() => {
+                        {msg.file_path && (() => {
                           const kind = getFileKind(msg.file_type);
                           const url = msg._local ? msg.file_path : getImageUrl(`/storage/${msg.file_path}`);
                           if (kind === "image") {
                             return (
                               <img
                                 src={url}
-                                alt="attachment"
+                                alt={t("groups.attachment")}
                                 className="groups-msg-attachment-img"
                                 onClick={(e) => {
                                   e.stopPropagation();
@@ -444,7 +442,7 @@ const GroupChat = ({ group, authUserId, onMessageSent }) => {
                                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
                                 <path d="M14 2v6h6" />
                               </svg>
-                              {t("groups.attachment", "Attachment")}
+                              {t("groups.attachment")}
                             </a>
                           );
                         })()}
@@ -464,15 +462,15 @@ const GroupChat = ({ group, authUserId, onMessageSent }) => {
       {replyingToMsg && (
         <div className="groups-reply-preview">
           <div className="groups-reply-preview-content">
-            <span className="groups-reply-preview-author">{replyingToMsg.user?.name || t("groups.you", "You")}</span>
+            <span className="groups-reply-preview-author">{replyingToMsg.user?.name || t("groups.you")}</span>
             <span className="groups-reply-preview-text">
-              {replyingToMsg.content || (replyingToMsg.file_path ? t("groups.attachment", "Attachment") : "")}
+              {replyingToMsg.content || (replyingToMsg.file_path ? t("groups.attachment") : "")}
             </span>
           </div>
           <button
             className="groups-reply-preview-close"
             onClick={() => setReplyingToMsg(null)}
-            aria-label={t("groups.cancelReply", "Cancel reply")}
+            aria-label={t("groups.cancelReply")}
           >
             ✕
           </button>
@@ -492,7 +490,7 @@ const GroupChat = ({ group, authUserId, onMessageSent }) => {
               <span>{file.name}</span>
             </div>
           )}
-          <button onClick={removeFile} aria-label="Remove">✕</button>
+          <button onClick={removeFile} aria-label={t("groups.removeFile")}>✕</button>
         </div>
       )}
 
@@ -510,11 +508,11 @@ const GroupChat = ({ group, authUserId, onMessageSent }) => {
         <button
           className="groups-chat-icon-btn"
           onClick={() => setShowEmoji((v) => !v)}
-          aria-label={t("groups.emoji", "Emoji")}
+          aria-label={t("groups.emoji")}
         >
           {showEmoji ? "😁" : "😊"}
         </button>
-        <label className="groups-chat-icon-btn" title={t("groups.attach", "Attach")}>
+        <label className="groups-chat-icon-btn" title={t("groups.attach")}>
           <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" />
           </svg>
@@ -530,7 +528,7 @@ const GroupChat = ({ group, authUserId, onMessageSent }) => {
           ref={inputRef}
           type="text"
           className="groups-chat-input"
-          placeholder={t("groups.typeMessage", "Type a message...")}
+          placeholder={t("groups.typeMessage")}
           value={content}
           onChange={(e) => setContent(e.target.value)}
           onKeyDown={(e) => {
@@ -545,7 +543,7 @@ const GroupChat = ({ group, authUserId, onMessageSent }) => {
           className="groups-chat-send-btn"
           onClick={handleSend}
           disabled={(!content.trim() && !file) || sending}
-          aria-label={t("groups.send", "Send")}
+          aria-label={t("groups.send")}
         >
           {sending ? (
             <div className="groups-spinner groups-spinner--small" />
@@ -557,23 +555,21 @@ const GroupChat = ({ group, authUserId, onMessageSent }) => {
         </button>
       </div>
 
-      {/* Context menu (right-click / left-click desktop, long-press mobile) */}
       {contextMenu && (() => {
         const targetMsg = messages.find((m) => m.id === contextMenu.msgId);
         if (!targetMsg || targetMsg.deleted_for_everyone_at) return null;
         return (
           <div className="groups-context-menu" style={{ top: contextMenu.y, left: contextMenu.x }} onClick={(e) => e.stopPropagation()}>
             <button className="groups-context-menu-item" onClick={() => startReply(targetMsg)}>
-              {t("groups.reply", "Reply")}
+              {t("groups.reply")}
             </button>
             <button className="groups-context-menu-item groups-context-menu-item--danger" onClick={() => setDeleteConfirm(contextMenu.msgId)}>
-              {t("groups.delete", "Delete")}
+              {t("groups.delete")}
             </button>
           </div>
         );
       })()}
 
-      {/* Delete confirmation modal */}
       {deleteConfirm && (() => {
         const targetMsg = messages.find((m) => m.id === deleteConfirm);
         if (!targetMsg) return null;
@@ -581,17 +577,17 @@ const GroupChat = ({ group, authUserId, onMessageSent }) => {
         return (
           <div className="groups-delete-modal-overlay" onClick={() => setDeleteConfirm(null)}>
             <div className="groups-delete-modal" onClick={(e) => e.stopPropagation()}>
-              <p className="groups-delete-modal-title">{t("groups.deleteMessageTitle", "Delete this message?")}</p>
+              <p className="groups-delete-modal-title">{t("groups.deleteMessageTitle")}</p>
               <button className="groups-delete-modal-btn" onClick={() => hideForMe(deleteConfirm)}>
-                {t("groups.deleteForMe", "Delete for me")}
+                {t("groups.deleteForMe")}
               </button>
               {isOwnMsg && (
                 <button className="groups-delete-modal-btn groups-delete-modal-btn--danger" onClick={() => deleteForEveryone(deleteConfirm)}>
-                  {t("groups.deleteForEveryone", "Delete for everyone")}
+                  {t("groups.deleteForEveryone")}
                 </button>
               )}
               <button className="groups-delete-modal-btn groups-delete-modal-btn--cancel" onClick={() => setDeleteConfirm(null)}>
-                {t("groups.cancel", "Cancel")}
+                {t("groups.cancel")}
               </button>
             </div>
           </div>

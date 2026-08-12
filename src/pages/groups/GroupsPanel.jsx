@@ -25,27 +25,11 @@ const getImageUrl = (path) => {
   return path.startsWith("/storage") ? `${base}${path}` : `${base}/storage/${path}`;
 };
 
-const formatListTime = (dateStr) => {
-  if (!dateStr) return "";
-  const d = new Date(dateStr);
-  const now = new Date();
-  const isToday = d.toDateString() === now.toDateString();
-  const yesterday = new Date(now);
-  yesterday.setDate(now.getDate() - 1);
-  const isYesterday = d.toDateString() === yesterday.toDateString();
-
-  if (isToday) return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-  if (isYesterday) return "Yesterday";
-  const diffDays = (now - d) / (1000 * 60 * 60 * 24);
-  if (diffDays < 7) return d.toLocaleDateString([], { weekday: "short" });
-  return d.toLocaleDateString([], { day: "numeric", month: "short" });
-};
-
 const GroupsPanel = ({ authUserId, onGroupOpenChange, activeSection = "groups", onSectionChange }) => {
   const [groups, setGroups] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  const [filter, setFilter] = useState("all"); // all | mine | discover
+  const [filter, setFilter] = useState("all");
   const [selectedGroupId, setSelectedGroupId] = useState(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [newGroupName, setNewGroupName] = useState("");
@@ -57,8 +41,24 @@ const GroupsPanel = ({ authUserId, onGroupOpenChange, activeSection = "groups", 
   const [groupMembers, setGroupMembers] = useState([]);
   const [headerMenuOpen, setHeaderMenuOpen] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
+
+  const formatListTime = (dateStr) => {
+    if (!dateStr) return "";
+    const d = new Date(dateStr);
+    const now = new Date();
+    const isToday = d.toDateString() === now.toDateString();
+    const yesterday = new Date(now);
+    yesterday.setDate(now.getDate() - 1);
+    const isYesterday = d.toDateString() === yesterday.toDateString();
+
+    if (isToday) return d.toLocaleTimeString(i18n.language, { hour: "2-digit", minute: "2-digit" });
+    if (isYesterday) return t("groups.yesterday");
+    const diffDays = (now - d) / (1000 * 60 * 60 * 24);
+    if (diffDays < 7) return d.toLocaleDateString(i18n.language, { weekday: "short" });
+    return d.toLocaleDateString(i18n.language, { day: "numeric", month: "short" });
+  };
 
   const handleShareGroup = (group) => {
     const link = `${window.location.origin}/messagerie?groupInvite=${group.invite_token}`;
@@ -81,7 +81,6 @@ const GroupsPanel = ({ authUserId, onGroupOpenChange, activeSection = "groups", 
     fetchGroups();
   }, []);
 
-  // ── Auto-join if the user arrived via a group invite link (?groupInvite=TOKEN) ──
   useEffect(() => {
     const token = localStorage.getItem('pending_group_invite');
     if (!token) return;
@@ -107,13 +106,10 @@ const GroupsPanel = ({ authUserId, onGroupOpenChange, activeSection = "groups", 
 
   const selectedGroup = groups.find((g) => g.id === selectedGroupId);
 
-  // Let the parent (MessagingHub) know whether a group chat is open, so it can
-  // hide its own "← Groups" mobile header and give full height to the chat.
   useEffect(() => {
     onGroupOpenChange?.(!!selectedGroupId);
   }, [selectedGroupId, onGroupOpenChange]);
 
-  // Fetch member avatars for the header stack whenever a member group is opened
   useEffect(() => {
     setHeaderMenuOpen(false);
     if (!selectedGroup?.is_member) {
@@ -126,7 +122,6 @@ const GroupsPanel = ({ authUserId, onGroupOpenChange, activeSection = "groups", 
       .catch(() => setGroupMembers([]));
   }, [selectedGroupId, selectedGroup?.is_member]);
 
-  // ── Immersive mode: hide global navbar on mobile when a group is open ──────
   useEffect(() => {
     const isGroupOpen = !!selectedGroupId;
     document.body.classList.toggle('groups-chat-fullscreen', isGroupOpen);
@@ -161,7 +156,7 @@ const GroupsPanel = ({ authUserId, onGroupOpenChange, activeSection = "groups", 
 
   const handleDeleteGroup = async (id) => {
     setHeaderMenuOpen(false);
-    if (!window.confirm(t("groups.confirmDelete", "Delete this group permanently? This cannot be undone."))) return;
+    if (!window.confirm(t("groups.confirmDelete"))) return;
     try {
       await api.delete(`/groups/${id}`);
       setGroups((prev) => prev.filter((g) => g.id !== id));
@@ -210,21 +205,21 @@ const GroupsPanel = ({ authUserId, onGroupOpenChange, activeSection = "groups", 
       <aside className={`groups-sidebar ${!selectedGroupId ? "groups-sidebar--open" : ""}`}>
         <div className="groups-sidebar-header">
           <div className="groups-sidebar-header-top">
-            <h1 className="groups-sidebar-title">{t("groups.title", "Groupes")}</h1>
+            <h1 className="groups-sidebar-title">{t("groups.title")}</h1>
             <div className="wa-hub-switch">
               <button
                 type="button"
                 className={`wa-hub-switch-btn ${activeSection === "messages" ? "active" : ""}`}
                 onClick={() => onSectionChange?.("messages")}
               >
-                {t("messagingHub.messages", "Messages")}
+                {t("messagingHub.messages")}
               </button>
               <button
                 type="button"
                 className={`wa-hub-switch-btn ${activeSection === "groups" ? "active" : ""}`}
                 onClick={() => onSectionChange?.("groups")}
               >
-                {t("messagingHub.groups", "Groups")}
+                {t("messagingHub.groups")}
               </button>
             </div>
           </div>
@@ -237,7 +232,7 @@ const GroupsPanel = ({ authUserId, onGroupOpenChange, activeSection = "groups", 
               </svg>
               <input
                 type="text"
-                placeholder={t("groups.searchPlaceholder", "Search groups...")}
+                placeholder={t("groups.searchPlaceholder")}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -247,20 +242,20 @@ const GroupsPanel = ({ authUserId, onGroupOpenChange, activeSection = "groups", 
                 <path d="M12 5v14" />
                 <path d="M5 12h14" />
               </svg>
-              {t("groups.create", "Create")}
+              {t("groups.create")}
             </button>
           </div>
         </div>
 
         <div className="groups-filters">
           <button className={`groups-filter-btn ${filter === "all" ? "active" : ""}`} onClick={() => setFilter("all")}>
-            {t("groups.filters.all", "All Groups")}
+            {t("groups.filters.all")}
           </button>
           <button className={`groups-filter-btn ${filter === "mine" ? "active" : ""}`} onClick={() => setFilter("mine")}>
-            {t("groups.filters.mine", "My Groups")}
+            {t("groups.filters.mine")}
           </button>
           <button className={`groups-filter-btn ${filter === "discover" ? "active" : ""}`} onClick={() => setFilter("discover")}>
-            {t("groups.filters.discover", "Discover")}
+            {t("groups.filters.discover")}
           </button>
         </div>
 
@@ -270,7 +265,7 @@ const GroupsPanel = ({ authUserId, onGroupOpenChange, activeSection = "groups", 
               <div className="groups-spinner" />
             </div>
           ) : filtered.length === 0 ? (
-            <div className="groups-empty-list">{t("groups.noGroups", "No groups found")}</div>
+            <div className="groups-empty-list">{t("groups.noGroups")}</div>
           ) : (
             filtered.map((group) => {
               const unread = group.unread_count || 0;
@@ -293,8 +288,8 @@ const GroupsPanel = ({ authUserId, onGroupOpenChange, activeSection = "groups", 
                     <div className="groups-item-bottom">
                       <span className={`groups-item-preview ${unread > 0 ? "groups-item-preview--unread" : ""}`}>
                         {group.last_message
-                          ? `${group.last_message.user_name ? group.last_message.user_name + ": " : ""}${group.last_message.content || t("groups.attachment", "Attachment")}`
-                          : t("groups.membersCount", { count: group.members_count, defaultValue: `${group.members_count} members` })}
+                          ? `${group.last_message.user_name ? group.last_message.user_name + ": " : ""}${group.last_message.content || t("groups.attachment")}`
+                          : t("groups.membersCount", { count: group.members_count })}
                       </span>
                       {unread > 0 ? (
                         <span className="groups-item-badge">{unread > 9 ? "9+" : unread}</span>
@@ -321,10 +316,10 @@ const GroupsPanel = ({ authUserId, onGroupOpenChange, activeSection = "groups", 
                 <path d="M16 3.13a4 4 0 0 1 0 7.75" />
               </svg>
             </div>
-            <h2>{t("groups.welcome.title", "Welcome to Groups")}</h2>
-            <p>{t("groups.welcome.description", "Join groups, connect with people and start discussing topics that matter to you.")}</p>
+            <h2>{t("groups.welcome.title")}</h2>
+            <p>{t("groups.welcome.description")}</p>
             <button className="groups-explore-btn" onClick={() => setFilter("discover")}>
-              {t("groups.welcome.explore", "Explore Groups")}
+              {t("groups.welcome.explore")}
             </button>
           </div>
         ) : (
@@ -333,7 +328,7 @@ const GroupsPanel = ({ authUserId, onGroupOpenChange, activeSection = "groups", 
               <button
                 className="groups-back-btn"
                 onClick={() => setSelectedGroupId(null)}
-                aria-label={t("groups.back", "Back")}
+                aria-label={t("groups.back")}
               >
                 ‹
               </button>
@@ -366,15 +361,15 @@ const GroupsPanel = ({ authUserId, onGroupOpenChange, activeSection = "groups", 
                   )}
 
                   <span>
-                    {t("groups.membersCount", { count: selectedGroup.members_count, defaultValue: `${selectedGroup.members_count} Members` })}
-                    {" · "}{t("groups.public", "Public")}
+                    {t("groups.membersCount", { count: selectedGroup.members_count })}
+                    {" · "}{t("groups.public")}
                   </span>
                 </div>
               </div>
 
               {selectedGroup.is_member ? (
                 <div className="groups-header-menu-wrap">
-                  <button className="groups-header-menu-btn" onClick={() => setHeaderMenuOpen((v) => !v)} aria-label="Menu">
+                  <button className="groups-header-menu-btn" onClick={() => setHeaderMenuOpen((v) => !v)} aria-label={t("groups.menu")}>
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
                       <circle cx="12" cy="5" r="1.6" />
                       <circle cx="12" cy="12" r="1.6" />
@@ -386,15 +381,15 @@ const GroupsPanel = ({ authUserId, onGroupOpenChange, activeSection = "groups", 
                       <div className="groups-header-menu-overlay" onClick={() => setHeaderMenuOpen(false)} />
                       <div className="groups-header-menu">
                         <button className="groups-header-menu-item" onClick={() => handleShareGroup(selectedGroup)}>
-                          {linkCopied ? t("groups.linkCopied", "Link copied!") : t("groups.shareGroup", "Share group")}
+                          {linkCopied ? t("groups.linkCopied") : t("groups.shareGroup")}
                         </button>
                         {selectedGroup.is_admin && (
                           <button className="groups-header-menu-item groups-header-menu-item--danger" onClick={() => handleDeleteGroup(selectedGroup.id)}>
-                            {t("groups.deleteGroup", "Delete group")}
+                            {t("groups.deleteGroup")}
                           </button>
                         )}
                         <button className="groups-header-menu-item groups-header-menu-item--danger" onClick={() => handleLeave(selectedGroup.id)}>
-                          {t("groups.leave", "Leave group")}
+                          {t("groups.leave")}
                         </button>
                       </div>
                     </>
@@ -402,7 +397,7 @@ const GroupsPanel = ({ authUserId, onGroupOpenChange, activeSection = "groups", 
                 </div>
               ) : (
                 <button className="groups-join-btn" onClick={(e) => handleJoin(selectedGroup.id, e)} disabled={joiningId === selectedGroup.id}>
-                  {t("groups.join", "Join")}
+                  {t("groups.join")}
                 </button>
               )}
             </div>
@@ -412,7 +407,7 @@ const GroupsPanel = ({ authUserId, onGroupOpenChange, activeSection = "groups", 
             ) : (
               <div className="groups-detail-placeholder">
                 {selectedGroup.description && <p className="groups-detail-description">{selectedGroup.description}</p>}
-                <p>{t("groups.joinToChat", "Join this group to see and send messages.")}</p>
+                <p>{t("groups.joinToChat")}</p>
               </div>
             )}
           </div>
@@ -422,11 +417,11 @@ const GroupsPanel = ({ authUserId, onGroupOpenChange, activeSection = "groups", 
       {showCreateModal && (
         <div className="groups-modal-overlay" onClick={() => setShowCreateModal(false)}>
           <form className="groups-modal" onClick={(e) => e.stopPropagation()} onSubmit={handleCreateGroup}>
-            <h3>{t("groups.createGroup", "Create Group")}</h3>
+            <h3>{t("groups.createGroup")}</h3>
 
             <label className="groups-modal-cover-picker">
               {newGroupCoverPreview ? (
-                <img src={newGroupCoverPreview} alt="Cover preview" />
+                <img src={newGroupCoverPreview} alt={t("groups.coverPreview")} />
               ) : (
                 <span>
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -435,7 +430,7 @@ const GroupsPanel = ({ authUserId, onGroupOpenChange, activeSection = "groups", 
                     <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
                     <path d="M16 3.13a4 4 0 0 1 0 7.75" />
                   </svg>
-                  {t("groups.addCoverPhoto", "Add cover photo")}
+                  {t("groups.addCoverPhoto")}
                 </span>
               )}
               <input type="file" accept="image/*" onChange={handleCoverSelect} style={{ display: "none" }} />
@@ -443,23 +438,23 @@ const GroupsPanel = ({ authUserId, onGroupOpenChange, activeSection = "groups", 
 
             <input
               type="text"
-              placeholder={t("groups.namePlaceholder", "Group name")}
+              placeholder={t("groups.namePlaceholder")}
               value={newGroupName}
               onChange={(e) => setNewGroupName(e.target.value)}
               required
             />
             <textarea
-              placeholder={t("groups.descriptionPlaceholder", "Description (optional)")}
+              placeholder={t("groups.descriptionPlaceholder")}
               value={newGroupDescription}
               onChange={(e) => setNewGroupDescription(e.target.value)}
               rows={3}
             />
             <div className="groups-modal-actions">
               <button type="button" className="groups-modal-cancel" onClick={() => setShowCreateModal(false)}>
-                {t("groups.cancel", "Cancel")}
+                {t("groups.cancel")}
               </button>
               <button type="submit" className="groups-modal-submit" disabled={creating || !newGroupName.trim()}>
-                {creating ? t("common.loading", "Loading...") : t("groups.create", "Create")}
+                {creating ? t("groups.loading") : t("groups.create")}
               </button>
             </div>
           </form>

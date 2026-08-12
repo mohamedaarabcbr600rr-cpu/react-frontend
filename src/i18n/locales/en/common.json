@@ -922,7 +922,65 @@
       "gem": { "name": "Gem" },
       "crown": { "name": "Crown" }
     }
-  }
+  },
+
+  "groups": {
+  "welcomeToGroup": "Welcome to the group! 🎉",
+  "startDiscussion": "Introduce yourself and start the first discussion.",
+  "messageDeleted": "This message has been deleted.",
+  "attachment": "Attachment",
+  "you": "You",
+  "cancelReply": "Cancel reply",
+  "removeFile": "Remove file",
+  "emoji": "Emoji",
+  "attach": "Attach a file",
+  "typeMessage": "Type a message...",
+  "send": "Send",
+  "reply": "Reply",
+  "delete": "Delete",
+  "deleteMessageTitle": "Delete this message?",
+  "deleteForMe": "Delete for me",
+  "deleteForEveryone": "Delete for everyone",
+  "cancel": "Cancel",
+  "today": "Today",
+  "yesterday": "Yesterday",
+  "title": "Groups",
+  "searchPlaceholder": "Search groups...",
+  "create": "Create",
+  "filters": {
+    "all": "All groups",
+    "mine": "My groups",
+    "discover": "Discover"
+  },
+  "noGroups": "No groups found",
+  "membersCount": "{{count}} member",
+  "membersCount_plural": "{{count}} members",
+  "welcome": {
+    "title": "Welcome to Groups",
+    "description": "Join groups, connect with others, and discuss topics that interest you.",
+    "explore": "Explore groups"
+  },
+  "back": "Back",
+  "menu": "Menu",
+  "public": "Public",
+  "join": "Join",
+  "linkCopied": "Link copied!",
+  "shareGroup": "Share group",
+  "deleteGroup": "Delete group",
+  "leave": "Leave group",
+  "joinToChat": "Join this group to see and send messages.",
+  "createGroup": "Create a group",
+  "addCoverPhoto": "Add a cover photo",
+  "coverPreview": "Cover preview",
+  "namePlaceholder": "Group name",
+  "descriptionPlaceholder": "Description (optional)",
+  "loading": "Loading...",
+  "confirmDelete": "Permanently delete this group? This action cannot be undone."
+},
+"messagingHub": {
+  "messages": "Messages",
+  "groups": "Groups"
+}
 
 
 

@@ -918,7 +918,68 @@
       "gem": { "name": "Gemme" },
       "crown": { "name": "Couronne" }
     }
-  }
+  },
+
+
+  
+  "groups": {
+  "welcomeToGroup": "Bienvenue dans le groupe ! 🎉",
+  "startDiscussion": "Présentez-vous et lancez la première discussion.",
+  "messageDeleted": "Ce message a été supprimé.",
+  "attachment": "Pièce jointe",
+  "you": "Vous",
+  "cancelReply": "Annuler la réponse",
+  "removeFile": "Supprimer le fichier",
+  "emoji": "Emoji",
+  "attach": "Joindre un fichier",
+  "typeMessage": "Écrivez un message...",
+  "send": "Envoyer",
+  "reply": "Répondre",
+  "delete": "Supprimer",
+  "deleteMessageTitle": "Supprimer ce message ?",
+  "deleteForMe": "Supprimer pour moi",
+  "deleteForEveryone": "Supprimer pour tout le monde",
+  "cancel": "Annuler",
+  "today": "Aujourd'hui",
+  "yesterday": "Hier",
+  "title": "Groupes",
+  "searchPlaceholder": "Rechercher des groupes...",
+  "create": "Créer",
+  "filters": {
+    "all": "Tous les groupes",
+    "mine": "Mes groupes",
+    "discover": "Découvrir"
+  },
+  "noGroups": "Aucun groupe trouvé",
+  "membersCount": "{{count}} membre",
+  "membersCount_plural": "{{count}} membres",
+  "welcome": {
+    "title": "Bienvenue dans les groupes",
+    "description": "Rejoignez des groupes, connectez-vous avec les autres et discutez de sujets qui vous intéressent.",
+    "explore": "Explorer les groupes"
+  },
+  "back": "Retour",
+  "menu": "Menu",
+  "public": "Public",
+  "join": "Rejoindre",
+  "linkCopied": "Lien copié !",
+  "shareGroup": "Partager le groupe",
+  "deleteGroup": "Supprimer le groupe",
+  "leave": "Quitter le groupe",
+  "joinToChat": "Rejoignez ce groupe pour voir et envoyer des messages.",
+  "createGroup": "Créer un groupe",
+  "addCoverPhoto": "Ajouter une photo de couverture",
+  "coverPreview": "Aperçu de la couverture",
+  "namePlaceholder": "Nom du groupe",
+  "descriptionPlaceholder": "Description (facultatif)",
+  "loading": "Chargement...",
+  "confirmDelete": "Supprimer définitivement ce groupe ? Cette action est irréversible."
+},
+"messagingHub": {
+  "messages": "Messages",
+  "groups": "Groupes"
+}
+
 
 
   
