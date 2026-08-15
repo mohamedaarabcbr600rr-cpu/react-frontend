@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite --port 5133",
-    "build": "vite build",
+    "build": "node scripts/generate-sitemap.mjs && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
