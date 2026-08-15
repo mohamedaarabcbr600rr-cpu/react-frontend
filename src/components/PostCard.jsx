@@ -119,6 +119,40 @@ const IconCopy = ({ size = 16, color = "currentColor" }) => (
 
 // ──────────────────────────────────────────────────────────────────────────────
 
+// ✅ SEO / Internal linking : transforme les #hashtags du contenu en liens cliquables
+// vers une recherche filtrée sur l'accueil (/?q=motclé), sans toucher au reste du texte.
+const HASHTAG_REGEX = /#[\p{L}\p{N}_]+/gu;
+
+const renderContentWithHashtags = (text, onHashtagClick) => {
+  if (!text) return null;
+  const regex = new RegExp(HASHTAG_REGEX);
+  const nodes = [];
+  let lastIndex = 0;
+  let match;
+  let key = 0;
+
+  while ((match = regex.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      nodes.push(text.slice(lastIndex, match.index));
+    }
+    const tag = match[0];
+    nodes.push(
+      <span
+        key={`hashtag-${key++}`}
+        onClick={(e) => { e.stopPropagation(); onHashtagClick(tag); }}
+        style={{ color: '#0a66c2', fontWeight: 600, cursor: 'pointer' }}
+      >
+        {tag}
+      </span>
+    );
+    lastIndex = regex.lastIndex;
+  }
+  if (lastIndex < text.length) {
+    nodes.push(text.slice(lastIndex));
+  }
+  return nodes;
+};
+
 const PostCard = ({
   experience,
   user,
@@ -199,6 +233,12 @@ const PostCard = ({
   const handleProfileClick = (userId, e) => {
     e?.stopPropagation();
     if (userId) navigate(`/profile/${userId}`);
+  };
+
+  // ✅ Clic sur un hashtag → recherche filtrée sur l'accueil
+  const handleHashtagClick = (tag) => {
+    const term = tag.replace(/^#/, '');
+    navigate(`/?q=${encodeURIComponent(term)}`);
   };
 
   /* ── Fetch réactions ── */
@@ -454,7 +494,7 @@ const PostCard = ({
         {exp.content && (
           <>
             <p className={`post-card__text ${!expandedText ? 'post-card__text--clamped' : ''}`}>
-              {exp.content}
+              {renderContentWithHashtags(exp.content, handleHashtagClick)}
             </p>
             {exp.content.length > 150 && (
               <button

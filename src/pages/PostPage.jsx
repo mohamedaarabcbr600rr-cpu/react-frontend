@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import axios from '../axios';
 import PostCard from '../components/PostCard';
@@ -192,6 +192,25 @@ const PostPage = ({
         friends={friends}
         shareUsers={shareUsers}
       />
+
+      {/* ✅ Internal linking : ramène le visiteur (notamment venu de Google) vers le reste du site */}
+      <div style={{ textAlign: 'center', marginTop: '32px', marginBottom: '16px' }}>
+        <Link
+          to="/"
+          style={{
+            display: 'inline-block',
+            background: '#0a66c2',
+            color: 'white',
+            textDecoration: 'none',
+            padding: '10px 24px',
+            borderRadius: '20px',
+            fontWeight: 600,
+            fontSize: '14px'
+          }}
+        >
+          {t('post.discoverMore', 'Découvrir plus de publications sur Studmo')}
+        </Link>
+      </div>
     </div>
   );
 };

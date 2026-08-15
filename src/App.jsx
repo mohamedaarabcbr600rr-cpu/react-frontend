@@ -296,6 +296,22 @@ const [adminToken, setAdminToken] = useState(() =>
 
   useEffect(() => { fetchExperiences(); }, []);
 
+  // ── Recherche déclenchée par un paramètre d'URL (?q=...), ex: clic sur un hashtag depuis un post ──
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const q = params.get('q');
+    if (!q) return;
+    setSearchTerm(q);
+    const term = q.toLowerCase();
+    setFilteredExperiences(
+      experiences.filter(exp =>
+        exp.title?.toLowerCase().includes(term) ||
+        exp.content?.toLowerCase().includes(term) ||
+        exp.user?.name?.toLowerCase().includes(term)
+      )
+    );
+  }, [location.search, experiences]);
+
   const addExperience = (newExp) => {
     setExperiences([newExp, ...experiences]);
     setFilteredExperiences([newExp, ...filteredExperiences]);
