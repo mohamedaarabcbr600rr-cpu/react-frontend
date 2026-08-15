@@ -5,6 +5,53 @@ import axios from '../axios';
 import PostCard from '../components/PostCard';
 import './Accueil.css';
 
+const SITE_NAME = 'Studmo';
+const DEFAULT_IMAGE = 'https://studmo.com/og-image.png';
+
+const stripHtml = (str = '') => str.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+
+const truncate = (str = '', max = 155) => {
+  if (str.length <= max) return str;
+  return str.slice(0, max - 1).trimEnd() + '…';
+};
+
+const setMetaTag = (attr, key, content) => {
+  if (!content) return;
+  let el = document.head.querySelector(`meta[${attr}="${key}"]`);
+  if (!el) {
+    el = document.createElement('meta');
+    el.setAttribute(attr, key);
+    document.head.appendChild(el);
+  }
+  el.setAttribute('content', content);
+};
+
+const setCanonical = (url) => {
+  let el = document.head.querySelector('link[rel="canonical"]');
+  if (!el) {
+    el = document.createElement('link');
+    el.setAttribute('rel', 'canonical');
+    document.head.appendChild(el);
+  }
+  el.setAttribute('href', url);
+};
+
+const setJsonLd = (data) => {
+  let el = document.getElementById('post-jsonld');
+  if (!el) {
+    el = document.createElement('script');
+    el.type = 'application/ld+json';
+    el.id = 'post-jsonld';
+    document.head.appendChild(el);
+  }
+  el.textContent = JSON.stringify(data);
+};
+
+const removeJsonLd = () => {
+  const el = document.getElementById('post-jsonld');
+  if (el) el.remove();
+};
+
 const PostPage = ({
   user,
   onLike,
@@ -47,6 +94,54 @@ const PostPage = ({
     fetchPost();
     return () => { cancelled = true; };
   }, [id]);
+
+  // ── SEO : title, meta description, canonical, OG, Twitter, JSON-LD ──
+  useEffect(() => {
+    if (!experience) return;
+
+    const url = `https://studmo.com/post/${experience.id}`;
+    const rawTitle = experience.title?.trim() || stripHtml(experience.content || '').slice(0, 60);
+    const title = rawTitle ? `${rawTitle} | ${SITE_NAME}` : `${SITE_NAME} — Connect. Learn. Grow.`;
+    const description = truncate(stripHtml(experience.content || experience.title || ''));
+    const image = experience.medias?.[0]?.url || experience.media_url || DEFAULT_IMAGE;
+    const authorName = experience.user?.name || 'Studmo';
+    const publishedAt = experience.created_at;
+
+    const previousTitle = document.title;
+    document.title = title;
+
+    setMetaTag('name', 'description', description);
+    setCanonical(url);
+
+    setMetaTag('property', 'og:type', 'article');
+    setMetaTag('property', 'og:title', title);
+    setMetaTag('property', 'og:description', description);
+    setMetaTag('property', 'og:url', url);
+    setMetaTag('property', 'og:image', image);
+
+    setMetaTag('name', 'twitter:card', 'summary_large_image');
+    setMetaTag('name', 'twitter:title', title);
+    setMetaTag('name', 'twitter:description', description);
+    setMetaTag('name', 'twitter:image', image);
+
+    setJsonLd({
+      '@context': 'https://schema.org',
+      '@type': 'SocialMediaPosting',
+      headline: rawTitle || undefined,
+      articleBody: experience.content || undefined,
+      datePublished: publishedAt || undefined,
+      dateModified: experience.updated_at || publishedAt || undefined,
+      author: { '@type': 'Person', name: authorName },
+      publisher: { '@type': 'Organization', name: 'Studmo', url: 'https://studmo.com' },
+      url,
+      image: image || undefined,
+    });
+
+    return () => {
+      document.title = previousTitle;
+      removeJsonLd();
+    };
+  }, [experience]);
 
   if (loading) {
     return (
