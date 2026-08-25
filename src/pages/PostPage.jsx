@@ -131,7 +131,13 @@ const PostPage = ({
       articleBody: experience.content || undefined,
       datePublished: publishedAt || undefined,
       dateModified: experience.updated_at || publishedAt || undefined,
-      author: { '@type': 'Person', name: authorName },
+      author: {
+        '@type': 'Person',
+        name: authorName,
+        url: experience.user?.id
+          ? `https://studmo.com/profile/${experience.user.id}`
+          : undefined,
+      },
       publisher: { '@type': 'Organization', name: 'Studmo', url: 'https://studmo.com' },
       url,
       image: image || undefined,
