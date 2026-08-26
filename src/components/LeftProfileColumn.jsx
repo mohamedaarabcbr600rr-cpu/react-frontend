@@ -5,6 +5,21 @@ import logo from '../assets/logo.jpg';
 import InviteEarnCard from './InviteEarnCard';
 import TopReferrers from './TopReferrers';
 
+const IconSparkle = ({ size = 18, color = "currentColor" }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill={color} aria-hidden="true">
+    <path d="M12 2.5c.4 0 .74.27.85.65l1.44 5.06 5.06 1.44a.88.88 0 0 1 0 1.7l-5.06 1.44-1.44 5.06a.88.88 0 0 1-1.7 0l-1.44-5.06-5.06-1.44a.88.88 0 0 1 0-1.7l5.06-1.44 1.44-5.06c.11-.38.45-.65.85-.65z" />
+  </svg>
+);
+
+const IconLink = ({ size = 14, color = "currentColor" }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
+    stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"
+    aria-hidden="true">
+    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+  </svg>
+);
+
 const LeftProfileColumn = ({
   user = null,
   getInitials,
