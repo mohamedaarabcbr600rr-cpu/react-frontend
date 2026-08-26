@@ -81,6 +81,12 @@
   margin-bottom: 2px;
 }
 
+.ai-hero__sparkle {
+  display: inline-flex;
+  vertical-align: -1px;
+  margin-left: 6px;
+}
+
 .ai-hero__subtitle {
   font-size: var(--font-size-base);
   color: var(--color-text-secondary);

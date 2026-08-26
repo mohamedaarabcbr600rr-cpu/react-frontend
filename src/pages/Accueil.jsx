@@ -334,8 +334,11 @@ const Accueil = ({
             </div>
             <div className="ai-hero__text">
               <h2 className="ai-hero__greeting">
-                {t("home.aiHero.greeting")}{user?.name ? `, ${user.name.split(' ')[0]}` : ''} 👋
-              </h2>
+  {t("home.aiHero.greeting")}{user?.name ? `, ${user.name.split(' ')[0]}` : ''}
+  <span className="ai-hero__sparkle">
+    <IconSparkle size={16} color="#6366f1" />
+  </span>
+</h2>
               <p className="ai-hero__subtitle">{t("home.aiHero.subtitle")}</p>
             </div>
           </div>
