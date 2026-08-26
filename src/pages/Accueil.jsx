@@ -89,16 +89,16 @@ const IconShare = ({ size = 40, color = "currentColor" }) => (
   </svg>
 );
 
-const IconRobot = ({ size = 24, color = "currentColor" }) => (
+const IconChip = ({ size = 24, color = "currentColor" }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
-    stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"
+    stroke={color} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"
     aria-hidden="true">
-    <rect x="4" y="8" width="16" height="12" rx="3" />
-    <circle cx="9" cy="14" r="1.2" fill={color} stroke="none" />
-    <circle cx="15" cy="14" r="1.2" fill={color} stroke="none" />
-    <path d="M12 8V4" />
-    <circle cx="12" cy="3" r="1" fill={color} stroke="none" />
-    <path d="M2 13h2M20 13h2" />
+    <rect x="7" y="7" width="10" height="10" rx="1.5" />
+    <rect x="10" y="10" width="4" height="4" rx="0.5" />
+    <path d="M9 2v3M12 2v3M15 2v3" />
+    <path d="M9 19v3M12 19v3M15 19v3" />
+    <path d="M2 9h3M2 12h3M2 15h3" />
+    <path d="M19 9h3M19 12h3M19 15h3" />
   </svg>
 );
 
@@ -335,9 +335,9 @@ const Accueil = ({
         <div className="ai-hero">
           <div className="ai-hero__intro">
             <div className="ai-hero__mascot" aria-hidden="true">
-              <span className="ai-hero__mascot-ring" />
-              <IconRobot size={26} color="#ffffff" />
-            </div>
+  <span className="ai-hero__mascot-ring" />
+  <IconChip size={24} color="#f7ef06" />
+</div>
             <div className="ai-hero__text">
               <h2 className="ai-hero__greeting">
   {t("home.aiHero.greeting")}{user?.name ? `, ${user.name.split(' ')[0]}` : ''}

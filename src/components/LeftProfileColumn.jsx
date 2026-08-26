@@ -5,9 +5,13 @@ import logo from '../assets/logo.jpg';
 import InviteEarnCard from './InviteEarnCard';
 import TopReferrers from './TopReferrers';
 
-const IconSparkle = ({ size = 18, color = "currentColor" }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill={color} aria-hidden="true">
-    <path d="M12 2.5c.4 0 .74.27.85.65l1.44 5.06 5.06 1.44a.88.88 0 0 1 0 1.7l-5.06 1.44-1.44 5.06a.88.88 0 0 1-1.7 0l-1.44-5.06-5.06-1.44a.88.88 0 0 1 0-1.7l5.06-1.44 1.44-5.06c.11-.38.45-.65.85-.65z" />
+const IconWelcome = ({ size = 28, color = "currentColor" }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
+    stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"
+    aria-hidden="true">
+    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+    <polyline points="16 17 21 12 16 7" />
+    <line x1="21" y1="12" x2="9" y2="12" />
   </svg>
 );
 
@@ -34,7 +38,7 @@ const LeftProfileColumn = ({
       <div className="left-profile">
         <div className="left-profile__visitor">
           <span className="left-profile__visitor-icon">
-  <IconSparkle size={28} color="#6366f1" />
+  <IconWelcome size={28} color="#6366f1" />
 </span>
 
           <h3 className="left-profile__visitor-title">
