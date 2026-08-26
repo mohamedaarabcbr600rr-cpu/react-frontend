@@ -130,6 +130,12 @@ const IconTrophy = ({ size = 22, color = "currentColor" }) => (
   </svg>
 );
 
+const IconSparkle = ({ size = 18, color = "currentColor" }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill={color} aria-hidden="true">
+    <path d="M12 2.5c.4 0 .74.27.85.65l1.44 5.06 5.06 1.44a.88.88 0 0 1 0 1.7l-5.06 1.44-1.44 5.06a.88.88 0 0 1-1.7 0l-1.44-5.06-5.06-1.44a.88.88 0 0 1 0-1.7l5.06-1.44 1.44-5.06c.11-.38.45-.65.85-.65z" />
+  </svg>
+);
+
 
 // ──────────────────────────────────────────────────────────────────────────────
 
