@@ -18,7 +18,9 @@ const LeftProfileColumn = ({
     return (
       <div className="left-profile">
         <div className="left-profile__visitor">
-          <span className="left-profile__visitor-icon">👋</span>
+          <span className="left-profile__visitor-icon">
+  <IconSparkle size={28} color="#6366f1" />
+</span>
 
           <h3 className="left-profile__visitor-title">
             {t('leftProfile.visitor.title')}
@@ -88,10 +90,12 @@ const LeftProfileColumn = ({
     rel="noopener noreferrer"
     onClick={(e) => e.stopPropagation()}
   >
-    🔗{' '}
-    {user.link.length > 35
-      ? `${user.link.substring(0, 35)}...`
-      : user.link}
+    <span style={{ display: 'inline-flex', verticalAlign: '-2px', marginRight: 4 }}>
+  <IconLink size={13} color="currentColor" />
+</span>
+{user.link.length > 35
+  ? `${user.link.substring(0, 35)}...`
+  : user.link}
   </a>
 )}
       </div>
