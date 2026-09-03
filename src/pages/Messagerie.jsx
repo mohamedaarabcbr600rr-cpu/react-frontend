@@ -814,12 +814,22 @@ const replyToId = replyingToMsg?.id || null;
   }, [content, files, sending, conversationId, authUserId, t]);
 
   // ── Typing handler ─────────────────────────────────────────────────────────
+  // AFTER
+  const lastTypingSentRef = useRef(0);
+
   const handleTyping = useCallback((e) => {
     setContent(e.target.value);
     if (!conversationId) return;
-    api.post(`/messages/${conversationId}/typing`, { user_id: authUserId, is_typing: true }).catch(() => {});
+
+    const now = Date.now();
+    if (now - lastTypingSentRef.current > 1500) {
+      lastTypingSentRef.current = now;
+      api.post(`/messages/${conversationId}/typing`, { user_id: authUserId, is_typing: true }).catch(() => {});
+    }
+
     clearTimeout(typingTimeoutRef.current);
     typingTimeoutRef.current = setTimeout(() => {
+      lastTypingSentRef.current = 0;
       api.post(`/messages/${conversationId}/typing`, { user_id: authUserId, is_typing: false }).catch(() => {});
     }, 2000);
   }, [conversationId, authUserId]);
