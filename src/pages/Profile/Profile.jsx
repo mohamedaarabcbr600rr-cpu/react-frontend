@@ -40,6 +40,7 @@ const Profile = ({
   const cleanUsername = username ? username.split(':')[0].trim() : null;
   const isNumericId = cleanUsername && !isNaN(cleanUsername) && parseInt(cleanUsername, 10) > 0;
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   // === State Management ===
   const [currentUserFollowing, setCurrentUserFollowing] = useState([]);
