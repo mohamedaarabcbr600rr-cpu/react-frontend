@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import "./delete-account.css";
 
 const MAIL = "privacy@studmo.com";
+const SUPPORTED = ["en", "fr", "ar"];
 
 const CONTENT = {
   en: {
@@ -64,20 +65,51 @@ const CONTENT = {
     team: "Équipe chargée de la confidentialité",
     site: "Site web",
   },
+  ar: {
+    docTitle: "طلب حذف الحساب | Studmo",
+    title: "طلب حذف الحساب",
+    intro:
+      "إذا كان لديك حساب على Studmo وترغب في حذفه، يمكنك طلب الحذف النهائي لحسابك وبياناتك الشخصية المرتبطة به عن طريق التواصل مع فريق الخصوصية لدينا.",
+    howTitle: "كيفية طلب الحذف",
+    subject: "طلب حذف حساب Studmo",
+    steps: [
+      "أرسل بريدًا إلكترونيًا إلى",
+      "استخدم عنوان الموضوع: «طلب حذف حساب Studmo».",
+      "اذكر عنوان البريد الإلكتروني المرتبط بحسابك على Studmo.",
+      "قد يتواصل معك فريقنا للتحقق من هويتك قبل معالجة طلبك.",
+    ],
+    button: "راسل فريق الخصوصية",
+    dataTitle: "البيانات المشمولة بالحذف",
+    data:
+      "مع مراعاة الالتزامات القانونية والقيود التقنية المعمول بها، يشمل طلبك حسابك والمعلومات الشخصية المرتبطة به، ومنها معلومات الملف الشخصي والمنشورات والتعليقات والمستندات المرفوعة وبيانات التعلّم المرتبطة بالحساب، عند الاقتضاء.",
+    timeTitle: "مدة المعالجة",
+    time: "تتم مراجعة طلبات حذف الحسابات ومعالجتها في أقرب وقت معقول.",
+    retTitle: "الاحتفاظ بالبيانات",
+    ret:
+      "قد يتم الاحتفاظ ببعض المعلومات عندما يقتضي القانون ذلك، أو عندما تكون ضرورية لأغراض مشروعة تتعلق بالأمان أو منع الاحتيال أو الامتثال القانوني. وتُحفظ هذه المعلومات بشكل منفصل عن البيانات التي يتم حذفها بناءً على طلبك.",
+    noteTitle: "ملاحظة مهمة",
+    note:
+      "إلغاء تثبيت تطبيق Studmo لا يؤدي إلى حذف حسابك أو بياناتك الشخصية تلقائيًا. يجب عليك تقديم طلب الحذف باتباع الخطوات الموضحة أعلاه.",
+    contactTitle: "التواصل",
+    team: "فريق الخصوصية",
+    site: "الموقع الإلكتروني",
+  },
 };
 
 const DeleteAccount = () => {
   const { i18n } = useTranslation();
 
-  // Le site gère déjà la langue avec i18next : on reste cohérent (fr = français, tout le reste = anglais)
-  const lang = (i18n.language || "en").toLowerCase().startsWith("fr") ? "fr" : "en";
+  // fr = français, ar = arabe, tout le reste = anglais
+  const current = (i18n.language || "en").toLowerCase();
+  const lang = current.startsWith("fr") ? "fr" : current.startsWith("ar") ? "ar" : "en";
+  const dir = lang === "ar" ? "rtl" : "ltr";
   const t = CONTENT[lang];
   const mailto = `mailto:${MAIL}?subject=${encodeURIComponent(t.subject)}`;
 
-  // Permet d'ouvrir directement /delete-account?lang=fr (ou en)
+  // Permet d'ouvrir directement /delete-account?lang=fr (ou en, ar)
   useEffect(() => {
     const q = new URLSearchParams(window.location.search).get("lang");
-    if ((q === "fr" || q === "en") && q !== lang) {
+    if (SUPPORTED.includes(q) && q !== lang) {
       i18n.changeLanguage(q);
       localStorage.setItem("lang", q);
     }
@@ -101,12 +133,13 @@ const DeleteAccount = () => {
   };
 
   return (
-    <div className="da-page">
+    <div className="da-page" dir={dir}>
       <main className="da-main" lang={lang}>
         <div className="da-lang-row">
-          <div className="da-lang" role="group" aria-label="Language / Langue">
+          <div className="da-lang" role="group" aria-label="Language / Langue / اللغة" dir="ltr">
             <button type="button" aria-pressed={lang === "en"} onClick={() => changeLang("en")}>English</button>
             <button type="button" aria-pressed={lang === "fr"} onClick={() => changeLang("fr")}>Français</button>
+            <button type="button" aria-pressed={lang === "ar"} onClick={() => changeLang("ar")}>العربية</button>
           </div>
         </div>
 

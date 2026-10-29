@@ -290,7 +290,8 @@
     "formatCount": {
       "million": "{{count}}M",
       "thousand": "{{count}}k"
-    }
+    },
+    "deleteAccount": "Supprimer mon compte"
   },
 
   "editProfile": {

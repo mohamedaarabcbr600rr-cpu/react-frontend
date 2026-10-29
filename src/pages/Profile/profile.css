@@ -335,6 +335,89 @@
   to { transform: rotate(360deg); }
 }
 
+
+/* ===== DELETE ACCOUNT BUTTON ===== */
+.profile-delete-account {
+  display: flex;
+  justify-content: center;
+  margin: 24px 0 8px;
+  padding-top: 20px;
+  border-top: 1px solid #efefef;
+}
+
+.profile-delete-account-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 9px 20px;
+  background: transparent;
+  color: #ed4956;
+  border: 1px solid #ed4956;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+}
+
+.profile-delete-account-btn:hover {
+  background: #ed4956;
+  color: #fff;
+}
+
+.profile-delete-account-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(237, 73, 86, 0.3);
+}
+
+.profile-delete-account-btn:active {
+  transform: scale(0.98);
+}
+
+.profile-delete-account-btn svg {
+  flex-shrink: 0;
+}
+
+@media (max-width: 480px) {
+  .profile-delete-account {
+    padding: 20px 16px 0;
+  }
+
+  .profile-delete-account-btn {
+    width: 100%;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .profile-delete-account {
+    border-top-color: #2c2c2c;
+  }
+
+  .profile-delete-account-btn {
+    color: #ff6b78;
+    border-color: #ff6b78;
+  }
+
+  .profile-delete-account-btn:hover {
+    background: #ff6b78;
+    color: #1a1a1a;
+  }
+}
+
+[dir="rtl"] .profile-delete-account-btn {
+  flex-direction: row-reverse;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .profile-delete-account-btn:active {
+    transform: none;
+  }
+}
+
+
+
+
 /* ===== RESPONSIVE DESIGN ===== */
 @media (max-width: 735px) {
   .profile-page {

@@ -292,7 +292,9 @@
     "formatCount": {
       "million": "{{count}}M",
       "thousand": "{{count}}k"
-    }
+    },
+    "deleteAccount": "Delete my account"
+
   },
 
 

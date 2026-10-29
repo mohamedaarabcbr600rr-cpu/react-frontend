@@ -576,16 +576,32 @@ const handleFollow = async (targetUserId, targetUserData = null) => {
 
       {/* Bouton Supprimer le compte (visible uniquement sur son propre profil) */}
       {isMyProfile && (
-        <div className="profile-delete-account">
-          <button
-            type="button"
-            className="profile-delete-account-btn"
-            onClick={() => navigate('/delete-account')}
-          >
-            Supprimer mon compte
-          </button>
-        </div>
-      )}
+  <div className="profile-delete-account">
+    <button
+      type="button"
+      className="profile-delete-account-btn"
+      onClick={() => navigate('/delete-account')}
+    >
+      <svg
+        viewBox="0 0 24 24"
+        width="16"
+        height="16"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden="true"
+      >
+        <polyline points="3 6 5 6 21 6" />
+        <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+        <path d="M10 11v6M14 11v6" />
+        <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+      </svg>
+      <span>{t('profile.deleteAccount', 'Supprimer mon compte')}</span>
+    </button>
+  </div>
+)}
 
       <div className="profile-content">
         {activeTab === "posts" && (

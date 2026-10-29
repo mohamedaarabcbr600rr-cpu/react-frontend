@@ -1,54 +1,407 @@
-/* pages/DeleteAccount/delete-account.css
-   Adapte --da-brand à la couleur principale de Studmo. */
+/* ============================================
+   Delete Account page — Studmo
+   Style "startup": propre, aéré, accessible
+   Supporte LTR + RTL (arabe) via propriétés logiques
+   ============================================ */
+
 .da-page {
-  --da-brand: #1f4fd8;
-  --da-brand-dark: #173a9e;
-  --da-bg: #f6f7fb;
+  --da-bg: #fafafa;
   --da-surface: #ffffff;
-  --da-text: #1b2033;
-  --da-muted: #5a6178;
-  --da-line: #dde1ec;
-  --da-note-bg: #fff6e0;
-  --da-note-line: #e3b341;
-  background: var(--da-bg);
+  --da-text: #0f172a;
+  --da-text-soft: #334155;
+  --da-muted: #64748b;
+  --da-border: #e2e8f0;
+  --da-accent: #4f46e5;
+  --da-accent-hover: #4338ca;
+  --da-accent-soft: #eef2ff;
+  --da-warn-bg: #fffbeb;
+  --da-warn-border: #fcd34d;
+  --da-warn-text: #92400e;
+  --da-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px rgba(15, 23, 42, 0.06);
+
+  min-height: 100vh;
+  padding: 56px 20px 96px;
   color: var(--da-text);
-  line-height: 1.65;
-  font-size: 1.0625rem;
+  background:
+    radial-gradient(900px 380px at 50% -120px, rgba(79, 70, 229, 0.12), transparent 70%),
+    var(--da-bg);
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  box-sizing: border-box;
 }
-.da-page *, .da-page *::before, .da-page *::after { box-sizing: border-box; }
-.da-page a { color: var(--da-brand); }
-.da-page a:focus-visible, .da-page button:focus-visible {
-  outline: 3px solid var(--da-brand);
+
+.da-page *,
+.da-page *::before,
+.da-page *::after {
+  box-sizing: border-box;
+}
+
+[dir="rtl"].da-page {
+  font-family: "Segoe UI", Tahoma, "Noto Sans Arabic", "Noto Kufi Arabic", Arial, sans-serif;
+  line-height: 1.9;
+}
+
+/* ===== LAYOUT ===== */
+.da-main {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+/* ===== LANGUAGE SWITCH ===== */
+.da-lang-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 40px;
+}
+
+[dir="rtl"] .da-lang-row {
+  justify-content: flex-start;
+}
+
+.da-lang {
+  display: inline-flex;
+  padding: 4px;
+  gap: 2px;
+  background: var(--da-surface);
+  border: 1px solid var(--da-border);
+  border-radius: 999px;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+.da-lang button {
+  padding: 6px 14px;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--da-muted);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.da-lang button:hover {
+  color: var(--da-text);
+}
+
+.da-lang button[aria-pressed="true"] {
+  background: var(--da-text);
+  color: #fff;
+}
+
+.da-lang button:focus-visible {
+  outline: 2px solid var(--da-accent);
+  outline-offset: 2px;
+}
+
+/* ===== TITLE ===== */
+.da-main h1 {
+  margin: 0 0 16px;
+  font-size: clamp(30px, 5vw, 44px);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  color: var(--da-text);
+}
+
+[dir="rtl"] .da-main h1 {
+  letter-spacing: 0;
+  line-height: 1.35;
+}
+
+.da-lead {
+  margin: 0 0 36px;
+  font-size: 18px;
+  color: var(--da-muted);
+}
+
+/* ===== MAIN CARD (steps) ===== */
+.da-card {
+  position: relative;
+  margin-bottom: 40px;
+  padding: 32px;
+  background: var(--da-surface);
+  border: 1px solid var(--da-border);
+  border-radius: 20px;
+  box-shadow: var(--da-shadow);
+}
+
+.da-card h2 {
+  margin: 0 0 20px;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+[dir="rtl"] .da-card h2 {
+  letter-spacing: 0;
+}
+
+.da-card ol {
+  margin: 0 0 28px;
+  padding: 0;
+  list-style: none;
+  counter-reset: da-step;
+}
+
+.da-card li {
+  position: relative;
+  counter-increment: da-step;
+  min-height: 32px;
+  padding-block: 4px 18px;
+  padding-inline-start: 48px;
+  color: var(--da-text-soft);
+  font-size: 15.5px;
+}
+
+.da-card li:last-child {
+  padding-bottom: 4px;
+}
+
+.da-card li::before {
+  content: counter(da-step);
+  position: absolute;
+  top: 2px;
+  inset-inline-start: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--da-accent-soft);
+  color: var(--da-accent);
+  border-radius: 50%;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+/* Ligne verticale qui relie les étapes */
+.da-card li:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  top: 38px;
+  bottom: 4px;
+  inset-inline-start: 15px;
+  width: 2px;
+  background: var(--da-border);
+  border-radius: 2px;
+}
+
+/* ===== BUTTON ===== */
+.da-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 13px 24px;
+  background: var(--da-accent);
+  color: #fff;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: 0 1px 2px rgba(79, 70, 229, 0.3), 0 6px 16px rgba(79, 70, 229, 0.25);
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+
+.da-btn::after {
+  content: "→";
+  font-size: 17px;
+  line-height: 1;
+  transition: transform 0.2s;
+}
+
+[dir="rtl"] .da-btn::after {
+  content: "←";
+}
+
+.da-btn:hover {
+  background: var(--da-accent-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(79, 70, 229, 0.3), 0 10px 22px rgba(79, 70, 229, 0.3);
+}
+
+.da-btn:hover::after {
+  transform: translateX(3px);
+}
+
+[dir="rtl"] .da-btn:hover::after {
+  transform: translateX(-3px);
+}
+
+.da-btn:active {
+  transform: translateY(0);
+}
+
+.da-btn:focus-visible {
+  outline: 3px solid rgba(79, 70, 229, 0.4);
+  outline-offset: 2px;
+}
+
+/* ===== INFO SECTIONS ===== */
+.da-main > section:not(.da-card) {
+  padding: 28px 0;
+  border-top: 1px solid var(--da-border);
+}
+
+.da-main > section:not(.da-card) h2 {
+  margin: 0 0 10px;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+[dir="rtl"] .da-main > section:not(.da-card) h2 {
+  letter-spacing: 0;
+}
+
+.da-main > section:not(.da-card) p {
+  margin: 0;
+  color: var(--da-text-soft);
+  font-size: 15.5px;
+}
+
+/* ===== IMPORTANT NOTE ===== */
+.da-note {
+  margin: 12px 0 12px;
+  padding: 22px 24px;
+  background: var(--da-warn-bg);
+  border: 1px solid var(--da-warn-border);
+  border-inline-start-width: 4px;
+  border-radius: 14px;
+}
+
+.da-note h2 {
+  margin: 0 0 6px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--da-warn-text);
+}
+
+.da-note p {
+  margin: 0;
+  color: var(--da-warn-text);
+  font-size: 15px;
+}
+
+/* ===== LINKS ===== */
+.da-main a:not(.da-btn) {
+  color: var(--da-accent);
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.da-main a:not(.da-btn):hover {
+  color: var(--da-accent-hover);
+  border-bottom-color: currentColor;
+}
+
+.da-main a:not(.da-btn):focus-visible {
+  outline: 2px solid var(--da-accent);
   outline-offset: 3px;
   border-radius: 4px;
 }
-.da-main { max-width: 52rem; margin: 0 auto; padding: 1.5rem 1.25rem 3rem; }
-.da-lang-row { display: flex; justify-content: flex-end; margin-bottom: 1rem; }
-.da-lang { display: inline-flex; border: 1px solid var(--da-line); border-radius: 999px; overflow: hidden; background: var(--da-surface); }
-.da-lang button {
-  font: inherit; font-size: .95rem; padding: .4rem 1rem; border: 0; cursor: pointer;
-  background: transparent; color: var(--da-text);
+
+/* Emails et URLs restent lisibles en LTR dans un texte arabe */
+.da-main a[href^="mailto:"],
+.da-main a[href^="http"]:not(.da-btn) {
+  direction: ltr;
+  unicode-bidi: isolate;
+  display: inline-block;
 }
-.da-lang button[aria-pressed="true"] { background: var(--da-brand); color: #fff; font-weight: 600; }
-.da-main h1 { font-size: clamp(1.9rem, 5vw, 2.6rem); line-height: 1.15; margin: 0 0 1rem; letter-spacing: -.02em; }
-.da-main h2 { font-size: 1.3rem; margin: 2.25rem 0 .6rem; }
-.da-main p { margin: 0 0 1rem; max-width: 42rem; }
-.da-lead { font-size: 1.15rem; color: var(--da-muted); }
-.da-card {
-  background: var(--da-surface); border: 1px solid var(--da-line); border-radius: 12px;
-  padding: 1.5rem; margin: 1.5rem 0;
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 640px) {
+  .da-page {
+    padding: 28px 16px 64px;
+  }
+
+  .da-lang-row {
+    margin-bottom: 28px;
+  }
+
+  .da-lead {
+    font-size: 16px;
+    margin-bottom: 28px;
+  }
+
+  .da-card {
+    padding: 24px 20px;
+    border-radius: 16px;
+  }
+
+  .da-btn {
+    width: 100%;
+  }
 }
-.da-card h2 { margin-top: 0; }
-.da-main ol { padding-left: 1.4rem; margin: 0 0 1.25rem; }
-.da-main ol li { margin-bottom: .55rem; max-width: 40rem; }
-.da-btn {
-  display: inline-block; background: var(--da-brand); color: #fff !important; text-decoration: none;
-  padding: .8rem 1.4rem; border-radius: 8px; font-weight: 600;
+
+/* ===== DARK MODE ===== */
+@media (prefers-color-scheme: dark) {
+  .da-page {
+    --da-bg: #0b0f1a;
+    --da-surface: #111827;
+    --da-text: #f1f5f9;
+    --da-text-soft: #cbd5e1;
+    --da-muted: #94a3b8;
+    --da-border: #1f2937;
+    --da-accent: #818cf8;
+    --da-accent-hover: #a5b4fc;
+    --da-accent-soft: rgba(129, 140, 248, 0.14);
+    --da-warn-bg: rgba(245, 158, 11, 0.08);
+    --da-warn-border: rgba(245, 158, 11, 0.4);
+    --da-warn-text: #fcd34d;
+    --da-shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 12px 32px rgba(0, 0, 0, 0.35);
+
+    background:
+      radial-gradient(900px 380px at 50% -120px, rgba(129, 140, 248, 0.16), transparent 70%),
+      var(--da-bg);
+  }
+
+  .da-lang button[aria-pressed="true"] {
+    background: #f1f5f9;
+    color: #0f172a;
+  }
+
+  .da-btn {
+    color: #0b0f1a;
+    box-shadow: 0 6px 18px rgba(129, 140, 248, 0.3);
+  }
 }
-.da-btn:hover { background: var(--da-brand-dark); }
-.da-note {
-  background: var(--da-note-bg); border-left: 4px solid var(--da-note-line);
-  padding: 1rem 1.25rem; border-radius: 6px; margin: 2rem 0 0; color: #1b2033;
+
+/* ===== REDUCED MOTION ===== */
+@media (prefers-reduced-motion: reduce) {
+  .da-btn,
+  .da-btn::after,
+  .da-lang button,
+  .da-main a {
+    transition: none;
+  }
+
+  .da-btn:hover,
+  .da-btn:hover::after {
+    transform: none;
+  }
 }
-.da-note h2 { margin: 0 0 .4rem; font-size: 1.1rem; }
-.da-note p { margin: 0; }
+
+/* ===== PRINT ===== */
+@media print {
+  .da-page {
+    background: #fff;
+    padding: 0;
+  }
+
+  .da-lang-row,
+  .da-btn {
+    display: none;
+  }
+
+  .da-card {
+    box-shadow: none;
+  }
+}

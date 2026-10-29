@@ -291,7 +291,8 @@
     "formatCount": {
       "million": "{{count}} مليون",
       "thousand": "{{count}} ألف"
-    }
+    },
+    "deleteAccount": "حذف حسابي"
   },
 
 
