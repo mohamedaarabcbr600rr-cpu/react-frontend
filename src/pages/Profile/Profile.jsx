@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "../../axios";
+import { useTranslation } from "react-i18next";
 import ProfileHeader from "./components/ProfileHeader";
 import StoriesSection from "./components/StoriesSection";
 import PostsTab from "./components/PostsTab";
