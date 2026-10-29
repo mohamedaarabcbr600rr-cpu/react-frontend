@@ -19,6 +19,7 @@ const EmailVerified = lazy(() => import('./pages/EmailVerified'));
 const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
 const ResetPassword = lazy(() => import('./pages/ResetPassword'));
 const AuthCallback = lazy(() => import('./pages/AuthCallback'));
+const DeleteAccount = lazy(() => import('./pages/DeleteAccount/DeleteAccount'));
 import EmailVerificationBanner from "./components/EmailVerificationBanner";
 
 // Legal pages
@@ -591,6 +592,10 @@ const [adminToken, setAdminToken] = useState(() =>
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/auth/callback" element={<AuthCallback setUser={setUser} />} />
+
+          {/* ✅ DEMANDE DE SUPPRESSION DE COMPTE (publique, requise par Google Play) */}
+          <Route path="/delete-account" element={<DeleteAccount />} />
+
         {/* LEGAL PAGES */}
           <Route path="/about"         element={<About />}         />
           <Route path="/privacy"       element={<Privacy />}       />

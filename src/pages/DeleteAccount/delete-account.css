@@ -1,0 +1,54 @@
+/* pages/DeleteAccount/delete-account.css
+   Adapte --da-brand à la couleur principale de Studmo. */
+.da-page {
+  --da-brand: #1f4fd8;
+  --da-brand-dark: #173a9e;
+  --da-bg: #f6f7fb;
+  --da-surface: #ffffff;
+  --da-text: #1b2033;
+  --da-muted: #5a6178;
+  --da-line: #dde1ec;
+  --da-note-bg: #fff6e0;
+  --da-note-line: #e3b341;
+  background: var(--da-bg);
+  color: var(--da-text);
+  line-height: 1.65;
+  font-size: 1.0625rem;
+}
+.da-page *, .da-page *::before, .da-page *::after { box-sizing: border-box; }
+.da-page a { color: var(--da-brand); }
+.da-page a:focus-visible, .da-page button:focus-visible {
+  outline: 3px solid var(--da-brand);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+.da-main { max-width: 52rem; margin: 0 auto; padding: 1.5rem 1.25rem 3rem; }
+.da-lang-row { display: flex; justify-content: flex-end; margin-bottom: 1rem; }
+.da-lang { display: inline-flex; border: 1px solid var(--da-line); border-radius: 999px; overflow: hidden; background: var(--da-surface); }
+.da-lang button {
+  font: inherit; font-size: .95rem; padding: .4rem 1rem; border: 0; cursor: pointer;
+  background: transparent; color: var(--da-text);
+}
+.da-lang button[aria-pressed="true"] { background: var(--da-brand); color: #fff; font-weight: 600; }
+.da-main h1 { font-size: clamp(1.9rem, 5vw, 2.6rem); line-height: 1.15; margin: 0 0 1rem; letter-spacing: -.02em; }
+.da-main h2 { font-size: 1.3rem; margin: 2.25rem 0 .6rem; }
+.da-main p { margin: 0 0 1rem; max-width: 42rem; }
+.da-lead { font-size: 1.15rem; color: var(--da-muted); }
+.da-card {
+  background: var(--da-surface); border: 1px solid var(--da-line); border-radius: 12px;
+  padding: 1.5rem; margin: 1.5rem 0;
+}
+.da-card h2 { margin-top: 0; }
+.da-main ol { padding-left: 1.4rem; margin: 0 0 1.25rem; }
+.da-main ol li { margin-bottom: .55rem; max-width: 40rem; }
+.da-btn {
+  display: inline-block; background: var(--da-brand); color: #fff !important; text-decoration: none;
+  padding: .8rem 1.4rem; border-radius: 8px; font-weight: 600;
+}
+.da-btn:hover { background: var(--da-brand-dark); }
+.da-note {
+  background: var(--da-note-bg); border-left: 4px solid var(--da-note-line);
+  padding: 1rem 1.25rem; border-radius: 6px; margin: 2rem 0 0; color: #1b2033;
+}
+.da-note h2 { margin: 0 0 .4rem; font-size: 1.1rem; }
+.da-note p { margin: 0; }

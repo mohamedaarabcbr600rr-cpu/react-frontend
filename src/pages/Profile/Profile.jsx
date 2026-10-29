@@ -574,6 +574,19 @@ const handleFollow = async (targetUserId, targetUserData = null) => {
         isMyProfile={isMyProfile}
       />
 
+      {/* Bouton Supprimer le compte (visible uniquement sur son propre profil) */}
+      {isMyProfile && (
+        <div className="profile-delete-account">
+          <button
+            type="button"
+            className="profile-delete-account-btn"
+            onClick={() => navigate('/delete-account')}
+          >
+            Supprimer mon compte
+          </button>
+        </div>
+      )}
+
       <div className="profile-content">
         {activeTab === "posts" && (
           <PostsTab
@@ -740,10 +753,3 @@ const handleFollow = async (targetUserId, targetUserData = null) => {
 };
 
 export default Profile;
-
-
-
-
-
-
-
